@@ -1,41 +1,447 @@
-<div class="container">
-  <h2>Pay with Bitcoin</h2>
+---
+const BTC_ADDRESS = "3BjNYuWcg1iUKnypB8gee4ji5MQnUu3sRn";
+---
 
-  <p style="text-align:center; font-size:18px;">
-    Amount: <strong>550 NOK</strong>
-  </p>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AmicBridge – Pay with Bitcoin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --ab-bg: #f2f4f8;
+        --ab-card-bg: #ffffff;
+        --ab-primary: #0a3d62;
+        --ab-primary-dark: #062b44;
+        --ab-accent: #f39c12;
+        --ab-border: #d0d5e0;
+        --ab-text: #222;
+        --ab-muted: #666;
+      }
 
-  <p>Send BTC to this address:</p>
+      * {
+        box-sizing: border-box;
+      }
 
-  <div class="btc-box" id="btcAddress">
-    3BjNYuWcg1iUKnypB8gee4ji5MQnUu3sRn
-  </div>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: radial-gradient(circle at top, #dde7ff 0, #f2f4f8 45%, #f2f4f8 100%);
+        color: var(--ab-text);
+      }
 
-  <!-- Copy Button -->
-  <button 
-    onclick="copyBTC()" 
-    style="display:block; width:100%; padding:10px; background:#0a3d62; color:#fff; border:none; border-radius:6px; font-size:16px; margin-bottom:15px;"
-  >
-    Copy Address
-  </button>
+      .page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
 
-  <!-- QR Code (Safari-friendly) -->
-  <img
-    class="qr"
-    src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=bitcoin:3BjNYuWcg1iUKnypB8gee4ji5MQnUu3sRn"
-    alt="BTC QR Code"
-  />
+      .card {
+        width: 100%;
+        max-width: 520px;
+        background: var(--ab-card-bg);
+        border-radius: 18px;
+        border: 2px solid var(--ab-primary);
+        box-shadow: 0 22px 40px rgba(0, 0, 0, 0.12);
+        padding: 26px 26px 20px;
+        position: relative;
+      }
 
-  <p class="note">
-    After sending payment, please notify us or upload proof of transaction.
-  </p>
-</div>
+      .logo-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
 
-<script>
-function copyBTC() {
-  const addr = "3BjNYuWcg1iUKnypB8gee4ji5MQnUu3sRn";
-  navigator.clipboard.writeText(addr);
-  alert("Bitcoin address copied!");
-}
-</script>
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 12px;
+        background: var(--ab-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        font-size: 16px;
+      }
+
+      .logo-text {
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--ab-primary-dark);
+      }
+
+      .badge {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        background: #eaf3ff;
+        color: var(--ab-primary);
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+
+      h1 {
+        margin: 6px 0 0;
+        font-size: 24px;
+        color: var(--ab-primary-dark);
+        text-align: left;
+      }
+
+      .subtitle {
+        margin: 4px 0 16px;
+        font-size: 13px;
+        color: var(--ab-muted);
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      .col {
+        flex: 1 1 220px;
+        min-width: 0;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--ab-primary-dark);
+      }
+
+      .amount {
+        font-size: 18px;
+        margin: 0 0 10px;
+      }
+
+      .amount span {
+        font-weight: 700;
+      }
+
+      .address-box {
+        background: #f6f7fb;
+        border: 1px solid var(--ab-border);
+        border-radius: 9px;
+        padding: 8px 10px;
+        font-size: 13px;
+        word-wrap: break-word;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .address-text {
+        flex: 1;
+        overflow-wrap: anywhere;
+      }
+
+      .copy-btn {
+        border: none;
+        background: var(--ab-primary);
+        color: #fff;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .copy-btn:active {
+        transform: translateY(1px);
+      }
+
+      .qr-wrapper {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .qr {
+        width: 190px;
+        height: 190px;
+        border-radius: 12px;
+        border: 1px solid var(--ab-border);
+        background: #fff;
+      }
+
+      .status-chip {
+        position: absolute;
+        bottom: 16px;
+        right: 20px;
+        font-size: 11px;
+        color: var(--ab-muted);
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        display: inline-block;
+        margin-right: 4px;
+        background: #f1c40f;
+      }
+
+      .status-dot.ok {
+        background: #2ecc71;
+      }
+
+      .status-dot.err {
+        background: #e74c3c;
+      }
+
+      .check-box {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--ab-border);
+      }
+
+      .tx-label {
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+
+      .tx-input-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .tx-input {
+        flex: 1;
+        border-radius: 7px;
+        border: 1px solid var(--ab-border);
+        padding: 8px 9px;
+        font-size: 13px;
+        outline: none;
+      }
+
+      .tx-input:focus {
+        border-color: var(--ab-primary);
+        box-shadow: 0 0 0 1px rgba(10, 61, 98, 0.15);
+      }
+
+      .check-btn {
+        border-radius: 7px;
+        border: none;
+        padding: 8px 12px;
+        background: var(--ab-primary);
+        color: #fff;
+        font-size: 13px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .check-btn:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      .result {
+        font-size: 12px;
+        margin-top: 6px;
+        min-height: 16px;
+        color: var(--ab-muted);
+      }
+
+      .result.ok {
+        color: #2ecc71;
+      }
+
+      .result.err {
+        color: #e74c3c;
+      }
+
+      .footer-note {
+        margin-top: 12px;
+        font-size: 11px;
+        color: var(--ab-muted);
+      }
+
+      @media (max-width: 600px) {
+        .card {
+          padding: 18px 16px 18px;
+          border-radius: 14px;
+        }
+
+        .logo-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+        }
+
+        h1 {
+          font-size: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <main class="card">
+        <header>
+          <div class="logo-row">
+            <div class="logo">
+              <div class="logo-mark">AB</div>
+              <div class="logo-text">AmicBridge</div>
+            </div>
+            <div class="badge">Secure payment</div>
+          </div>
+          <h1>Pay with Bitcoin</h1>
+          <p class="subtitle">
+            Use your preferred Bitcoin wallet to complete the payment below.
+          </p>
+        </header>
+
+        <section class="row">
+          <div class="col">
+            <p class="section-title">Payment details</p>
+            <p class="amount">
+              Amount: <span>550 NOK</span>
+            </p>
+            <p style="font-size: 13px; margin-bottom: 4px;">
+              Send BTC to this address:
+            </p>
+            <div class="address-box">
+              <span class="address-text">{BTC_ADDRESS}</span>
+              <button class="copy-btn" type="button" id="copyBtn">COPY</button>
+            </div>
+            <p class="footer-note">
+              The BTC amount is based on the current exchange rate. Please make
+              sure your wallet uses an up-to-date rate.
+            </p>
+          </div>
+
+          <div class="col">
+            <p class="section-title">Scan with wallet</p>
+            <div class="qr-wrapper">
+              <img
+                class="qr"
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=bitcoin:${BTC_ADDRESS}`}
+                alt="BTC QR Code"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="check-box">
+          <p class="section-title">Confirm your payment</p>
+          <p class="tx-label">
+            Paste your Bitcoin transaction ID (txid) to verify on-chain:
+          </p>
+          <div class="tx-input-row">
+            <input
+              id="txidInput"
+              class="tx-input"
+              type="text"
+              placeholder="e.g. 1a2b3c4d..."
+            />
+            <button id="checkBtn" class="check-btn" type="button">
+              Check
+            </button>
+          </div>
+          <div id="result" class="result">
+            Awaiting transaction ID…
+          </div>
+        </section>
+
+        <div class="status-chip" id="statusChip">
+          <span class="status-dot"></span>
+          No payment checked yet
+        </div>
+      </main>
+    </div>
+
+    <script type="module">
+      const BTC_ADDRESS = "3BjNYuWcg1iUKnypB8gee4ji5MQnUu3sRn";
+      const REQUIRED_SATS = 10000; 
+      // ^ Set this to the minimum amount in satoshis that equals ~550 NOK.
+      // You can adjust this manually as needed.
+
+      // COPY ADDRESS
+      const copyBtn = document.getElementById("copyBtn");
+      copyBtn?.addEventListener("click", () => {
+        navigator.clipboard
+          .writeText(BTC_ADDRESS)
+          .then(() => alert("Bitcoin address copied"))
+          .catch(() => alert("Could not copy address"));
+      });
+
+      // CHECK PAYMENT
+      const txidInput = document.getElementById("txidInput");
+      const checkBtn = document.getElementById("checkBtn");
+      const resultEl = document.getElementById("result");
+      const statusChip = document.getElementById("statusChip");
+
+      function setStatus(state, message) {
+        if (!statusChip) return;
+        const dot = statusChip.querySelector(".status-dot");
+        dot?.classList.remove("ok", "err");
+
+        if (state === "ok") dot?.classList.add("ok");
+        if (state === "err") dot?.classList.add("err");
+
+        statusChip.lastChild.textContent = " " + message;
+      }
+
+      checkBtn?.addEventListener("click", async () => {
+        const txid = txidInput.value.trim();
+        if (!txid) {
+          resultEl.textContent = "Please paste a transaction ID first.";
+          resultEl.className = "result err";
+          setStatus("err", "No txid supplied");
+          return;
+        }
+
+        resultEl.textContent = "Checking blockchain for your payment…";
+        resultEl.className = "result";
+        checkBtn.disabled = true;
+
+        try {
+          const res = await fetch(
+            `/api/check-payment?txid=${encodeURIComponent(
+              txid
+            )}&address=${encodeURIComponent(BTC_ADDRESS)}&min=${REQUIRED_SATS}`
+          );
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            resultEl.textContent = data.message || "Payment not found or not confirmed.";
+            resultEl.className = "result err";
+            setStatus("err", "Payment not confirmed");
+          } else {
+            resultEl.textContent = `✅ Payment found: ${data.amount_btc} BTC to ${data.address} with ${data.confirmations} confirmation(s).`;
+            resultEl.className = "result ok";
+            setStatus("ok", "Payment confirmed on-chain");
+          }
+        } catch (err) {
+          console.error(err);
+          resultEl.textContent = "Error checking payment. Please try again.";
+          resultEl.className = "result err";
+          setStatus("err", "Check failed");
+        } finally {
+          checkBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
 
