@@ -1,169 +1,338 @@
 ---
-const products = [
-  {
-    name: "Black Satin-Look Cami & Shorts Set",
-    price: "399NOK",
-    image: "/images/set-black.png",
-  },
-  {
-    name: "White Satin-Look Cami & Shorts Set",
-    price: "399 NOK",
-    image: "/images/set-white.png",
-  },
-  {
-    name: "Nude Satin-Look Slip Dress",
-    price: "499 NOK",
-    image: "/images/nude-slipp-dress.png",
-  },
-  {
-    name: "Black Satin-Look Chemise Dress",
-    price: "499 NOK",
-    image: "/images/black-chemise.png",
-  },
-];
+const base = import.meta.env.BASE_URL;
+
+// Your Formspree endpoint:
+const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amicbridge</title>
+    <title>Checkout — Amicbridge</title>
+
     <style>
-      body {
-        margin: 0;
-        font-family: system-ui, sans-serif;
-        background: #fafafa;
-        color: #111;
+      :root{
+        --bg:#f7f6f4;
+        --text:#151515;
+        --muted:#6b6b6b;
+        --border:#dedede;
+        --card:#ffffff;
+      }
+      *{ box-sizing:border-box; }
+      body{
+        margin:0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background:var(--bg);
+        color:var(--text);
+      }
+      header{
+        padding:26px 44px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      }
+      a{ color:var(--text); text-decoration:none; }
+      a:hover{ text-decoration:underline; }
+
+      main{
+        max-width:1100px;
+        margin:0 auto;
+        padding:0 44px 80px;
+      }
+      h1{
+        margin:20px 0 18px;
+        font-size:34px;
+        letter-spacing:-0.01em;
       }
 
-      header {
-        padding: 24px 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      .layout{
+        display:grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap:26px;
+        align-items:start;
       }
 
-      nav a {
-        margin-left: 20px;
-        text-decoration: none;
-        color: #111;
-        font-weight: 500;
+      .card{
+        background:var(--card);
+        border:1px solid var(--border);
+        padding:18px;
       }
 
-      .hero {
-        padding: 80px 40px;
-        max-width: 1200px;
+      .muted{ color:var(--muted); }
+
+      .items{ display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+      .item{
+        display:flex;
+        justify-content:space-between;
+        gap:12px;
+        border-top:1px solid var(--border);
+        padding-top:12px;
+      }
+      .item:first-child{ border-top:0; padding-top:0; }
+      .item b{ font-weight:700; }
+      .pill{
+        display:inline-block;
+        padding:2px 8px;
+        border:1px solid var(--border);
+        border-radius:999px;
+        font-size:12px;
+        color:var(--muted);
+        margin-right:6px;
+      }
+      .totalRow{
+        border-top:1px solid var(--border);
+        margin-top:14px;
+        padding-top:14px;
+        display:flex;
+        justify-content:space-between;
+        font-weight:800;
       }
 
-      .hero h1 {
-        font-size: 56px;
-        margin-bottom: 20px;
+      form{
+        display:grid;
+        gap:12px;
+        margin-top:8px;
+      }
+      .grid2{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:12px;
+      }
+      label{
+        font-size:13px;
+        color:var(--muted);
+        text-transform:uppercase;
+        letter-spacing:.06em;
+      }
+      input, textarea, select{
+        width:100%;
+        padding:12px;
+        border:1px solid var(--border);
+        background:#fff;
+        font-size:15px;
+        outline:none;
+      }
+      textarea{ min-height:90px; resize:vertical; }
+
+      .btn{
+        padding:14px 12px;
+        border:1px solid var(--text);
+        background:var(--text);
+        color:#fff;
+        cursor:pointer;
+        font-weight:700;
+        font-size:15px;
+      }
+      .btn.secondary{
+        background:#fff;
+        color:var(--text);
+        border-color:var(--border);
       }
 
-      .hero p {
-        font-size: 18px;
-        color: #555;
-        max-width: 520px;
+      .notice{
+        font-size:13px;
+        color:var(--muted);
+        line-height:1.45;
+      }
+      .error{
+        color:#b42318;
+        font-size:13px;
+        margin-top:8px;
       }
 
-      .products {
-        padding: 40px;
-        max-width: 1200px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 30px;
-      }
-
-      .card {
-        background: white;
-        border: 1px solid #ddd;
-        padding: 16px;
-      }
-
-      .card img {
-        width: 100%;
-        height: 380px;
-        object-fit: cover;
-        background: #eee;
-      }
-
-      .card h3 {
-        margin: 14px 0 6px;
-        font-size: 18px;
-      }
-
-      .price {
-        font-weight: bold;
-        margin-bottom: 10px;
-      }
-
-      .buy {
-        display: block;
-        text-align: center;
-        padding: 12px;
-        border: 1px solid #111;
-        background: white;
-        cursor: pointer;
-        text-decoration: none;
-        color: #111;
-      }
-
-      .buy:hover {
-        background: #111;
-        color: white;
-      }
-
-      footer {
-        padding: 40px;
-        text-align: center;
-        color: #666;
+      @media (max-width: 900px){
+        header{ padding:18px 18px; }
+        main{ padding:0 18px 60px; }
+        .layout{ grid-template-columns: 1fr; }
       }
     </style>
   </head>
 
   <body>
     <header>
-      <strong>AMICBRIDGE</strong>
-      <nav>
-        <a href="#shop">Shop</a>
-        <a
-          href="https://wa.me/4792928373"
-          target="_blank"
-        >
-          Contact
-        </a>
-      </nav>
+      <strong style="letter-spacing:.08em;">AMICBRIDGE</strong>
+      <a href={`${base}`}>← Back to shop</a>
     </header>
 
-    <section class="hero">
-      <h1>Underwear designed for real life</h1>
-      <p>
-        Amicbridge creates thoughtfully made underwear for women who value
-        comfort, simplicity, and quiet confidence.
-      </p>
-    </section>
+    <main>
+      <h1>Checkout</h1>
+      <p class="muted">Fill in shipping details. Your order will be sent to our email.</p>
 
-    <section id="shop" class="products">
-      {products.map((product) => (
-        <div class="card">
-          <img src={product.image} alt={product.name} />
-          <h3>{product.name}</h3>
-          <div class="price">{product.price}</div>
-          <a
-            class="buy"
-            href="https://wa.me/4792928373?text=Hi%20I%20want%20to%20order%20{encodeURIComponent(product.name)}"
-            target="_blank"
-          >
-            Order on WhatsApp
-          </a>
-        </div>
-      ))}
-    </section>
+      <div class="layout">
+        <!-- LEFT: Shipping form -->
+        <section class="card">
+          <h2 style="margin:0 0 10px;font-size:18px;">Shipping information</h2>
 
-    <footer>
-      © {new Date().getFullYear()} Amicbridge · Contact via WhatsApp
-    </footer>
+          <form id="orderForm" action={FORMSPREE_ACTION} method="POST">
+            <!-- Hidden fields we fill by JS -->
+            <input type="hidden" name="order_summary" id="order_summary" />
+            <input type="hidden" name="order_total_nok" id="order_total_nok" />
+            <input type="hidden" name="order_items_json" id="order_items_json" />
+
+            <div>
+              <label for="fullName">Full name</label>
+              <input id="fullName" name="full_name" required placeholder="Full name" />
+            </div>
+
+            <div class="grid2">
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required placeholder="you@example.com" />
+              </div>
+              <div>
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" required placeholder="92928373" />
+              </div>
+            </div>
+
+            <div>
+              <label for="address">Address</label>
+              <input id="address" name="address" required placeholder="Street + house number" />
+            </div>
+
+            <div class="grid2">
+              <div>
+                <label for="city">City</label>
+                <input id="city" name="city" required placeholder="Oslo" />
+              </div>
+              <div>
+                <label for="postal">Postal code</label>
+                <input id="postal" name="postal_code" required placeholder="0000" />
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div>
+                <label for="country">Country</label>
+                <input id="country" name="country" required value="Norway" />
+              </div>
+              <div>
+                <label for="delivery">Delivery note (optional)</label>
+                <input id="delivery" name="delivery_note" placeholder="Door code, etc." />
+              </div>
+            </div>
+
+            <div>
+              <label for="message">Message (optional)</label>
+              <textarea id="message" name="message" placeholder="Anything we should know?"></textarea>
+            </div>
+
+            <!-- Formspree settings -->
+            <input type="hidden" name="_subject" value="New Amicbridge order" />
+            <input type="hidden" name="_format" value="plain" />
+
+            <button class="btn" type="submit">Send order</button>
+            <p class="notice">
+              By placing an order you confirm your shipping details are correct.
+              Payment can be handled after we confirm availability.
+            </p>
+
+            <p class="error" id="cartError" style="display:none;">
+              Your cart is empty. Go back to the shop and add items.
+            </p>
+          </form>
+        </section>
+
+        <!-- RIGHT: Order summary -->
+        <aside class="card">
+          <h2 style="margin:0 0 10px;font-size:18px;">Order summary</h2>
+          <div id="items" class="items"></div>
+          <div class="totalRow">
+            <span>Total</span>
+            <span><span id="total">0</span> NOK</span>
+          </div>
+
+          <div style="margin-top:14px;">
+            <button class="btn secondary" id="clearCartBtn" type="button">Clear cart</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script>
+      const CART_KEY = "amicbridge_cart_v1";
+
+      function readCart() {
+        try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+        catch { return []; }
+      }
+
+      function writeCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      }
+
+      function formatLine(item) {
+        const parts = [];
+        if (item.size) parts.push(`Size: ${item.size}`);
+        if (item.color) parts.push(`Color: ${item.color}`);
+        return parts.join(" · ");
+      }
+
+      const cart = readCart();
+      const itemsEl = document.getElementById("items");
+      const totalEl = document.getElementById("total");
+      const cartError = document.getElementById("cartError");
+      const form = document.getElementById("orderForm");
+
+      // Render summary
+      let total = 0;
+      itemsEl.innerHTML = "";
+
+      cart.forEach((item) => {
+        const qty = Number(item.qty || 0);
+        const price = Number(item.price || 0);
+        const lineTotal = qty * price;
+        total += lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div>
+            <b>${item.name || "Product"}</b><br/>
+            <span class="pill">Qty: ${qty}</span>
+            <span class="pill">${formatLine(item) || "—"}</span>
+          </div>
+          <div><b>${lineTotal} NOK</b></div>
+        `;
+        itemsEl.appendChild(div);
+      });
+
+      totalEl.textContent = String(total);
+
+      // Fill hidden fields for Formspree email
+      const summaryLines = cart.map((i) => {
+        const qty = Number(i.qty || 0);
+        const price = Number(i.price || 0);
+        const lineTotal = qty * price;
+        return `${i.name} | Qty: ${qty} | ${formatLine(i) || ""} | ${lineTotal} NOK`;
+      });
+
+      document.getElementById("order_summary").value = summaryLines.join("\n");
+      document.getElementById("order_total_nok").value = String(total);
+      document.getElementById("order_items_json").value = JSON.stringify(cart, null, 2);
+
+      // If cart empty, block submit
+      if (!cart.length) {
+        cartError.style.display = "block";
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+        });
+      }
+
+      // Clear cart button
+      document.getElementById("clearCartBtn").addEventListener("click", () => {
+        writeCart([]);
+        location.reload();
+      });
+
+      // Optional: clear cart after successful submit (Formspree redirect)
+      form.addEventListener("submit", () => {
+        // Clear immediately so customer doesn’t double-order by mistake
+        writeCart([]);
+      });
+    </script>
   </body>
 </html>
 
