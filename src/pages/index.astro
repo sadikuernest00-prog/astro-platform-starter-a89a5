@@ -5,7 +5,7 @@ const products = [
   {
     id: "set-black",
     name: "Black Satin-Look Cami & Shorts Set",
-    price: 399,
+    price: 350,
     image: "/images/set-black.png",
     colors: ["Black"],
     sizes: ["S", "M", "L"],
@@ -14,7 +14,7 @@ const products = [
   {
     id: "set-white",
     name: "White Satin-Look Cami & Shorts Set",
-    price: 399,
+    price: 350,
     image: "/images/set-white.png",
     colors: ["White"],
     sizes: ["S", "M", "L"],
@@ -23,20 +23,40 @@ const products = [
   {
     id: "nude-slip",
     name: "Nude Satin-Look Slip Dress",
-    price: 499,
+    price: 350,
     image: "/images/nude-slipp-dress.png",
     colors: ["Nude"],
     sizes: ["S", "M", "L"],
     defaultColor: "Nude",
   },
   {
+    id: "white-slip",
+    name: "White Satin-Look Slip Dress",
+    price: 350,
+    image: "/images/white-slip-dress.png",
+    colors: ["White"],
+    sizes: ["S", "M", "L"],
+    defaultColor: "White",
+  },
+  {
     id: "black-chemise",
     name: "Black Satin-Look Chemise Dress",
-    price: 499,
+    price: 350,
     image: "/images/black-chemise.png",
     colors: ["Black"],
     sizes: ["S", "M", "L"],
     defaultColor: "Black",
+  },
+
+  // ✅ NEW PRODUCT
+  {
+    id: "white-soft-bra",
+    name: "White Soft Comfort Bra",
+    price: 350,
+    image: "/images/white-soft-bra.png",
+    colors: ["White"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "White",
   },
 ];
 ---
@@ -401,7 +421,7 @@ const products = [
           setMsg(card, "Added to cart ✓");
         });
 
-        // ✅ Remove from cart (removes that exact size+color item)
+        // Remove from cart (removes the exact size+color item)
         card.querySelector("[data-remove]").addEventListener("click", () => {
           if (!size || !color) {
             return setMsg(card, "Select size & color to remove.", false);
