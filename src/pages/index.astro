@@ -1,22 +1,14 @@
 ---
 const products = [
   {
-    id: 1,
     name: "Lace Bra & Panty Set",
     price: "$29.99",
-    image: "/images/set-white.jpg",
+    image: "/images/set-white.png",
   },
   {
-    id: 2,
     name: "Classic Black Lace Set",
     price: "$32.99",
-    image: "/images/set-black.jpg",
-  },
-  {
-    id: 3,
-    name: "Soft Comfort Bralette",
-    price: "$24.99",
-    image: "/images/bralette.jpg",
+    image: "/images/set-black.png",
   },
 ];
 ---
@@ -38,39 +30,14 @@ const products = [
 
       header {
         padding: 24px 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         border-bottom: 1px solid #e5e5e5;
       }
 
       header h1 {
         margin: 0;
+        font-size: 18px;
         letter-spacing: 2px;
-        font-size: 18px;
         text-transform: uppercase;
-      }
-
-      nav a {
-        margin-left: 20px;
-        text-decoration: none;
-        color: #111;
-        font-size: 14px;
-      }
-
-      .hero {
-        padding: 80px 40px;
-        max-width: 900px;
-      }
-
-      .hero h2 {
-        font-size: 42px;
-        margin-bottom: 16px;
-      }
-
-      .hero p {
-        font-size: 18px;
-        color: #555;
       }
 
       .products {
@@ -90,17 +57,17 @@ const products = [
         width: 100%;
         height: 360px;
         object-fit: cover;
+        background: #f0f0f0;
       }
 
       .product h3 {
-        font-size: 16px;
         margin: 12px 0 4px;
+        font-size: 16px;
       }
 
       .product p {
         margin: 0;
-        font-size: 14px;
-        color: #444;
+        color: #555;
       }
 
       .product button {
@@ -110,15 +77,6 @@ const products = [
         border: 1px solid #111;
         background: transparent;
         cursor: pointer;
-        font-size: 14px;
-      }
-
-      footer {
-        text-align: center;
-        padding: 24px;
-        font-size: 13px;
-        color: #777;
-        border-top: 1px solid #e5e5e5;
       }
     </style>
   </head>
@@ -126,20 +84,7 @@ const products = [
   <body>
     <header>
       <h1>Amicbridge</h1>
-      <nav>
-        <a href="#">Shop</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
-      </nav>
     </header>
-
-    <section class="hero">
-      <h2>Underwear made for everyday confidence</h2>
-      <p>
-        Comfortable, elegant women’s underwear designed for real bodies and
-        daily wear.
-      </p>
-    </section>
 
     <section class="products">
       {products.map((product) => (
@@ -151,10 +96,6 @@ const products = [
         </div>
       ))}
     </section>
-
-    <footer>
-      © {new Date().getFullYear()} Amicbridge. All rights reserved.
-    </footer>
   </body>
 </html>
 
