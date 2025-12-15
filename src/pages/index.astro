@@ -3,319 +3,319 @@ const products = [
   {
     id: "set-white",
     name: "Lace Bra & Panty Set",
-    priceNok: 350,
+    price: 350,
     image: "/images/set-white.png",
-    defaultColor: "White",
     colors: ["White", "Black"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "White",
   },
   {
     id: "set-black",
     name: "Classic Black Lace Set",
-    priceNok: 350,
+    price: 350,
     image: "/images/set-black.png",
-    defaultColor: "Black",
     colors: ["Black", "White"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "Black",
   },
 ];
 ---
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Amicbridge — Women’s Underwear</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amicbridge — Women’s Underwear</title>
 
-    <style>
-      :root { --border:#e5e5e5; --text:#111; --muted:#666; --bg:#fafafa; }
-      body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
-      header { padding:24px 40px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:16px; }
-      header h1 { margin:0; font-size:18px; letter-spacing:2px; text-transform:uppercase; }
-      header .mini { color:var(--muted); font-size:13px; }
+  <style>
+    :root {
+      --border:#e5e5e5;
+      --text:#111;
+      --muted:#666;
+      --bg:#fafafa;
+    }
+    body {
+      margin:0;
+      font-family: system-ui, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header {
+      padding:20px 40px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+    }
+    header h1 {
+      margin:0;
+      font-size:18px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
+    header a {
+      text-decoration:none;
+      color:#111;
+      border:1px solid #111;
+      padding:8px 12px;
+      font-size:14px;
+    }
 
-      main { max-width:1200px; margin:0 auto; }
-      .products { padding:40px; display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:30px; }
+    main {
+      max-width:1200px;
+      margin:0 auto;
+      padding:40px;
+    }
 
-      .product { background:#fff; border:1px solid var(--border); padding:16px; display:flex; flex-direction:column; gap:12px; }
-      .product img { width:100%; height:360px; object-fit:cover; background:#f0f0f0; border:1px solid var(--border); }
-      .title { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
-      .title h2 { margin:0; font-size:16px; }
-      .price { margin:0; font-weight:600; color:#222; white-space:nowrap; }
-      .sub { margin:0; color:var(--muted); font-size:13px; }
+    .products {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap:30px;
+    }
 
-      .sectionLabel { margin:8px 0 6px; font-size:13px; color:var(--muted); letter-spacing:.04em; text-transform:uppercase; }
-      .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; }
-      .pillgrid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; }
+    .product {
+      background:#fff;
+      border:1px solid var(--border);
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
 
-      .optionBtn {
-        border:1px solid var(--border);
-        background:#fff;
-        padding:14px 10px;
-        cursor:pointer;
-        text-align:center;
-        font-size:16px;
-        user-select:none;
-      }
-      .optionBtn[aria-pressed="true"] { border-color:#111; outline:2px solid #1111; }
+    .product img {
+      width:100%;
+      height:360px;
+      object-fit:cover;
+      background:#f0f0f0;
+      border:1px solid var(--border);
+    }
 
-      .row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
-      .qty {
-        display:grid;
-        grid-template-columns: 52px 64px 52px;
-        border:1px solid var(--border);
-        width:max-content;
-      }
-      .qty button {
-        border:0;
-        background:#fff;
-        padding:12px 0;
-        cursor:pointer;
-        font-size:18px;
-      }
-      .qty div {
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        border-left:1px solid var(--border);
-        border-right:1px solid var(--border);
-        font-size:14px;
-      }
+    .row {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
 
-      .actions { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px; }
-      .primary, .secondary {
-        width:100%;
-        padding:12px 10px;
-        border:1px solid #111;
-        cursor:pointer;
-        font-size:14px;
-        background:#fff;
-      }
-      .primary { background:#111; color:#fff; }
-      .secondary { border-color:var(--border); color:#111; }
+    .price {
+      font-weight:600;
+      white-space:nowrap;
+    }
 
-      .hint { font-size:12px; color:var(--muted); margin:0; }
+    .label {
+      font-size:13px;
+      color:var(--muted);
+      text-transform:uppercase;
+      margin:8px 0 6px;
+    }
 
-      .contact {
-        padding:40px;
-        border-top:1px solid var(--border);
-        margin:0 40px 40px;
-        background:#fff;
-        border:1px solid var(--border);
-      }
-      .contact h3 { margin:0 0 10px; font-size:16px; }
-      .contact p { margin:6px 0; color:#222; }
-      .contact a { color:#111; text-decoration:none; border-bottom:1px solid #111; }
-    </style>
-  </head>
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:10px;
+    }
 
-  <body>
-    <header>
-      <h1>Amicbridge</h1>
-      <div class="mini">
-        Cart: <span id="cartCount">0</span> item(s)
-      </div>
-    </header>
+    .btn-option {
+      padding:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:pointer;
+      text-align:center;
+    }
 
-    <main>
-      <section class="products">
-        {products.map((p) => (
-          <article class="product" data-product-id={p.id} data-price={p.priceNok}>
-            <img src={p.image} alt={p.name} />
+    .btn-option.active {
+      border-color:#111;
+    }
 
-            <div class="title">
-              <div>
-                <h2>{p.name}</h2>
-                <p class="sub">Select size & color, then add to cart</p>
-              </div>
-              <p class="price">{p.priceNok} NOK</p>
+    .qty {
+      display:grid;
+      grid-template-columns: 40px 60px 40px;
+      border:1px solid var(--border);
+    }
+
+    .qty button {
+      background:#fff;
+      border:none;
+      cursor:pointer;
+      font-size:18px;
+    }
+
+    .qty div {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-left:1px solid var(--border);
+      border-right:1px solid var(--border);
+    }
+
+    .actions {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .btn {
+      padding:12px;
+      border:1px solid #111;
+      cursor:pointer;
+      font-size:14px;
+    }
+
+    .btn.primary {
+      background:#111;
+      color:#fff;
+    }
+
+    .btn.secondary {
+      background:#fff;
+    }
+
+    .message {
+      font-size:12px;
+      color:#1a7f37;
+    }
+
+    .contact {
+      margin-top:60px;
+      padding:30px;
+      border:1px solid var(--border);
+      background:#fff;
+    }
+
+    .contact h3 {
+      margin-top:0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Amicbridge</h1>
+    <div>
+      Cart: <strong><span id="cartCount">0</span></strong>
+      <a href="/checkout" style="margin-left:12px;">Checkout</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="products">
+      {products.map(p => (
+        <div class="product" data-id={p.id} data-price={p.price}>
+          <img src={p.image} alt={p.name} />
+
+          <div class="row">
+            <h2>{p.name}</h2>
+            <div class="price">{p.price} NOK</div>
+          </div>
+
+          <div>
+            <div class="label">Size</div>
+            <div class="grid sizes">
+              {p.sizes.map(s => (
+                <button class="btn-option" data-size={s}>{s}</button>
+              ))}
             </div>
+          </div>
 
+          <div>
+            <div class="label">Color</div>
+            <div class="grid colors">
+              {p.colors.map(c => (
+                <button class="btn-option {c === p.defaultColor ? 'active' : ''}" data-color={c}>{c}</button>
+              ))}
+            </div>
+          </div>
+
+          <div class="row">
             <div>
-              <div class="sectionLabel">Size</div>
-              <div class="grid" data-size-grid>
-                {p.sizes.map((s) => (
-                  <button class="optionBtn" type="button" data-size={s} aria-pressed="false">{s}</button>
-                ))}
+              <div class="label">Quantity</div>
+              <div class="qty">
+                <button data-minus>-</button>
+                <div data-qty>1</div>
+                <button data-plus>+</button>
               </div>
             </div>
+          </div>
 
-            <div>
-              <div class="sectionLabel">Color</div>
-              <div class="pillgrid" data-color-grid>
-                {p.colors.map((c) => (
-                  <button class="optionBtn" type="button" data-color={c} aria-pressed={c === p.defaultColor ? "true" : "false"}>{c}</button>
-                ))}
-              </div>
-            </div>
+          <div class="actions">
+            <button class="btn secondary" data-clear>Clear</button>
+            <button class="btn primary" data-add>Add to cart</button>
+          </div>
 
-            <div class="row">
-              <div>
-                <div class="sectionLabel">Quantity</div>
-                <div class="qty" role="group" aria-label="Quantity selector">
-                  <button type="button" data-qty-minus aria-label="Decrease quantity">-</button>
-                  <div data-qty-value>1</div>
-                  <button type="button" data-qty-plus aria-label="Increase quantity">+</button>
-                </div>
-              </div>
+          <div class="message"></div>
+        </div>
+      ))}
+    </section>
 
-              <div style="flex:1; text-align:right;">
-                <div class="sectionLabel">Selected</div>
-                <div class="hint">
-                  Size: <span data-selected-size>—</span> • Color: <span data-selected-color>{p.defaultColor}</span>
-                </div>
-              </div>
-            </div>
+    <section class="contact">
+      <h3>Contact</h3>
+      <p><strong>CEO:</strong> Robert</p>
+      <p><strong>Phone:</strong> <a href="tel:92928373">92928373</a></p>
+    </section>
+  </main>
 
-            <div class="actions">
-              <button class="secondary" type="button" data-clear>Clear</button>
-              <button class="primary" type="button" data-add>Add to cart</button>
-            </div>
+  <script>
+    const CART_KEY = "amicbridge_cart_v1";
 
-            <p class="hint" data-message></p>
-          </article>
-        ))}
-      </section>
+    function readCart() {
+      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    }
 
-      <section class="contact">
-        <h3>Contact</h3>
-        <p><strong>CEO:</strong> Robert</p>
-        <p><strong>Phone:</strong> <a href="tel:92928373">92928373</a></p>
-      </section>
-    </main>
+    function writeCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartCount();
+    }
 
-    <script>
-      const CART_KEY = "amicbridge_cart_v1";
+    function updateCartCount() {
+      const count = readCart().reduce((s,i)=>s+i.qty,0);
+      document.getElementById("cartCount").textContent = count;
+    }
 
-      function readCart() {
-        try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-        catch { return []; }
-      }
+    document.querySelectorAll(".product").forEach(card => {
+      let qty = 1;
+      let size = null;
+      let color = card.querySelector(".colors .active")?.dataset.color;
 
-      function writeCart(cart) {
-        localStorage.setItem(CART_KEY, JSON.stringify(cart));
-        updateCartCount();
-      }
-
-      function updateCartCount() {
-        const cart = readCart();
-        const count = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
-        const el = document.getElementById("cartCount");
-        if (el) el.textContent = String(count);
-      }
-
-      function setPressed(groupEl, selector, valueAttr, value) {
-        groupEl.querySelectorAll(selector).forEach(btn => {
-          const v = btn.getAttribute(valueAttr);
-          btn.setAttribute("aria-pressed", v === value ? "true" : "false");
-        });
-      }
-
-      function getPressedValue(groupEl, selector, valueAttr) {
-        const pressed = groupEl.querySelector(`${selector}[aria-pressed="true"]`);
-        return pressed ? pressed.getAttribute(valueAttr) : null;
-      }
-
-      function showMsg(card, text, ok=true) {
-        const msg = card.querySelector("[data-message]");
-        if (!msg) return;
-        msg.textContent = text;
-        msg.style.color = ok ? "#1a7f37" : "#b42318";
-      }
-
-      // Setup all product cards
-      document.querySelectorAll("[data-product-id]").forEach(card => {
-        const sizeGrid = card.querySelector("[data-size-grid]");
-        const colorGrid = card.querySelector("[data-color-grid]");
-        const qtyValueEl = card.querySelector("[data-qty-value]");
-        const selectedSizeEl = card.querySelector("[data-selected-size]");
-        const selectedColorEl = card.querySelector("[data-selected-color]");
-
-        const defaultColorBtn = colorGrid.querySelector('[aria-pressed="true"]');
-        if (defaultColorBtn && selectedColorEl) selectedColorEl.textContent = defaultColorBtn.textContent.trim();
-
-        // Size buttons
-        sizeGrid.querySelectorAll("[data-size]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const size = btn.getAttribute("data-size");
-            setPressed(sizeGrid, "[data-size]", "data-size", size);
-            if (selectedSizeEl) selectedSizeEl.textContent = size;
-            showMsg(card, "");
-          });
-        });
-
-        // Color buttons
-        colorGrid.querySelectorAll("[data-color]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const color = btn.getAttribute("data-color");
-            setPressed(colorGrid, "[data-color]", "data-color", color);
-            if (selectedColorEl) selectedColorEl.textContent = color;
-            showMsg(card, "");
-          });
-        });
-
-        // Qty
-        card.querySelector("[data-qty-minus]").addEventListener("click", () => {
-          const n = Math.max(1, parseInt(qtyValueEl.textContent || "1", 10) - 1);
-          qtyValueEl.textContent = String(n);
-        });
-        card.querySelector("[data-qty-plus]").addEventListener("click", () => {
-          const n = Math.min(99, parseInt(qtyValueEl.textContent || "1", 10) + 1);
-          qtyValueEl.textContent = String(n);
-        });
-
-        // Clear
-        card.querySelector("[data-clear]").addEventListener("click", () => {
-          // reset size
-          setPressed(sizeGrid, "[data-size]", "data-size", "__none__");
-          if (selectedSizeEl) selectedSizeEl.textContent = "—";
-
-          // reset color to first default pressed or first button
-          const fallback = colorGrid.querySelector("[data-color]");
-          const def = colorGrid.querySelector('[aria-pressed="true"]') || fallback;
-          const color = def ? def.getAttribute("data-color") : null;
-          if (color) setPressed(colorGrid, "[data-color]", "data-color", color);
-          if (selectedColorEl) selectedColorEl.textContent = color || "—";
-
-          // reset qty
-          qtyValueEl.textContent = "1";
-          showMsg(card, "Cleared.");
-        });
-
-        // Add to cart
-        card.querySelector("[data-add]").addEventListener("click", () => {
-          const productId = card.getAttribute("data-product-id");
-          const name = card.querySelector("h2")?.textContent?.trim() || "Product";
-          const price = parseInt(card.getAttribute("data-price") || "0", 10);
-
-          const size = getPressedValue(sizeGrid, "[data-size]", "data-size");
-          const color = getPressedValue(colorGrid, "[data-color]", "data-color");
-          const qty = parseInt(qtyValueEl.textContent || "1", 10);
-
-          if (!size) {
-            showMsg(card, "Please select a size.", false);
-            return;
-          }
-          if (!color) {
-            showMsg(card, "Please select a color.", false);
-            return;
-          }
-
-          const cart = readCart();
-
-          // Merge same product + same variant
-          const existing = cart.find(i => i.productId === productId && i.size === size && i.color === color);
-          if (existing) existing.qty += qty;
-          else cart.push({ productId, name, price, size, color, qty });
-
-          writeCart(cart);
-          showMsg(card, "Added to cart ✅");
-        });
+      card.querySelectorAll(".sizes .btn-option").forEach(b=>{
+        b.onclick=()=>{ card.querySelectorAll(".sizes .btn-option").forEach(x=>x.classList.remove("active")); b.classList.add("active"); size=b.dataset.size; };
       });
 
-      updateCartCount();
-    </script>
-  </body>
+      card.querySelectorAll(".colors .btn-option").forEach(b=>{
+        b.onclick=()=>{ card.querySelectorAll(".colors .btn-option").forEach(x=>x.classList.remove("active")); b.classList.add("active"); color=b.dataset.color; };
+      });
+
+      card.querySelector("[data-plus]").onclick=()=>{ qty++; card.querySelector("[data-qty]").textContent=qty; };
+      card.querySelector("[data-minus]").onclick=()=>{ qty=Math.max(1,qty-1); card.querySelector("[data-qty]").textContent=qty; };
+
+      card.querySelector("[data-clear]").onclick=()=>{
+        size=null; qty=1;
+        card.querySelector("[data-qty]").textContent=1;
+        card.querySelectorAll(".btn-option").forEach(b=>b.classList.remove("active"));
+      };
+
+      card.querySelector("[data-add]").onclick=()=>{
+        if(!size || !color){
+          card.querySelector(".message").textContent="Please select size and color";
+          return;
+        }
+        const cart = readCart();
+        cart.push({
+          productId: card.dataset.id,
+          name: card.querySelector("h2").textContent,
+          price: Number(card.dataset.price),
+          size, color, qty
+        });
+        writeCart(cart);
+        card.querySelector(".message").textContent="Added to cart ✓";
+      };
+    });
+
+    updateCartCount();
+  </script>
+</body>
 </html>
+
 
