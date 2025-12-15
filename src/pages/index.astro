@@ -1,5 +1,9 @@
+
 ---
 const base = import.meta.env.BASE_URL;
+
+// helper: always build correct URL (works on / and subfolders)
+const img = (path) => `${base}${path.replace(/^\/+/, "")}`;
 
 const products = [
   {
@@ -24,7 +28,7 @@ const products = [
     id: "nude-slip",
     name: "Nude Satin-Look Slip Dress",
     price: 400,
-    image: "/images/nude-slipp-dress.png",
+    image: "/images/nude-slipp-dress.png", // ✅ matches your file name
     colors: ["Nude"],
     sizes: ["S", "M", "L"],
     defaultColor: "Nude",
@@ -48,7 +52,7 @@ const products = [
     defaultColor: "Black",
   },
 
-  // ✅ White bra
+  // ✅ bras
   {
     id: "white-soft-bra",
     name: "White Soft Comfort Bra",
@@ -58,8 +62,6 @@ const products = [
     sizes: ["75B", "80B", "85B", "90B", "95B"],
     defaultColor: "White",
   },
-
-  // ✅ Black bra (NEW)
   {
     id: "black-soft-bra",
     name: "Black Soft Comfort Bra",
@@ -69,16 +71,32 @@ const products = [
     sizes: ["75B", "80B", "85B", "90B", "95B"],
     defaultColor: "Black",
   },
-
-  // ✅ Grey bra (if you want it too — ONLY if the file exists!)
   {
     id: "grey-soft-bra",
     name: "Grey Soft Comfort Bra",
     price: 350,
-    image: "/images/grey-soft.png",
+    image: "/images/grey-soft.png", // ✅ matches your file name
     colors: ["Grey"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
     defaultColor: "Grey",
+  },
+  {
+    id: "white-sport-bra",
+    name: "White Sport Bra",
+    price: 350,
+    image: "/images/white-sport-bra.png", // ✅ matches your file name
+    colors: ["White"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "White",
+  },
+  {
+    id: "white-set-bra",
+    name: "White Set Bra",
+    price: 350,
+    image: "/images/white-set-bra.png", // ✅ matches your file name
+    colors: ["White"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "White",
   },
 ];
 ---
@@ -323,7 +341,8 @@ const products = [
             data-name={p.name}
             data-price={p.price}
           >
-            <img src={p.image} alt={p.name} />
+            {/* ✅ THIS is the key fix: img() adds BASE_URL */}
+            <img src={img(p.image)} alt={p.name} />
 
             <div class="name">{p.name}</div>
             <div class="price">{p.price} NOK</div>
@@ -443,11 +462,9 @@ const products = [
           setMsg(card, "Added to cart ✓");
         });
 
-        // Remove from cart (removes the exact size+color item)
+        // Remove exact size+color variant from cart
         card.querySelector("[data-remove]").addEventListener("click", () => {
-          if (!size || !color) {
-            return setMsg(card, "Select size & color to remove.", false);
-          }
+          if (!size || !color) return setMsg(card, "Select size & color to remove.", false);
 
           let cart = readCart();
           const before = cart.length;
@@ -461,9 +478,7 @@ const products = [
               )
           );
 
-          if (cart.length === before) {
-            return setMsg(card, "Item not in cart.", false);
-          }
+          if (cart.length === before) return setMsg(card, "Item not in cart.", false);
 
           writeCart(cart);
           setMsg(card, "Removed from cart ✓");
