@@ -229,7 +229,7 @@ const products = [
       }
       .btn.secondary{
         border-color:var(--border);
-        font-weight:600;
+        font-weight:700;
       }
       .msg{
         margin:10px 0 0;
@@ -314,7 +314,7 @@ const products = [
             </div>
 
             <div class="actions">
-              <button class="btn secondary" type="button" data-clear>Clear</button>
+              <button class="btn secondary" type="button" data-remove>Remove</button>
               <button class="btn primary" type="button" data-add>Add to cart</button>
             </div>
 
@@ -383,15 +383,6 @@ const products = [
           qtyEl.textContent = String(qty);
         });
 
-        // Clear
-        card.querySelector("[data-clear]").addEventListener("click", () => {
-          qty = 1;
-          size = null;
-          qtyEl.textContent = "1";
-          card.querySelectorAll(".sizes .opt").forEach((x) => x.classList.remove("active"));
-          setMsg(card, "Cleared.");
-        });
-
         // Add to cart
         card.querySelector("[data-add]").addEventListener("click", () => {
           if (!size) return setMsg(card, "Please select a size.", false);
@@ -408,6 +399,32 @@ const products = [
 
           writeCart(cart);
           setMsg(card, "Added to cart ✓");
+        });
+
+        // ✅ Remove from cart (removes that exact size+color item)
+        card.querySelector("[data-remove]").addEventListener("click", () => {
+          if (!size || !color) {
+            return setMsg(card, "Select size & color to remove.", false);
+          }
+
+          let cart = readCart();
+          const before = cart.length;
+
+          cart = cart.filter(
+            (i) =>
+              !(
+                i.productId === card.dataset.id &&
+                i.size === size &&
+                i.color === color
+              )
+          );
+
+          if (cart.length === before) {
+            return setMsg(card, "Item not in cart.", false);
+          }
+
+          writeCart(cart);
+          setMsg(card, "Removed from cart ✓");
         });
       });
 
