@@ -19,6 +19,9 @@ const products = [
     defaultColor: "Black",
   },
 ];
+
+const WHATSAPP_LINK =
+  "https://wa.me/4792928373?text=Hi%20I%20have%20a%20question%20about%20your%20products";
 ---
 
 <!DOCTYPE html>
@@ -35,32 +38,36 @@ const products = [
       --muted:#666;
       --bg:#fafafa;
     }
+
     body {
       margin:0;
       font-family: system-ui, sans-serif;
       background:var(--bg);
       color:var(--text);
     }
+
     header {
       padding:20px 40px;
       border-bottom:1px solid var(--border);
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:20px;
     }
+
     header h1 {
       margin:0;
       font-size:18px;
       letter-spacing:2px;
       text-transform:uppercase;
     }
+
     header a {
       text-decoration:none;
       color:#111;
       border:1px solid #111;
       padding:8px 12px;
       font-size:14px;
+      margin-left:10px;
     }
 
     main {
@@ -96,12 +103,10 @@ const products = [
       display:flex;
       justify-content:space-between;
       align-items:flex-start;
-      gap:12px;
     }
 
     .price {
       font-weight:600;
-      white-space:nowrap;
     }
 
     .label {
@@ -122,7 +127,6 @@ const products = [
       border:1px solid var(--border);
       background:#fff;
       cursor:pointer;
-      text-align:center;
     }
 
     .btn-option.active {
@@ -185,8 +189,24 @@ const products = [
       background:#fff;
     }
 
-    .contact h3 {
-      margin-top:0;
+    .contact a {
+      color:#111;
+      text-decoration:none;
+      border-bottom:1px solid #111;
+    }
+
+    /* Floating WhatsApp button */
+    .whatsapp-float {
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      background:#25D366;
+      color:#fff;
+      padding:14px 18px;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow:0 6px 16px rgba(0,0,0,0.2);
     }
   </style>
 </head>
@@ -196,7 +216,7 @@ const products = [
     <h1>Amicbridge</h1>
     <div>
       Cart: <strong><span id="cartCount">0</span></strong>
-      <a href="/checkout" style="margin-left:12px;">Checkout</a>
+      <a href="/checkout/">Checkout</a>
     </div>
   </header>
 
@@ -212,7 +232,7 @@ const products = [
           </div>
 
           <div>
-            <div class="label">Size</div>
+            <div class="label">Size (EU)</div>
             <div class="grid sizes">
               {p.sizes.map(s => (
                 <button class="btn-option" data-size={s}>{s}</button>
@@ -224,7 +244,7 @@ const products = [
             <div class="label">Color</div>
             <div class="grid colors">
               {p.colors.map(c => (
-                <button class="btn-option {c === p.defaultColor ? 'active' : ''}" data-color={c}>{c}</button>
+                <button class={`btn-option ${c === p.defaultColor ? "active" : ""}`} data-color={c}>{c}</button>
               ))}
             </div>
           </div>
@@ -253,9 +273,24 @@ const products = [
     <section class="contact">
       <h3>Contact</h3>
       <p><strong>CEO:</strong> Robert</p>
-      <p><strong>Phone:</strong> <a href="tel:92928373">92928373</a></p>
+      <p>
+        <strong>WhatsApp:</strong>
+        <a href={WHATSAPP_LINK} target="_blank" rel="noopener">
+          Chat on WhatsApp
+        </a>
+      </p>
     </section>
   </main>
+
+  <!-- Floating WhatsApp button -->
+  <a
+    class="whatsapp-float"
+    href={WHATSAPP_LINK}
+    target="_blank"
+    rel="noopener"
+  >
+    WhatsApp
+  </a>
 
   <script>
     const CART_KEY = "amicbridge_cart_v1";
@@ -270,8 +305,8 @@ const products = [
     }
 
     function updateCartCount() {
-      const count = readCart().reduce((s,i)=>s+i.qty,0);
-      document.getElementById("cartCount").textContent = count;
+      document.getElementById("cartCount").textContent =
+        readCart().reduce((s,i)=>s+i.qty,0);
     }
 
     document.querySelectorAll(".product").forEach(card => {
