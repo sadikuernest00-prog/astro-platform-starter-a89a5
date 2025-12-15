@@ -3,7 +3,7 @@ const products = [
   {
     id: "set-white",
     name: "Lace Bra & Panty Set",
-    price: 499,
+    price: 350,
     image: "/images/set-white.png",
     colors: ["White", "Black"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
@@ -12,7 +12,7 @@ const products = [
   {
     id: "set-black",
     name: "Classic Black Lace Set",
-    price: 399,
+    price: 350,
     image: "/images/set-black.png",
     colors: ["Black", "White"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
@@ -22,334 +22,499 @@ const products = [
 
 const WHATSAPP_LINK =
   "https://wa.me/4792928373?text=Hi%20I%20have%20a%20question%20about%20your%20products";
+
+// IMPORTANT: Works on GitHub Pages / subfolders too
+const base = import.meta.env.BASE_URL;
 ---
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Amicbridge — Women’s Underwear</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amicbridge — Underwear designed for real life</title>
 
-  <style>
-    :root {
-      --border:#e5e5e5;
-      --text:#111;
-      --muted:#666;
-      --bg:#fafafa;
-    }
+    <style>
+      :root{
+        --bg:#f7f6f4;
+        --text:#151515;
+        --muted:#6b6b6b;
+        --border:#dedede;
+        --card:#ffffff;
+      }
 
-    body {
-      margin:0;
-      font-family: system-ui, sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
+      *{ box-sizing:border-box; }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background:var(--bg);
+        color:var(--text);
+        line-height:1.6;
+      }
 
-    header {
-      padding:20px 40px;
-      border-bottom:1px solid var(--border);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
+      /* Header (like screenshot) */
+      header{
+        padding:26px 44px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      }
+      .brand{
+        font-weight:800;
+        letter-spacing:.08em;
+        text-transform:uppercase;
+        font-size:18px;
+      }
+      nav{
+        display:flex;
+        gap:34px;
+        align-items:center;
+      }
+      nav a{
+        color:var(--text);
+        text-decoration:none;
+        font-size:16px;
+      }
+      nav a:hover{ text-decoration:underline; }
 
-    header h1 {
-      margin:0;
-      font-size:18px;
-      letter-spacing:2px;
-      text-transform:uppercase;
-    }
+      /* Layout */
+      main{
+        max-width:1200px;
+        margin:0 auto;
+        padding:0 44px 70px;
+      }
 
-    header a {
-      text-decoration:none;
-      color:#111;
-      border:1px solid #111;
-      padding:8px 12px;
-      font-size:14px;
-      margin-left:10px;
-    }
+      /* Hero (like screenshot) */
+      .hero{
+        margin-top:110px;
+        max-width:720px;
+      }
+      .hero h1{
+        margin:0 0 18px;
+        font-size:72px;
+        line-height:1.05;
+        letter-spacing:-0.02em;
+      }
+      .hero p{
+        margin:0 0 26px;
+        color:var(--muted);
+        font-size:20px;
+        max-width:560px;
+      }
+      .cta{
+        display:inline-block;
+        border:2px solid var(--text);
+        padding:16px 22px;
+        background:transparent;
+        color:var(--text);
+        text-decoration:none;
+        font-size:16px;
+      }
 
-    main {
-      max-width:1200px;
-      margin:0 auto;
-      padding:40px;
-    }
+      /* Features row (like screenshot) */
+      .features{
+        margin-top:140px;
+        display:grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap:70px;
+      }
+      .feature h3{
+        margin:0 0 10px;
+        font-size:24px;
+      }
+      .feature p{
+        margin:0;
+        color:var(--muted);
+        font-size:18px;
+        max-width:360px;
+      }
 
-    .products {
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap:30px;
-    }
+      /* Shop section */
+      .sectionTitle{
+        margin-top:120px;
+        font-size:26px;
+        margin-bottom:16px;
+      }
+      .products{
+        display:grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap:26px;
+      }
+      .product{
+        background:var(--card);
+        border:1px solid var(--border);
+        padding:16px;
+      }
+      .product img{
+        width:100%;
+        height:420px;
+        object-fit:cover;
+        background:#efefef;
+        border:1px solid var(--border);
+      }
+      .row{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+        margin-top:12px;
+      }
+      .row h2{
+        margin:0;
+        font-size:18px;
+      }
+      .price{
+        margin:0;
+        font-weight:700;
+        white-space:nowrap;
+      }
+      .sub{
+        margin:6px 0 0;
+        color:var(--muted);
+        font-size:14px;
+      }
 
-    .product {
-      background:#fff;
-      border:1px solid var(--border);
-      padding:16px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
+      .label{
+        margin:14px 0 8px;
+        color:var(--muted);
+        font-size:13px;
+        text-transform:uppercase;
+        letter-spacing:.06em;
+      }
+      .grid{
+        display:grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap:10px;
+      }
+      .opt{
+        border:1px solid var(--border);
+        background:#fff;
+        padding:14px 10px;
+        cursor:pointer;
+        text-align:center;
+        font-size:16px;
+      }
+      .opt.active{
+        border-color:var(--text);
+        outline:2px solid rgba(0,0,0,.06);
+      }
 
-    .product img {
-      width:100%;
-      height:360px;
-      object-fit:cover;
-      background:#f0f0f0;
-      border:1px solid var(--border);
-    }
+      .qty{
+        display:grid;
+        grid-template-columns: 56px 70px 56px;
+        border:1px solid var(--border);
+        width:max-content;
+      }
+      .qty button{
+        border:0;
+        background:#fff;
+        padding:12px 0;
+        cursor:pointer;
+        font-size:18px;
+      }
+      .qty div{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-left:1px solid var(--border);
+        border-right:1px solid var(--border);
+        font-size:14px;
+      }
 
-    .row {
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-    }
+      .actions{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:10px;
+        margin-top:14px;
+      }
+      .btn{
+        padding:12px 10px;
+        border:1px solid var(--text);
+        background:#fff;
+        cursor:pointer;
+        font-size:14px;
+      }
+      .btn.primary{
+        background:var(--text);
+        color:#fff;
+      }
+      .btn.secondary{
+        border-color:var(--border);
+      }
+      .msg{
+        margin:10px 0 0;
+        font-size:12px;
+        color:#1a7f37;
+        min-height:16px;
+      }
+      .msg.bad{ color:#b42318; }
 
-    .price {
-      font-weight:600;
-    }
+      /* About + Contact */
+      .about, .contact{
+        margin-top:90px;
+        background:var(--card);
+        border:1px solid var(--border);
+        padding:22px;
+      }
+      .about h3, .contact h3{
+        margin:0 0 10px;
+        font-size:18px;
+      }
+      .about p, .contact p{
+        margin:8px 0;
+        color:var(--muted);
+        font-size:15px;
+      }
+      .contact a{
+        color:var(--text);
+        text-decoration:none;
+        border-bottom:1px solid var(--text);
+      }
 
-    .label {
-      font-size:13px;
-      color:var(--muted);
-      text-transform:uppercase;
-      margin:8px 0 6px;
-    }
+      /* WhatsApp floating button */
+      .wa-float{
+        position:fixed;
+        bottom:18px;
+        right:18px;
+        background:#25D366;
+        color:#fff;
+        text-decoration:none;
+        padding:14px 16px;
+        border-radius:999px;
+        font-weight:700;
+        box-shadow:0 8px 18px rgba(0,0,0,.18);
+      }
 
-    .grid {
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:10px;
-    }
+      /* Responsive */
+      @media (max-width: 900px){
+        header{ padding:18px 18px; }
+        main{ padding:0 18px 60px; }
+        .hero{ margin-top:70px; }
+        .hero h1{ font-size:48px; }
+        .features{ grid-template-columns:1fr; gap:26px; margin-top:80px; }
+        nav{ gap:18px; }
+      }
+    </style>
+  </head>
 
-    .btn-option {
-      padding:12px;
-      border:1px solid var(--border);
-      background:#fff;
-      cursor:pointer;
-    }
+  <body>
+    <header>
+      <div class="brand">AMICBRIDGE</div>
+      <nav>
+        <a href="#shop">Shop</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href={`${base}checkout/`} aria-label="Checkout">Checkout</a>
+      </nav>
+    </header>
 
-    .btn-option.active {
-      border-color:#111;
-    }
+    <main>
+      <!-- HERO (like screenshot) -->
+      <section class="hero">
+        <h1>Underwear designed for<br />real life</h1>
+        <p>
+          Amicbridge creates thoughtfully made underwear for women who value comfort,
+          simplicity, and quiet confidence.
+        </p>
+        <a class="cta" href="#shop">Explore the collection</a>
+      </section>
 
-    .qty {
-      display:grid;
-      grid-template-columns: 40px 60px 40px;
-      border:1px solid var(--border);
-    }
-
-    .qty button {
-      background:#fff;
-      border:none;
-      cursor:pointer;
-      font-size:18px;
-    }
-
-    .qty div {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-left:1px solid var(--border);
-      border-right:1px solid var(--border);
-    }
-
-    .actions {
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .btn {
-      padding:12px;
-      border:1px solid #111;
-      cursor:pointer;
-      font-size:14px;
-    }
-
-    .btn.primary {
-      background:#111;
-      color:#fff;
-    }
-
-    .btn.secondary {
-      background:#fff;
-    }
-
-    .message {
-      font-size:12px;
-      color:#1a7f37;
-    }
-
-    .contact {
-      margin-top:60px;
-      padding:30px;
-      border:1px solid var(--border);
-      background:#fff;
-    }
-
-    .contact a {
-      color:#111;
-      text-decoration:none;
-      border-bottom:1px solid #111;
-    }
-
-    /* Floating WhatsApp button */
-    .whatsapp-float {
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      background:#25D366;
-      color:#fff;
-      padding:14px 18px;
-      border-radius:999px;
-      text-decoration:none;
-      font-weight:600;
-      box-shadow:0 6px 16px rgba(0,0,0,0.2);
-    }
-  </style>
-</head>
-
-<body>
-  <header>
-    <h1>Amicbridge</h1>
-    <div>
-      Cart: <strong><span id="cartCount">0</span></strong>
-      <a href="/checkout/">Checkout</a>
-    </div>
-  </header>
-
-  <main>
-    <section class="products">
-      {products.map(p => (
-        <div class="product" data-id={p.id} data-price={p.price}>
-          <img src={p.image} alt={p.name} />
-
-          <div class="row">
-            <h2>{p.name}</h2>
-            <div class="price">{p.price} NOK</div>
-          </div>
-
-          <div>
-            <div class="label">Size (EU)</div>
-            <div class="grid sizes">
-              {p.sizes.map(s => (
-                <button class="btn-option" data-size={s}>{s}</button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <div class="label">Color</div>
-            <div class="grid colors">
-              {p.colors.map(c => (
-                <button class={`btn-option ${c === p.defaultColor ? "active" : ""}`} data-color={c}>{c}</button>
-              ))}
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <div class="label">Quantity</div>
-              <div class="qty">
-                <button data-minus>-</button>
-                <div data-qty>1</div>
-                <button data-plus>+</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="actions">
-            <button class="btn secondary" data-clear>Clear</button>
-            <button class="btn primary" data-add>Add to cart</button>
-          </div>
-
-          <div class="message"></div>
+      <!-- FEATURES (like screenshot) -->
+      <section class="features" aria-label="Features">
+        <div class="feature">
+          <h3>Comfort first</h3>
+          <p>Soft, breathable fabrics with cuts that respect real bodies—not trends.</p>
         </div>
-      ))}
-    </section>
+        <div class="feature">
+          <h3>Thoughtful design</h3>
+          <p>Waistbands that don’t roll. Seams that don’t shout. Details that matter.</p>
+        </div>
+        <div class="feature">
+          <h3>Everyday quality</h3>
+          <p>Built to be worn, washed, and trusted again and again.</p>
+        </div>
+      </section>
 
-    <section class="contact">
-      <h3>Contact</h3>
-      <p><strong>CEO:</strong> Robert</p>
-      <p>
-        <strong>WhatsApp:</strong>
-        <a href={WHATSAPP_LINK} target="_blank" rel="noopener">
-          Chat on WhatsApp
-        </a>
-      </p>
-    </section>
-  </main>
+      <!-- SHOP -->
+      <section id="shop" aria-label="Shop">
+        <h2 class="sectionTitle">Shop</h2>
 
-  <!-- Floating WhatsApp button -->
-  <a
-    class="whatsapp-float"
-    href={WHATSAPP_LINK}
-    target="_blank"
-    rel="noopener"
-  >
-    WhatsApp
-  </a>
+        <div class="products">
+          {products.map((p) => (
+            <article class="product" data-id={p.id} data-price={p.price}>
+              <img src={p.image} alt={p.name} />
 
-  <script>
-    const CART_KEY = "amicbridge_cart_v1";
+              <div class="row">
+                <div>
+                  <h2>{p.name}</h2>
+                  <p class="sub">Choose size & color</p>
+                </div>
+                <p class="price">{p.price} NOK</p>
+              </div>
 
-    function readCart() {
-      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-    }
+              <div class="label">Size (EU)</div>
+              <div class="grid sizes">
+                {p.sizes.map((s) => (
+                  <button class="opt" type="button" data-size={s}>{s}</button>
+                ))}
+              </div>
 
-    function writeCart(cart) {
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      updateCartCount();
-    }
+              <div class="label">Color</div>
+              <div class="grid colors">
+                {p.colors.map((c) => (
+                  <button
+                    class={`opt ${c === p.defaultColor ? "active" : ""}`}
+                    type="button"
+                    data-color={c}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
 
-    function updateCartCount() {
-      document.getElementById("cartCount").textContent =
-        readCart().reduce((s,i)=>s+i.qty,0);
-    }
+              <div class="label">Quantity</div>
+              <div class="qty" role="group" aria-label="Quantity selector">
+                <button type="button" data-minus>-</button>
+                <div data-qty>1</div>
+                <button type="button" data-plus>+</button>
+              </div>
 
-    document.querySelectorAll(".product").forEach(card => {
-      let qty = 1;
-      let size = null;
-      let color = card.querySelector(".colors .active")?.dataset.color;
+              <div class="actions">
+                <button class="btn secondary" type="button" data-clear>Clear</button>
+                <button class="btn primary" type="button" data-add>Add to cart</button>
+              </div>
 
-      card.querySelectorAll(".sizes .btn-option").forEach(b=>{
-        b.onclick=()=>{ card.querySelectorAll(".sizes .btn-option").forEach(x=>x.classList.remove("active")); b.classList.add("active"); size=b.dataset.size; };
-      });
+              <p class="msg" data-msg></p>
+            </article>
+          ))}
+        </div>
 
-      card.querySelectorAll(".colors .btn-option").forEach(b=>{
-        b.onclick=()=>{ card.querySelectorAll(".colors .btn-option").forEach(x=>x.classList.remove("active")); b.classList.add("active"); color=b.dataset.color; };
-      });
+        <p style="margin-top:18px;color:var(--muted);">
+          Cart: <strong><span id="cartCount">0</span></strong> item(s)
+          • <a href={`${base}checkout/`} style="color:var(--text);">Go to checkout</a>
+        </p>
+      </section>
 
-      card.querySelector("[data-plus]").onclick=()=>{ qty++; card.querySelector("[data-qty]").textContent=qty; };
-      card.querySelector("[data-minus]").onclick=()=>{ qty=Math.max(1,qty-1); card.querySelector("[data-qty]").textContent=qty; };
+      <!-- ABOUT -->
+      <section id="about" class="about">
+        <h3>About</h3>
+        <p>
+          Amicbridge is built around comfort, quality, and clean design. No loud gimmicks—just underwear that fits and feels right.
+        </p>
+      </section>
 
-      card.querySelector("[data-clear]").onclick=()=>{
-        size=null; qty=1;
-        card.querySelector("[data-qty]").textContent=1;
-        card.querySelectorAll(".btn-option").forEach(b=>b.classList.remove("active"));
-      };
+      <!-- CONTACT -->
+      <section id="contact" class="contact">
+        <h3>Contact</h3>
+        <p><strong>CEO:</strong> Robert</p>
+        <p>
+          <strong>WhatsApp:</strong>
+          <a href={WHATSAPP_LINK} target="_blank" rel="noopener">Chat on WhatsApp</a>
+        </p>
+      </section>
+    </main>
 
-      card.querySelector("[data-add]").onclick=()=>{
-        if(!size || !color){
-          card.querySelector(".message").textContent="Please select size and color";
-          return;
-        }
-        const cart = readCart();
-        cart.push({
-          productId: card.dataset.id,
-          name: card.querySelector("h2").textContent,
-          price: Number(card.dataset.price),
-          size, color, qty
+    <!-- Floating WhatsApp button -->
+    <a class="wa-float" href={WHATSAPP_LINK} target="_blank" rel="noopener">WhatsApp</a>
+
+    <script>
+      const CART_KEY = "amicbridge_cart_v1";
+
+      function readCart() {
+        try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+        catch { return []; }
+      }
+      function writeCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartCount();
+      }
+      function updateCartCount() {
+        const count = readCart().reduce((sum, i) => sum + (Number(i.qty) || 0), 0);
+        const el = document.getElementById("cartCount");
+        if (el) el.textContent = String(count);
+      }
+      function setMsg(card, text, ok=true){
+        const el = card.querySelector("[data-msg]");
+        if(!el) return;
+        el.textContent = text;
+        el.classList.toggle("bad", !ok);
+      }
+
+      document.querySelectorAll(".product").forEach((card) => {
+        let qty = 1;
+        let size = null;
+        let color = card.querySelector(".colors .opt.active")?.dataset.color || null;
+
+        // Size select
+        card.querySelectorAll(".sizes .opt").forEach((b) => {
+          b.addEventListener("click", () => {
+            card.querySelectorAll(".sizes .opt").forEach((x) => x.classList.remove("active"));
+            b.classList.add("active");
+            size = b.dataset.size;
+            setMsg(card, "");
+          });
         });
-        writeCart(cart);
-        card.querySelector(".message").textContent="Added to cart ✓";
-      };
-    });
 
-    updateCartCount();
-  </script>
-</body>
+        // Color select
+        card.querySelectorAll(".colors .opt").forEach((b) => {
+          b.addEventListener("click", () => {
+            card.querySelectorAll(".colors .opt").forEach((x) => x.classList.remove("active"));
+            b.classList.add("active");
+            color = b.dataset.color;
+            setMsg(card, "");
+          });
+        });
+
+        // Qty
+        const qtyEl = card.querySelector("[data-qty]");
+        card.querySelector("[data-plus]").addEventListener("click", () => {
+          qty = Math.min(99, qty + 1);
+          qtyEl.textContent = String(qty);
+        });
+        card.querySelector("[data-minus]").addEventListener("click", () => {
+          qty = Math.max(1, qty - 1);
+          qtyEl.textContent = String(qty);
+        });
+
+        // Clear
+        card.querySelector("[data-clear]").addEventListener("click", () => {
+          qty = 1;
+          size = null;
+          qtyEl.textContent = "1";
+          card.querySelectorAll(".sizes .opt").forEach((x) => x.classList.remove("active"));
+
+          // reset color to current default (the one that was initially active)
+          const def = card.querySelector(".colors .opt.active") || card.querySelector(".colors .opt");
+          if (def) {
+            card.querySelectorAll(".colors .opt").forEach((x) => x.classList.remove("active"));
+            def.classList.add("active");
+            color = def.dataset.color;
+          }
+          setMsg(card, "Cleared.");
+        });
+
+        // Add to cart
+        card.querySelector("[data-add]").addEventListener("click", () => {
+          if (!size) return setMsg(card, "Please select a size.", false);
+          if (!color) return setMsg(card, "Please select a color.", false);
+
+          const cart = readCart();
+          const productId = card.dataset.id;
+          const name = card.querySelector("h2")?.textContent?.trim() || "Product";
+          const price = Number(card.dataset.price) || 0;
+
+          const existing = cart.find(i => i.productId === productId && i.size === size && i.color === color);
+          if (existing) existing.qty += qty;
+          else cart.push({ productId, name, price, size, color, qty });
+
+          writeCart(cart);
+          setMsg(card, "Added to cart ✓");
+        });
+      });
+
+      updateCartCount();
+    </script>
+  </body>
 </html>
 
