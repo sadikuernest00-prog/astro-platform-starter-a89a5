@@ -1,142 +1,253 @@
-
 ---
-const BRAND = "Amicbridge";
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/xzznjkvd";
+const base = import.meta.env.BASE_URL;
+
+// Your Formspree endpoint:
+const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{BRAND} — Checkout</title>
+    <title>Checkout — Amicbridge</title>
 
     <style>
-      :root { --border:#e5e5e5; --text:#111; --muted:#666; --bg:#fafafa; }
-      body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
-      header { padding:24px 40px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:16px; }
-      a { color:inherit; text-decoration:none; }
-      main { max-width:900px; margin:0 auto; padding:40px; display:grid; gap:24px; }
-      .card { background:#fff; border:1px solid var(--border); padding:18px; }
-      h2 { margin:0 0 12px; font-size:16px; }
-      .muted { color:var(--muted); font-size:13px; margin:0; }
+      :root{
+        --bg:#f7f6f4;
+        --text:#151515;
+        --muted:#6b6b6b;
+        --border:#dedede;
+        --card:#ffffff;
+      }
+      *{ box-sizing:border-box; }
+      body{
+        margin:0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background:var(--bg);
+        color:var(--text);
+      }
+      header{
+        padding:26px 44px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      }
+      a{ color:var(--text); text-decoration:none; }
+      a:hover{ text-decoration:underline; }
 
-      form { display:grid; gap:12px; }
-      .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-      label { font-size:13px; color:var(--muted); display:block; margin-bottom:6px; }
-      input, textarea {
+      main{
+        max-width:1100px;
+        margin:0 auto;
+        padding:0 44px 80px;
+      }
+      h1{
+        margin:20px 0 18px;
+        font-size:34px;
+        letter-spacing:-0.01em;
+      }
+
+      .layout{
+        display:grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap:26px;
+        align-items:start;
+      }
+
+      .card{
+        background:var(--card);
+        border:1px solid var(--border);
+        padding:18px;
+      }
+
+      .muted{ color:var(--muted); }
+
+      .items{ display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+      .item{
+        display:flex;
+        justify-content:space-between;
+        gap:12px;
+        border-top:1px solid var(--border);
+        padding-top:12px;
+      }
+      .item:first-child{ border-top:0; padding-top:0; }
+      .item b{ font-weight:700; }
+      .pill{
+        display:inline-block;
+        padding:2px 8px;
+        border:1px solid var(--border);
+        border-radius:999px;
+        font-size:12px;
+        color:var(--muted);
+        margin-right:6px;
+      }
+      .totalRow{
+        border-top:1px solid var(--border);
+        margin-top:14px;
+        padding-top:14px;
+        display:flex;
+        justify-content:space-between;
+        font-weight:800;
+      }
+
+      form{
+        display:grid;
+        gap:12px;
+        margin-top:8px;
+      }
+      .grid2{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:12px;
+      }
+      label{
+        font-size:13px;
+        color:var(--muted);
+        text-transform:uppercase;
+        letter-spacing:.06em;
+      }
+      input, textarea, select{
         width:100%;
-        padding:10px 12px;
+        padding:12px;
         border:1px solid var(--border);
         background:#fff;
-        font-size:14px;
+        font-size:15px;
+        outline:none;
       }
-      textarea { min-height:90px; resize:vertical; }
+      textarea{ min-height:90px; resize:vertical; }
 
-      .btn {
-        padding:12px 12px;
-        border:1px solid #111;
-        background:#111;
+      .btn{
+        padding:14px 12px;
+        border:1px solid var(--text);
+        background:var(--text);
         color:#fff;
         cursor:pointer;
-        font-size:14px;
+        font-weight:700;
+        font-size:15px;
       }
-      .btn.secondary {
+      .btn.secondary{
         background:#fff;
-        color:#111;
+        color:var(--text);
         border-color:var(--border);
       }
 
-      table { width:100%; border-collapse:collapse; font-size:14px; }
-      td, th { padding:10px 0; border-bottom:1px solid var(--border); text-align:left; }
-      .right { text-align:right; }
-      .total { font-weight:700; }
-      .bad { color:#b42318; }
+      .notice{
+        font-size:13px;
+        color:var(--muted);
+        line-height:1.45;
+      }
+      .error{
+        color:#b42318;
+        font-size:13px;
+        margin-top:8px;
+      }
+
+      @media (max-width: 900px){
+        header{ padding:18px 18px; }
+        main{ padding:0 18px 60px; }
+        .layout{ grid-template-columns: 1fr; }
+      }
     </style>
   </head>
 
   <body>
     <header>
-      <div style="display:flex; gap:14px; align-items:center;">
-        <a href="/" aria-label="Home"><strong>{BRAND}</strong></a>
-        <span class="muted">Checkout</span>
-      </div>
-      <a class="muted" href="/">← Back to shop</a>
+      <strong style="letter-spacing:.08em;">AMICBRIDGE</strong>
+      <a href={`${base}`}>← Back to shop</a>
     </header>
 
     <main>
-      <div class="card">
-        <h2>Order summary</h2>
-        <p class="muted">Your cart items will be sent to us with your shipping address.</p>
-        <div id="summary"></div>
-      </div>
+      <h1>Checkout</h1>
+      <p class="muted">Fill in shipping details. Your order will be sent to our email.</p>
 
-      <div class="card">
-        <h2>Shipping address</h2>
+      <div class="layout">
+        <!-- LEFT: Shipping form -->
+        <section class="card">
+          <h2 style="margin:0 0 10px;font-size:18px;">Shipping information</h2>
 
-        <form id="orderForm" action={FORMSPREE_ENDPOINT} method="POST">
-          <input type="hidden" name="_subject" value={`${BRAND} — New order`} />
-          <input type="hidden" name="_format" value="plain" />
+          <form id="orderForm" action={FORMSPREE_ACTION} method="POST">
+            <!-- Hidden fields we fill by JS -->
+            <input type="hidden" name="order_summary" id="order_summary" />
+            <input type="hidden" name="order_total_nok" id="order_total_nok" />
+            <input type="hidden" name="order_items_json" id="order_items_json" />
 
-          <!-- Cart data goes here automatically -->
-          <input type="hidden" name="order_items" id="order_items" value="" />
-          <input type="hidden" name="order_total_nok" id="order_total_nok" value="" />
-
-          <div class="grid2">
             <div>
               <label for="fullName">Full name</label>
-              <input id="fullName" name="fullName" required />
+              <input id="fullName" name="full_name" required placeholder="Full name" />
             </div>
+
+            <div class="grid2">
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required placeholder="you@example.com" />
+              </div>
+              <div>
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" required placeholder="92928373" />
+              </div>
+            </div>
+
             <div>
-              <label for="email">Email</label>
-              <input id="email" name="email" type="email" required />
+              <label for="address">Address</label>
+              <input id="address" name="address" required placeholder="Street + house number" />
             </div>
-          </div>
 
-          <div class="grid2">
+            <div class="grid2">
+              <div>
+                <label for="city">City</label>
+                <input id="city" name="city" required placeholder="Oslo" />
+              </div>
+              <div>
+                <label for="postal">Postal code</label>
+                <input id="postal" name="postal_code" required placeholder="0000" />
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div>
+                <label for="country">Country</label>
+                <input id="country" name="country" required value="Norway" />
+              </div>
+              <div>
+                <label for="delivery">Delivery note (optional)</label>
+                <input id="delivery" name="delivery_note" placeholder="Door code, etc." />
+              </div>
+            </div>
+
             <div>
-              <label for="phone">Phone</label>
-              <input id="phone" name="phone" required />
+              <label for="message">Message (optional)</label>
+              <textarea id="message" name="message" placeholder="Anything we should know?"></textarea>
             </div>
-            <div>
-              <label for="country">Country</label>
-              <input id="country" name="country" value="Norway" required />
-            </div>
-          </div>
 
-          <div>
-            <label for="address1">Address line 1</label>
-            <input id="address1" name="address1" placeholder="Street + number" required />
-          </div>
+            <!-- Formspree settings -->
+            <input type="hidden" name="_subject" value="New Amicbridge order" />
+            <input type="hidden" name="_format" value="plain" />
 
-          <div>
-            <label for="address2">Address line 2 (optional)</label>
-            <input id="address2" name="address2" placeholder="Apartment, floor, etc." />
-          </div>
-
-          <div class="grid2">
-            <div>
-              <label for="postal">Postal code</label>
-              <input id="postal" name="postal" required />
-            </div>
-            <div>
-              <label for="city">City</label>
-              <input id="city" name="city" required />
-            </div>
-          </div>
-
-          <div>
-            <label for="notes">Notes (optional)</label>
-            <textarea id="notes" name="notes" placeholder="Delivery notes, etc."></textarea>
-          </div>
-
-          <div class="grid2">
-            <button class="btn secondary" type="button" id="clearCart">Clear cart</button>
             <button class="btn" type="submit">Send order</button>
+            <p class="notice">
+              By placing an order you confirm your shipping details are correct.
+              Payment can be handled after we confirm availability.
+            </p>
+
+            <p class="error" id="cartError" style="display:none;">
+              Your cart is empty. Go back to the shop and add items.
+            </p>
+          </form>
+        </section>
+
+        <!-- RIGHT: Order summary -->
+        <aside class="card">
+          <h2 style="margin:0 0 10px;font-size:18px;">Order summary</h2>
+          <div id="items" class="items"></div>
+          <div class="totalRow">
+            <span>Total</span>
+            <span><span id="total">0</span> NOK</span>
           </div>
 
-          <p id="msg" class="muted"></p>
-        </form>
+          <div style="margin-top:14px;">
+            <button class="btn secondary" id="clearCartBtn" type="button">Clear cart</button>
+          </div>
+        </aside>
       </div>
     </main>
 
@@ -148,68 +259,78 @@ const FORMSPREE_ENDPOINT = "https://formspree.io/f/xzznjkvd";
         catch { return []; }
       }
 
-      function formatCart(cart) {
-        return cart.map(i =>
-          `${i.name} | Size: ${i.size} | Color: ${i.color} | Qty: ${i.qty} | Price: ${i.price} NOK`
-        ).join("\\n");
+      function writeCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
       }
 
-      function calcTotal(cart) {
-        return cart.reduce((sum, i) => sum + (Number(i.price || 0) * Number(i.qty || 0)), 0);
-      }
-
-      function renderSummary(cart) {
-        const total = calcTotal(cart);
-        if (!cart.length) return `<p class="bad">Cart is empty. Go back and add products.</p>`;
-
-        const rows = cart.map(i => `
-          <tr>
-            <td>${i.name}<br><span class="muted">Size: ${i.size} • Color: ${i.color}</span></td>
-            <td class="right">${i.qty}</td>
-            <td class="right">${i.price} NOK</td>
-          </tr>
-        `).join("");
-
-        return `
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th class="right">Qty</th>
-                <th class="right">Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows}
-              <tr>
-                <td class="total">Total</td>
-                <td></td>
-                <td class="right total">${total} NOK</td>
-              </tr>
-            </tbody>
-          </table>
-        `;
+      function formatLine(item) {
+        const parts = [];
+        if (item.size) parts.push(`Size: ${item.size}`);
+        if (item.color) parts.push(`Color: ${item.color}`);
+        return parts.join(" · ");
       }
 
       const cart = readCart();
-      document.getElementById("summary").innerHTML = renderSummary(cart);
-
-      document.getElementById("order_items").value = formatCart(cart);
-      document.getElementById("order_total_nok").value = String(calcTotal(cart));
-
+      const itemsEl = document.getElementById("items");
+      const totalEl = document.getElementById("total");
+      const cartError = document.getElementById("cartError");
       const form = document.getElementById("orderForm");
-      const msg = document.getElementById("msg");
 
+      // Render summary
+      let total = 0;
+      itemsEl.innerHTML = "";
+
+      cart.forEach((item) => {
+        const qty = Number(item.qty || 0);
+        const price = Number(item.price || 0);
+        const lineTotal = qty * price;
+        total += lineTotal;
+
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div>
+            <b>${item.name || "Product"}</b><br/>
+            <span class="pill">Qty: ${qty}</span>
+            <span class="pill">${formatLine(item) || "—"}</span>
+          </div>
+          <div><b>${lineTotal} NOK</b></div>
+        `;
+        itemsEl.appendChild(div);
+      });
+
+      totalEl.textContent = String(total);
+
+      // Fill hidden fields for Formspree email
+      const summaryLines = cart.map((i) => {
+        const qty = Number(i.qty || 0);
+        const price = Number(i.price || 0);
+        const lineTotal = qty * price;
+        return `${i.name} | Qty: ${qty} | ${formatLine(i) || ""} | ${lineTotal} NOK`;
+      });
+
+      document.getElementById("order_summary").value = summaryLines.join("\n");
+      document.getElementById("order_total_nok").value = String(total);
+      document.getElementById("order_items_json").value = JSON.stringify(cart, null, 2);
+
+      // If cart empty, block submit
       if (!cart.length) {
-        msg.textContent = "Cart is empty. Please add products first.";
-        msg.className = "bad";
-        form.querySelector('button[type="submit"]').disabled = true;
-        form.querySelector('button[type="submit"]').style.opacity = "0.5";
+        cartError.style.display = "block";
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+        });
       }
 
-      document.getElementById("clearCart").addEventListener("click", () => {
-        localStorage.removeItem(CART_KEY);
+      // Clear cart button
+      document.getElementById("clearCartBtn").addEventListener("click", () => {
+        writeCart([]);
         location.reload();
+      });
+
+      // Optional: clear cart after successful submit (Formspree redirect)
+      form.addEventListener("submit", () => {
+        // Clear immediately so customer doesn’t double-order by mistake
+        writeCart([]);
       });
     </script>
   </body>
