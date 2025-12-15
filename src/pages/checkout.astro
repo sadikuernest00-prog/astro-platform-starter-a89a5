@@ -9,23 +9,81 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout — Amicbridge</title>
+
   <style>
-    body{margin:0;font-family:system-ui;background:#f7f6f4;color:#151515}
+    :root{
+      --bg:#f7f6f4; --text:#151515; --muted:#6b6b6b; --border:#dedede; --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
     header{padding:24px 40px;display:flex;justify-content:space-between;align-items:center}
-    main{max-width:1000px;margin:0 auto;padding:0 40px 60px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .card{background:#fff;border:1px solid #dedede;padding:16px}
-    label{font-size:12px;color:#6b6b6b;text-transform:uppercase;letter-spacing:.06em}
-    input,textarea{width:100%;padding:12px;border:1px solid #dedede;margin-top:6px}
-    textarea{min-height:90px}
-    .btn{padding:14px 12px;border:1px solid #151515;background:#151515;color:#fff;cursor:pointer;font-weight:700}
-    .muted{color:#6b6b6b}
-    .item{display:flex;justify-content:space-between;border-top:1px solid #dedede;padding-top:10px;margin-top:10px}
-    .total{display:flex;justify-content:space-between;border-top:1px solid #dedede;padding-top:12px;margin-top:12px;font-weight:800}
+    a{color:var(--text);text-decoration:none}
+    a:hover{text-decoration:underline}
+    main{max-width:1100px;margin:0 auto;padding:0 40px 70px}
+    h1{margin:16px 0 8px;font-size:34px}
+    .muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;margin-top:18px}
+    .card{background:var(--card);border:1px solid var(--border);padding:16px}
+    label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    input,textarea{width:100%;padding:12px;border:1px solid var(--border);margin-top:6px;font-size:15px}
+    textarea{min-height:90px;resize:vertical}
+    .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:700}
+    .btn.secondary{background:#fff;color:var(--text);border-color:var(--border);font-weight:600}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .error{color:#b42318;font-size:13px;margin-top:10px;display:none}
-    @media (max-width:900px){header{padding:18px}main{padding:0 18px 40px}.grid{grid-template-columns:1fr}}
+
+    .items{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+    .item{
+      border-top:1px solid var(--border);
+      padding-top:12px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+    }
+    .item:first-child{border-top:0;padding-top:0}
+    .item strong{display:block;font-size:16px;margin-bottom:4px}
+    .meta{color:var(--muted);font-size:13px;line-height:1.35}
+    .controls{
+      display:flex; flex-direction:column; gap:8px; align-items:flex-end;
+      min-width: 140px;
+    }
+    .qty{
+      display:grid;
+      grid-template-columns: 36px 44px 36px;
+      border:1px solid var(--border);
+      background:#fff;
+    }
+    .qty button{
+      border:0;background:#fff;cursor:pointer;font-size:18px;padding:8px 0;
+    }
+    .qty div{
+      border-left:1px solid var(--border);
+      border-right:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;font-size:14px;
+    }
+    .remove{
+      padding:10px 10px;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:pointer;
+      font-weight:600;
+      width:100%;
+    }
+    .lineTotal{font-weight:800}
+    .total{
+      display:flex;justify-content:space-between;border-top:1px solid var(--border);
+      padding-top:12px;margin-top:12px;font-weight:800;
+    }
+
+    @media (max-width: 900px){
+      header{padding:18px}
+      main{padding:0 18px 50px}
+      .grid{grid-template-columns:1fr}
+      .controls{align-items:stretch}
+    }
   </style>
 </head>
+
 <body>
   <header>
     <strong style="letter-spacing:.08em;">AMICBRIDGE</strong>
@@ -37,11 +95,12 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
     <p class="muted">Fill in shipping details and send your order. We will receive it by email.</p>
 
     <div class="grid">
+      <!-- Shipping form -->
       <section class="card">
         <h2 style="margin:0 0 10px;font-size:18px;">Shipping details</h2>
 
         <form id="orderForm" action={FORMSPREE_ACTION} method="POST">
-          <!-- hidden fields filled by JS -->
+          <!-- Hidden fields filled by JS -->
           <input type="hidden" name="order_summary" id="order_summary" />
           <input type="hidden" name="order_total_nok" id="order_total_nok" />
           <input type="hidden" name="order_items_json" id="order_items_json" />
@@ -68,14 +127,15 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
             <input name="address" required />
           </div>
 
-          <div style="margin-top:10px">
-            <label>City</label>
-            <input name="city" required />
-          </div>
-
-          <div style="margin-top:10px">
-            <label>Postal code</label>
-            <input name="postal_code" required />
+          <div class="row2" style="margin-top:10px">
+            <div>
+              <label>City</label>
+              <input name="city" required />
+            </div>
+            <div>
+              <label>Postal code</label>
+              <input name="postal_code" required />
+            </div>
           </div>
 
           <div style="margin-top:10px">
@@ -89,18 +149,22 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
           </div>
 
           <button class="btn" type="submit" style="margin-top:14px">Send order</button>
-
           <div class="error" id="cartError">Your cart is empty. Go back and add products.</div>
         </form>
       </section>
 
+      <!-- Order summary -->
       <aside class="card">
         <h2 style="margin:0 0 10px;font-size:18px;">Order summary</h2>
-        <div id="items"></div>
+        <div id="items" class="items"></div>
         <div class="total">
           <span>Total</span>
           <span><span id="total">0</span> NOK</span>
         </div>
+
+        <button id="clearAll" class="btn secondary" type="button" style="margin-top:12px;width:100%">
+          Clear all
+        </button>
       </aside>
     </div>
   </main>
@@ -112,50 +176,121 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
       catch { return []; }
     }
+    function writeCart(cart) {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
 
-    const cart = readCart();
-    const itemsEl = document.getElementById("items");
-    const totalEl = document.getElementById("total");
-    const cartError = document.getElementById("cartError");
-    const form = document.getElementById("orderForm");
+    function buildHiddenFields(cart, total) {
+      const summaryLines = cart.map((i) => {
+        const line = (Number(i.qty||0) * Number(i.price||0));
+        return `${i.name} | Qty: ${i.qty} | Size: ${i.size} | Color: ${i.color} | Line: ${line} NOK`;
+      });
 
-    let total = 0;
-    itemsEl.innerHTML = "";
+      document.getElementById("order_summary").value = summaryLines.join("\\n");
+      document.getElementById("order_total_nok").value = String(total);
+      document.getElementById("order_items_json").value = JSON.stringify(cart, null, 2);
+    }
 
-    cart.forEach((item) => {
-      const qty = Number(item.qty || 0);
-      const price = Number(item.price || 0);
-      const line = qty * price;
-      total += line;
+    function render() {
+      const cart = readCart();
+      const itemsEl = document.getElementById("items");
+      const totalEl = document.getElementById("total");
+      const cartError = document.getElementById("cartError");
+      const form = document.getElementById("orderForm");
 
-      const div = document.createElement("div");
-      div.className = "item";
-      div.innerHTML = `
-        <div>
-          <strong>${item.name}</strong><br/>
-          <span class="muted">Size: ${item.size || "-"} · Color: ${item.color || "-"}</span><br/>
-          <span class="muted">Qty: ${qty}</span>
-        </div>
-        <div><strong>${line} NOK</strong></div>
-      `;
-      itemsEl.appendChild(div);
+      itemsEl.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item, idx) => {
+        const qty = Math.max(1, Number(item.qty || 1));
+        const price = Number(item.price || 0);
+        const line = qty * price;
+        total += line;
+
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div>
+            <strong>${item.name}</strong>
+            <div class="meta">Size: ${item.size || "-"} · Color: ${item.color || "-"}</div>
+            <div class="meta">Price: ${price} NOK</div>
+          </div>
+
+          <div class="controls">
+            <div class="lineTotal">${line} NOK</div>
+            <div class="qty" aria-label="Quantity">
+              <button type="button" data-minus="${idx}">-</button>
+              <div>${qty}</div>
+              <button type="button" data-plus="${idx}">+</button>
+            </div>
+            <button class="remove" type="button" data-remove="${idx}">Remove</button>
+          </div>
+        `;
+
+        itemsEl.appendChild(div);
+      });
+
+      totalEl.textContent = String(total);
+      buildHiddenFields(cart, total);
+
+      if (!cart.length) {
+        cartError.style.display = "block";
+        form.addEventListener("submit", (e) => e.preventDefault(), { once: true });
+      } else {
+        cartError.style.display = "none";
+      }
+    }
+
+    // Event delegation for buttons
+    document.addEventListener("click", (e) => {
+      const minus = e.target.closest("[data-minus]");
+      const plus = e.target.closest("[data-plus]");
+      const remove = e.target.closest("[data-remove]");
+
+      if (!minus && !plus && !remove) return;
+
+      const cart = readCart();
+
+      if (minus) {
+        const idx = Number(minus.getAttribute("data-minus"));
+        if (cart[idx]) {
+          cart[idx].qty = Math.max(1, Number(cart[idx].qty || 1) - 1);
+          writeCart(cart);
+          render();
+        }
+      }
+
+      if (plus) {
+        const idx = Number(plus.getAttribute("data-plus"));
+        if (cart[idx]) {
+          cart[idx].qty = Math.min(99, Number(cart[idx].qty || 1) + 1);
+          writeCart(cart);
+          render();
+        }
+      }
+
+      if (remove) {
+        const idx = Number(remove.getAttribute("data-remove"));
+        if (cart[idx]) {
+          cart.splice(idx, 1);
+          writeCart(cart);
+          render();
+        }
+      }
     });
 
-    totalEl.textContent = String(total);
+    document.getElementById("clearAll").addEventListener("click", () => {
+      writeCart([]);
+      render();
+    });
 
-    // Hidden fields for Formspree email
-    const summaryLines = cart.map((i) =>
-      `${i.name} | Qty: ${i.qty} | Size: ${i.size} | Color: ${i.color} | Price: ${i.price} NOK`
-    );
+    // Clear cart after successful submit (Formspree navigates away)
+    document.getElementById("orderForm").addEventListener("submit", () => {
+      // keep it simple; comment this out if you DON'T want auto-clear
+      localStorage.setItem(CART_KEY, "[]");
+    });
 
-    document.getElementById("order_summary").value = summaryLines.join("\\n");
-    document.getElementById("order_total_nok").value = String(total);
-    document.getElementById("order_items_json").value = JSON.stringify(cart, null, 2);
-
-    if (!cart.length) {
-      cartError.style.display = "block";
-      form.addEventListener("submit", (e) => e.preventDefault());
-    }
+    render();
   </script>
 </body>
 </html>
