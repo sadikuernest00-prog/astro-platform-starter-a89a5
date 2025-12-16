@@ -29,8 +29,10 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
     textarea{min-height:90px;resize:vertical}
     .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:700}
     .btn.secondary{background:#fff;color:var(--text);border-color:var(--border);font-weight:600}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .error{color:#b42318;font-size:13px;margin-top:10px;display:none}
+    .ok{color:#1a7f37;font-size:13px;margin-top:10px;display:none}
 
     .items{display:flex;flex-direction:column;gap:12px;margin-top:10px}
     .item{
@@ -75,6 +77,21 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       padding-top:12px;margin-top:12px;font-weight:800;
     }
 
+    .payBox{
+      margin-top:12px;
+      border-top:1px solid var(--border);
+      padding-top:12px;
+      display:grid;
+      gap:10px;
+    }
+    .btn.vipps{
+      background:#ff5b24;
+      border-color:#ff5b24;
+      color:#111;
+      font-weight:800;
+    }
+    .small{font-size:12px;color:var(--muted);line-height:1.4}
+
     @media (max-width: 900px){
       header{padding:18px}
       main{padding:0 18px 50px}
@@ -104,6 +121,11 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
           <input type="hidden" name="order_summary" id="order_summary" />
           <input type="hidden" name="order_total_nok" id="order_total_nok" />
           <input type="hidden" name="order_items_json" id="order_items_json" />
+
+          <!-- Vipps info (filled by JS) -->
+          <input type="hidden" name="vipps_status" id="vipps_status" value="not_started" />
+          <input type="hidden" name="vipps_order_id" id="vipps_order_id" value="" />
+
           <input type="hidden" name="_subject" value="New Amicbridge order" />
           <input type="hidden" name="_format" value="plain" />
 
@@ -148,8 +170,13 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
             <textarea name="message"></textarea>
           </div>
 
-          <button class="btn" type="submit" style="margin-top:14px">Send order</button>
+          <button class="btn" id="sendOrderBtn" type="submit" style="margin-top:14px">
+            Send order
+          </button>
+
           <div class="error" id="cartError">Your cart is empty. Go back and add products.</div>
+          <div class="ok" id="vippsOk">Vipps payment started. You will be redirected…</div>
+          <div class="error" id="vippsError"></div>
         </form>
       </section>
 
@@ -160,6 +187,15 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
         <div class="total">
           <span>Total</span>
           <span><span id="total">0</span> NOK</span>
+        </div>
+
+        <div class="payBox">
+          <button id="vippsBtn" class="btn vipps" type="button">
+            Pay with Vipps
+          </button>
+          <div class="small">
+            This will open Vipps for payment. After payment, you can still submit the shipping form above if needed.
+          </div>
         </div>
 
         <button id="clearAll" class="btn secondary" type="button" style="margin-top:12px;width:100%">
@@ -191,12 +227,22 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       document.getElementById("order_items_json").value = JSON.stringify(cart, null, 2);
     }
 
+    function setVippsMsg(okText, errText) {
+      const ok = document.getElementById("vippsOk");
+      const err = document.getElementById("vippsError");
+      if (okText) { ok.style.display = "block"; ok.textContent = okText; }
+      else { ok.style.display = "none"; }
+      if (errText) { err.style.display = "block"; err.textContent = errText; }
+      else { err.style.display = "none"; }
+    }
+
     function render() {
       const cart = readCart();
       const itemsEl = document.getElementById("items");
       const totalEl = document.getElementById("total");
       const cartError = document.getElementById("cartError");
-      const form = document.getElementById("orderForm");
+      const sendBtn = document.getElementById("sendOrderBtn");
+      const vippsBtn = document.getElementById("vippsBtn");
 
       itemsEl.innerHTML = "";
       let total = 0;
@@ -233,15 +279,13 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       totalEl.textContent = String(total);
       buildHiddenFields(cart, total);
 
-      if (!cart.length) {
-        cartError.style.display = "block";
-        form.addEventListener("submit", (e) => e.preventDefault(), { once: true });
-      } else {
-        cartError.style.display = "none";
-      }
+      const empty = cart.length === 0;
+      cartError.style.display = empty ? "block" : "none";
+      sendBtn.disabled = empty;
+      vippsBtn.disabled = empty;
     }
 
-    // Event delegation for buttons
+    // Event delegation for +/- and remove
     document.addEventListener("click", (e) => {
       const minus = e.target.closest("[data-minus]");
       const plus = e.target.closest("[data-plus]");
@@ -284,9 +328,63 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       render();
     });
 
-    // Clear cart after successful submit (Formspree navigates away)
+    // Vipps payment button
+    document.getElementById("vippsBtn").addEventListener("click", async () => {
+      setVippsMsg("", "");
+      const cart = readCart();
+      if (!cart.length) return;
+
+      // total in NOK (your cart prices are NOK already)
+      const total = cart.reduce((sum, i) => sum + (Number(i.price||0) * Number(i.qty||0)), 0);
+
+      // Create an orderId (simple unique id)
+      const orderId = `amic_${Date.now()}`;
+
+      // store in form hidden fields too
+      document.getElementById("vipps_order_id").value = orderId;
+      document.getElementById("vipps_status").value = "started";
+
+      const vippsBtn = document.getElementById("vippsBtn");
+      vippsBtn.disabled = true;
+      setVippsMsg("Vipps payment started. You will be redirected…", "");
+
+      try {
+        const res = await fetch("/.netlify/edge-functions/create-vipps-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId,
+            amount: total,
+            currency: "NOK",
+            items: cart,
+            returnUrl: window.location.href
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          document.getElementById("vipps_status").value = "failed";
+          throw new Error(data?.error || "Vipps request failed");
+        }
+
+        // Your edge function should return { redirectUrl: "https://..." }
+        if (!data.redirectUrl) {
+          document.getElementById("vipps_status").value = "failed";
+          throw new Error("Missing redirectUrl from Vipps function");
+        }
+
+        document.getElementById("vipps_status").value = "redirected";
+        window.location.href = data.redirectUrl;
+      } catch (err) {
+        document.getElementById("vipps_status").value = "failed";
+        setVippsMsg("", err.message || "Vipps error");
+        vippsBtn.disabled = false;
+      }
+    });
+
+    // Optional: clear cart after submit
     document.getElementById("orderForm").addEventListener("submit", () => {
-      // keep it simple; comment this out if you DON'T want auto-clear
       localStorage.setItem(CART_KEY, "[]");
     });
 
