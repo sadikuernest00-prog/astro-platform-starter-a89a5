@@ -1,3 +1,4 @@
+
 ---
 const base = import.meta.env.BASE_URL;
 const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
@@ -84,12 +85,6 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       display:grid;
       gap:10px;
     }
-    .btn.vipps{
-      background:#ff5b24;
-      border-color:#ff5b24;
-      color:#111;
-      font-weight:800;
-    }
     .small{font-size:12px;color:var(--muted);line-height:1.4}
 
     @media (max-width: 900px){
@@ -109,7 +104,7 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
 
   <main>
     <h1>Checkout</h1>
-    <p class="muted">Fill in shipping details and send your order. We will receive it by email.</p>
+    <p class="muted">Fill in shipping details. Pay securely with Stripe.</p>
 
     <div class="grid">
       <!-- Shipping form -->
@@ -122,9 +117,9 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
           <input type="hidden" name="order_total_nok" id="order_total_nok" />
           <input type="hidden" name="order_items_json" id="order_items_json" />
 
-          <!-- Vipps info (filled by JS) -->
-          <input type="hidden" name="vipps_status" id="vipps_status" value="not_started" />
-          <input type="hidden" name="vipps_order_id" id="vipps_order_id" value="" />
+          <!-- Stripe info (filled by JS) -->
+          <input type="hidden" name="stripe_status" id="stripe_status" value="not_started" />
+          <input type="hidden" name="stripe_session_id" id="stripe_session_id" value="" />
 
           <input type="hidden" name="_subject" value="New Amicbridge order" />
           <input type="hidden" name="_format" value="plain" />
@@ -171,12 +166,13 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
           </div>
 
           <button class="btn" id="sendOrderBtn" type="submit" style="margin-top:14px">
-            Send order
+            Send order (email)
           </button>
 
           <div class="error" id="cartError">Your cart is empty. Go back and add products.</div>
-          <div class="ok" id="vippsOk">Vipps payment started. You will be redirected…</div>
-          <div class="error" id="vippsError"></div>
+
+          <div class="ok" id="stripeOk"></div>
+          <div class="error" id="stripeError"></div>
         </form>
       </section>
 
@@ -190,11 +186,11 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
         </div>
 
         <div class="payBox">
-          <button id="vippsBtn" class="btn vipps" type="button">
-            Pay with Vipps
+          <button id="stripeBtn" class="btn" type="button">
+            Pay securely (Card / Apple Pay / Google Pay)
           </button>
           <div class="small">
-            This will open Vipps for payment. After payment, you can still submit the shipping form above if needed.
+            You’ll be redirected to Stripe to complete payment.
           </div>
         </div>
 
@@ -227,13 +223,15 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       document.getElementById("order_items_json").value = JSON.stringify(cart, null, 2);
     }
 
-    function setVippsMsg(okText, errText) {
-      const ok = document.getElementById("vippsOk");
-      const err = document.getElementById("vippsError");
+    function setStripeMsg(okText, errText) {
+      const ok = document.getElementById("stripeOk");
+      const err = document.getElementById("stripeError");
+
       if (okText) { ok.style.display = "block"; ok.textContent = okText; }
-      else { ok.style.display = "none"; }
+      else { ok.style.display = "none"; ok.textContent = ""; }
+
       if (errText) { err.style.display = "block"; err.textContent = errText; }
-      else { err.style.display = "none"; }
+      else { err.style.display = "none"; err.textContent = ""; }
     }
 
     function render() {
@@ -242,7 +240,7 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       const totalEl = document.getElementById("total");
       const cartError = document.getElementById("cartError");
       const sendBtn = document.getElementById("sendOrderBtn");
-      const vippsBtn = document.getElementById("vippsBtn");
+      const stripeBtn = document.getElementById("stripeBtn");
 
       itemsEl.innerHTML = "";
       let total = 0;
@@ -282,7 +280,7 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       const empty = cart.length === 0;
       cartError.style.display = empty ? "block" : "none";
       sendBtn.disabled = empty;
-      vippsBtn.disabled = empty;
+      stripeBtn.disabled = empty;
     }
 
     // Event delegation for +/- and remove
@@ -328,62 +326,71 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       render();
     });
 
-    // Vipps payment button
-    document.getElementById("vippsBtn").addEventListener("click", async () => {
-      setVippsMsg("", "");
+    // Stripe: handle success return (adds ?paid=1&session_id=... to URL)
+    (function handleStripeReturn() {
+      const url = new URL(window.location.href);
+      const paid = url.searchParams.get("paid");
+      const sessionId = url.searchParams.get("session_id");
+
+      if (paid === "1") {
+        document.getElementById("stripe_status").value = "returned_success";
+        if (sessionId) document.getElementById("stripe_session_id").value = sessionId;
+
+        setStripeMsg("Payment completed (Stripe). You can now click “Send order (email)” to send shipping details.", "");
+      }
+      if (sessionId) {
+        // keep it, useful for your emails
+        document.getElementById("stripe_session_id").value = sessionId;
+      }
+    })();
+
+    // Stripe payment button
+    document.getElementById("stripeBtn").addEventListener("click", async () => {
+      setStripeMsg("", "");
       const cart = readCart();
       if (!cart.length) return;
 
-      // total in NOK (your cart prices are NOK already)
-      const total = cart.reduce((sum, i) => sum + (Number(i.price||0) * Number(i.qty||0)), 0);
+      document.getElementById("stripe_status").value = "started";
 
-      // Create an orderId (simple unique id)
-      const orderId = `amic_${Date.now()}`;
-
-      // store in form hidden fields too
-      document.getElementById("vipps_order_id").value = orderId;
-      document.getElementById("vipps_status").value = "started";
-
-      const vippsBtn = document.getElementById("vippsBtn");
-      vippsBtn.disabled = true;
-      setVippsMsg("Vipps payment started. You will be redirected…", "");
+      const stripeBtn = document.getElementById("stripeBtn");
+      stripeBtn.disabled = true;
+      setStripeMsg("Redirecting to Stripe…", "");
 
       try {
-        const res = await fetch("/.netlify/edge-functions/create-vipps-payment", {
+        const res = await fetch("/.netlify/functions/create-checkout-session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            orderId,
-            amount: total,
-            currency: "NOK",
             items: cart,
-            returnUrl: window.location.href
+            successUrl: `${window.location.origin}${window.location.pathname}?paid=1`,
+            cancelUrl: window.location.href
           }),
         });
 
         const data = await res.json();
 
         if (!res.ok) {
-          document.getElementById("vipps_status").value = "failed";
-          throw new Error(data?.error || "Vipps request failed");
+          document.getElementById("stripe_status").value = "failed";
+          throw new Error(data?.error || "Stripe request failed");
         }
 
-        // Your edge function should return { redirectUrl: "https://..." }
-        if (!data.redirectUrl) {
-          document.getElementById("vipps_status").value = "failed";
-          throw new Error("Missing redirectUrl from Vipps function");
+        if (!data.url) {
+          document.getElementById("stripe_status").value = "failed";
+          throw new Error("Missing Stripe Checkout URL");
         }
 
-        document.getElementById("vipps_status").value = "redirected";
-        window.location.href = data.redirectUrl;
+        document.getElementById("stripe_status").value = "redirected";
+        if (data.sessionId) document.getElementById("stripe_session_id").value = data.sessionId;
+
+        window.location.href = data.url;
       } catch (err) {
-        document.getElementById("vipps_status").value = "failed";
-        setVippsMsg("", err.message || "Vipps error");
-        vippsBtn.disabled = false;
+        document.getElementById("stripe_status").value = "failed";
+        setStripeMsg("", err.message || "Stripe error");
+        stripeBtn.disabled = false;
       }
     });
 
-    // Optional: clear cart after submit
+    // Optional: clear cart after sending shipping form
     document.getElementById("orderForm").addEventListener("submit", () => {
       localStorage.setItem(CART_KEY, "[]");
     });
