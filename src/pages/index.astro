@@ -1,9 +1,8 @@
-
 ---
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL ?? "/";
 
 // helper: always build correct URL (works on / and subfolders)
-const img = (path) => `${base}${path.replace(/^\/+/, "")}`;
+const img = (path: string) => `${base}${path.replace(/^\/+/, "")}`;
 
 const products = [
   {
@@ -28,7 +27,7 @@ const products = [
     id: "nude-slip",
     name: "Nude Satin-Look Slip Dress",
     price: 499,
-    image: "/images/nude-slipp-dress.png", // ✅ matches your file name
+    image: "/images/nude-slipp-dress.png",
     colors: ["Nude"],
     sizes: ["S", "M", "L"],
     defaultColor: "Nude",
@@ -52,7 +51,7 @@ const products = [
     defaultColor: "Black",
   },
 
-  // ✅ bras
+  // bras
   {
     id: "white-soft-bra",
     name: "White Soft Comfort Bra",
@@ -75,7 +74,7 @@ const products = [
     id: "grey-soft-bra",
     name: "Grey Soft Comfort Bra",
     price: 380,
-    image: "/images/grey-soft.png", // ✅ matches your file name
+    image: "/images/grey-soft.png",
     colors: ["Grey"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
     defaultColor: "Grey",
@@ -84,7 +83,7 @@ const products = [
     id: "white-sport-bra",
     name: "White Sport Bra",
     price: 380,
-    image: "/images/white-sport-bra.png", // ✅ matches your file name
+    image: "/images/white-sport-bra.png",
     colors: ["White"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
     defaultColor: "White",
@@ -93,7 +92,7 @@ const products = [
     id: "white-set-bra",
     name: "White Set Bra",
     price: 380,
-    image: "/images/white-set-bra.png", // ✅ matches your file name
+    image: "/images/white-set-bra.png",
     colors: ["White"],
     sizes: ["75B", "80B", "85B", "90B", "95B"],
     defaultColor: "White",
@@ -315,7 +314,8 @@ const products = [
         <a href="#shop">Shop</a>
         <a href="https://wa.me/4792928373" target="_blank" rel="noopener">Contact</a>
 
-        <a href={`${base}checkout/`}>
+        <!-- IMPORTANT: checkout page is /checkout (not /checkout/) -->
+        <a href={`${base}checkout`}>
           Checkout <span class="badge" id="cartCount">0</span>
         </a>
       </nav>
@@ -325,7 +325,7 @@ const products = [
       <section class="hero">
         <h1>everday comfort. Designed beautifully.</h1>
         <p>
-          Amic Underwear creates soft, supportive essentials designed to move with your body - 
+          Amic Underwear creates soft, supportive essentials designed to move with your body -
           made for confidence, comfort, and real life.
         </p>
       </section>
@@ -341,7 +341,6 @@ const products = [
             data-name={p.name}
             data-price={p.price}
           >
-            {/* ✅ THIS is the key fix: img() adds BASE_URL */}
             <img src={img(p.image)} alt={p.name} />
 
             <div class="name">{p.name}</div>
