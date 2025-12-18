@@ -1,3 +1,4 @@
+
 ---
 const base = import.meta.env.BASE_URL;
 const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
@@ -73,6 +74,28 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
     .totalsRow strong{font-size:18px}
     .stack{display:flex;flex-direction:column;gap:10px;margin-top:12px}
     .small{font-size:12px;color:var(--muted);line-height:1.4}
+
+    /* Vipps box */
+    .vippsBox{
+      border:1px solid var(--border);
+      background:#fff;
+      padding:14px;
+    }
+    .vippsNumber{
+      font-size:24px;
+      font-weight:800;
+      margin:6px 0 10px;
+      letter-spacing:.02em;
+    }
+    .pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .pill{
+      border:1px solid var(--border);
+      padding:10px 12px;
+      background:#fff;
+      cursor:pointer;
+      font-weight:700;
+    }
+
     @media (max-width: 900px){
       header{padding:18px 18px}
       main{padding:0 18px 56px}
@@ -90,14 +113,13 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
 
   <main>
     <h1>Checkout</h1>
-    <div class="muted">Enter your details, review your order, then pay by card.</div>
+    <div class="muted">Enter your details, review your order, then pay with Vipps.</div>
 
     <div class="grid">
-      <!-- LEFT: customer details (optional, and can still send to Formspree if you want) -->
+      <!-- LEFT: customer details -->
       <section class="card">
         <h2 style="margin:0 0 10px;font-size:18px">Customer details</h2>
 
-        <!-- You can keep Formspree for messages/order notes if you want -->
         <form id="detailsForm" action={FORMSPREE_ACTION} method="POST">
           <div class="row2">
             <div>
@@ -131,12 +153,13 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
             <textarea id="notes" name="notes" placeholder="Size requests, delivery notes, etc."></textarea>
           </div>
 
-          <!-- We’ll write the cart summary into this hidden field before submit -->
+          <!-- Hidden fields sent to Formspree -->
           <input type="hidden" id="cartSummary" name="cartSummary" value="" />
+          <input type="hidden" id="orderTotal" name="orderTotal" value="" />
         </form>
 
         <div class="small" style="margin-top:12px">
-          Payment is handled securely by Stripe. You won’t enter card details on this page.
+          Payment is made in Vipps. After you pay, click “Send order details” so we can match your payment to your order.
         </div>
       </section>
 
@@ -157,7 +180,7 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
           </div>
           <div class="totalsRow">
             <span class="muted">Shipping</span>
-            <span id="shipping">Calculated at checkout</span>
+            <span id="shipping">Agree in message</span>
           </div>
           <div class="totalsRow">
             <strong>Total</strong>
@@ -165,15 +188,34 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
           </div>
 
           <div class="stack">
-            <button class="btn" id="payBtn" type="button">Pay with card</button>
-            <button class="btn secondary" id="sendBtn" type="button">Send order details (optional)</button>
+            <!-- VIPPS PAYMENT BOX -->
+            <div class="vippsBox">
+              <div style="font-weight:800;margin-bottom:4px">Pay with Vipps (Private)</div>
+              <div class="meta">Send the total amount to Vipps number:</div>
+              <div class="vippsNumber" id="vippsNumber">92928373</div>
+
+              <div class="meta">
+                Message: <strong>Your name + product</strong>
+              </div>
+
+              <div class="pillrow">
+                <button class="pill" id="copyVipps" type="button">Copy number</button>
+                <button class="pill" id="copyTotal" type="button">Copy total</button>
+              </div>
+
+              <div class="small" style="margin-top:10px">
+                After paying in Vipps, click <strong>Send order details</strong> below.
+              </div>
+            </div>
+
+            <!-- SEND ORDER DETAILS -->
+            <button class="btn secondary" id="sendBtn" type="button">Send order details</button>
 
             <p class="error" id="payErr"></p>
             <p class="ok" id="okMsg"></p>
 
             <div class="small">
-              “Send order details” submits your info + cart to Formspree (optional).  
-              “Pay with card” redirects to Stripe Checkout to complete payment.
+              This sends your details + cart to our inbox so we can confirm your Vipps payment and ship your order.
             </div>
           </div>
         </div>
@@ -209,13 +251,17 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
     const elSubtotal = document.getElementById("subtotal");
     const elTotal = document.getElementById("total");
 
-    const payBtn = document.getElementById("payBtn");
     const sendBtn = document.getElementById("sendBtn");
     const payErr = document.getElementById("payErr");
     const okMsg = document.getElementById("okMsg");
 
     const detailsForm = document.getElementById("detailsForm");
     const cartSummaryInput = document.getElementById("cartSummary");
+    const orderTotalInput = document.getElementById("orderTotal");
+
+    const copyVippsBtn = document.getElementById("copyVipps");
+    const copyTotalBtn = document.getElementById("copyTotal");
+    const vippsNumberEl = document.getElementById("vippsNumber");
 
     function calcSubtotal(cart) {
       return cart.reduce((sum, it) => sum + (Number(it.price || 0) * Number(it.quantity || 1)), 0);
@@ -228,6 +274,8 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
         elEmpty.style.display = "block";
         elTotals.style.display = "none";
         elItems.innerHTML = "";
+        cartSummaryInput.value = "[]";
+        orderTotalInput.value = "0";
         return;
       }
 
@@ -271,8 +319,13 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
       elSubtotal.textContent = fmt(sub);
       elTotal.textContent = fmt(sub);
 
-      // Update hidden field for Formspree
+      // Keep hidden fields updated (Formspree)
       cartSummaryInput.value = JSON.stringify(cart);
+      orderTotalInput.value = String(sub);
+
+      // Store total as text for copy button
+      copyTotalBtn.dataset.totalText = fmt(sub);
+      copyTotalBtn.dataset.totalNumber = String(sub);
     }
 
     elItems.addEventListener("click", (e) => {
@@ -296,27 +349,45 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
       render();
     });
 
+    async function copyText(text) {
+      // Works on https (Netlify). If it fails, we show a small message.
+      await navigator.clipboard.writeText(text);
+    }
+
+    copyVippsBtn?.addEventListener("click", async () => {
+      payErr.style.display = "none";
+      okMsg.style.display = "none";
+      try {
+        await copyText(vippsNumberEl.textContent.trim());
+        okMsg.textContent = "Vipps number copied.";
+        okMsg.style.display = "block";
+      } catch {
+        payErr.textContent = "Could not copy. Please copy manually: 92928373";
+        payErr.style.display = "block";
+      }
+    });
+
+    copyTotalBtn?.addEventListener("click", async () => {
+      payErr.style.display = "none";
+      okMsg.style.display = "none";
+      const totalText = copyTotalBtn.dataset.totalText || "";
+      if (!totalText) return;
+      try {
+        await copyText(totalText);
+        okMsg.textContent = "Total copied.";
+        okMsg.style.display = "block";
+      } catch {
+        payErr.textContent = "Could not copy total. Please copy manually from the Total above.";
+        payErr.style.display = "block";
+      }
+    });
+
     // ---------- actions ----------
     sendBtn?.addEventListener("click", () => {
       payErr.style.display = "none";
       okMsg.style.display = "none";
 
       // validate required fields first
-      if (!detailsForm.reportValidity()) return;
-
-      // Make sure cart summary is current
-      cartSummaryInput.value = JSON.stringify(readCart());
-
-      detailsForm.submit();
-      okMsg.textContent = "Order details sent.";
-      okMsg.style.display = "block";
-    });
-
-    payBtn?.addEventListener("click", async () => {
-      payErr.style.display = "none";
-      okMsg.style.display = "none";
-
-      // validate required fields first (recommended)
       if (!detailsForm.reportValidity()) return;
 
       const cart = readCart();
@@ -326,43 +397,13 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
         return;
       }
 
-      // Build items for Stripe API: ONLY send safe identifiers (id, qty, size, color)
-      const items = cart.map((it) => ({
-        id: it.id,
-        quantity: Number(it.quantity || 1),
-        size: it.size || "",
-        color: it.color || "",
-      }));
+      // Make sure hidden fields are current
+      cartSummaryInput.value = JSON.stringify(cart);
+      orderTotalInput.value = String(calcSubtotal(cart));
 
-      payBtn.disabled = true;
-
-      try {
-        const res = await fetch("/api/create-checkout-session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items,
-            customer: {
-              name: document.getElementById("name").value,
-              email: document.getElementById("email").value,
-              address: document.getElementById("address").value,
-              city: document.getElementById("city").value,
-              zip: document.getElementById("zip").value,
-              notes: document.getElementById("notes").value,
-            }
-          }),
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to start payment.");
-
-        window.location.href = data.url; // Stripe Checkout redirect
-      } catch (err) {
-        payErr.textContent = err.message || "Payment error.";
-        payErr.style.display = "block";
-      } finally {
-        payBtn.disabled = false;
-      }
+      detailsForm.submit();
+      okMsg.textContent = "Order details sent. Please pay with Vipps if you haven’t already.";
+      okMsg.style.display = "block";
     });
 
     // initial render
