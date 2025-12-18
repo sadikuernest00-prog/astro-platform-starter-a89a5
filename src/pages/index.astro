@@ -2,7 +2,7 @@
 const base = import.meta.env.BASE_URL ?? "/";
 
 // helper: always build correct URL (works on / and subfolders)
-const img = (path: string) => `${base}${path.replace(/^\/+/, "")}`;
+const img = (path) => `${base}${path.replace(/^\/+/, "")}`;
 
 const products = [
   {
@@ -314,7 +314,7 @@ const products = [
         <a href="#shop">Shop</a>
         <a href="https://wa.me/4792928373" target="_blank" rel="noopener">Contact</a>
 
-        <!-- IMPORTANT: checkout page is /checkout (not /checkout/) -->
+        <!-- checkout is src/pages/checkout.astro -->
         <a href={`${base}checkout`}>
           Checkout <span class="badge" id="cartCount">0</span>
         </a>
