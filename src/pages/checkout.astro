@@ -1,10 +1,6 @@
-
 ---
 const base = import.meta.env.BASE_URL;
 const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
-
-// helper: always build correct URL (works on / and subfolders)
-const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
 ---
 
 <!doctype html>
@@ -27,47 +23,28 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
     h1{margin:16px 0 8px;font-size:34px}
     .muted{color:var(--muted)}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;margin-top:18px}
-    .card{background:var(--card);border:1px solid var(--border);padding:16px}
+    .card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:10px}
     label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-    input,textarea{width:100%;padding:12px;border:1px solid var(--border);margin-top:6px;font-size:15px}
+    input,textarea{width:100%;padding:12px;border:1px solid var(--border);margin-top:6px;font-size:15px;border-radius:8px}
     textarea{min-height:90px;resize:vertical}
-    .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:700;width:100%}
-    .btn.secondary{background:#fff;color:var(--text);border-color:var(--border);font-weight:600}
+    .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:800;width:100%;border-radius:10px}
+    .btn.secondary{background:#fff;color:var(--text);border-color:var(--border);font-weight:700}
     .btn:disabled{opacity:.55;cursor:not-allowed}
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .error{color:#b42318;font-size:13px;margin-top:10px;display:none}
     .ok{color:#1a7f37;font-size:13px;margin-top:10px;display:none}
 
     .items{display:flex;flex-direction:column;gap:12px;margin-top:10px}
-    .item{
-      border-top:1px solid var(--border);
-      padding-top:12px;
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:12px;
-    }
+    .item{border-top:1px solid var(--border);padding-top:12px;display:grid;grid-template-columns:1fr auto;gap:12px}
     .item:first-child{border-top:0;padding-top:0}
     .item strong{display:block;font-size:16px;margin-bottom:4px}
     .meta{color:var(--muted);font-size:13px;line-height:1.35}
-    .controls{
-      display:flex; flex-direction:column; gap:8px; align-items:flex-end;
-      min-width: 160px;
-    }
-    .qty{
-      display:grid;
-      grid-template-columns: 36px 44px 36px;
-      border:1px solid var(--border);
-      background:#fff;
-    }
-    .qty button{
-      border:0;background:#fff;cursor:pointer;font-size:18px;padding:8px 0;
-    }
-    .qty div{
-      display:flex;align-items:center;justify-content:center;font-weight:700;
-      border-left:1px solid var(--border);border-right:1px solid var(--border);
-    }
-    .price{font-weight:800}
-    .thumb{width:54px;height:54px;border:1px solid var(--border);background:#fff;object-fit:cover}
+    .controls{display:flex;flex-direction:column;gap:8px;align-items:flex-end;min-width:160px}
+    .qty{display:grid;grid-template-columns:36px 44px 36px;border:1px solid var(--border);background:#fff;border-radius:10px;overflow:hidden}
+    .qty button{border:0;background:#fff;cursor:pointer;font-size:18px;padding:8px 0}
+    .qty div{display:flex;align-items:center;justify-content:center;font-weight:800;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+    .price{font-weight:900}
+    .thumb{width:54px;height:54px;border:1px solid var(--border);background:#fff;object-fit:cover;border-radius:10px}
     .leftline{display:flex;gap:12px}
     .totals{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
     .totalsRow{display:flex;justify-content:space-between;margin:6px 0}
@@ -75,26 +52,13 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
     .stack{display:flex;flex-direction:column;gap:10px;margin-top:12px}
     .small{font-size:12px;color:var(--muted);line-height:1.4}
 
-    /* Vipps box */
-    .vippsBox{
-      border:1px solid var(--border);
-      background:#fff;
-      padding:14px;
-    }
-    .vippsNumber{
-      font-size:24px;
-      font-weight:800;
-      margin:6px 0 10px;
-      letter-spacing:.02em;
-    }
+    /* Step boxes */
+    .stepBox{border:1px solid var(--border);background:#fff;padding:14px;border-radius:12px}
+    .stepTitle{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .badge{width:28px;height:28px;border-radius:999px;background:var(--text);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center}
+    .vippsNumber{font-size:26px;font-weight:900;margin:6px 0 10px;letter-spacing:.02em}
     .pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .pill{
-      border:1px solid var(--border);
-      padding:10px 12px;
-      background:#fff;
-      cursor:pointer;
-      font-weight:700;
-    }
+    .pill{border:1px solid var(--border);padding:10px 12px;background:#fff;cursor:pointer;font-weight:800;border-radius:12px}
 
     @media (max-width: 900px){
       header{padding:18px 18px}
@@ -113,7 +77,7 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
 
   <main>
     <h1>Checkout</h1>
-    <div class="muted">Enter your details, review your order, then pay with Vipps.</div>
+    <div class="muted">Two steps: (1) Pay with Vipps, (2) Send order details.</div>
 
     <div class="grid">
       <!-- LEFT: customer details -->
@@ -153,17 +117,17 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
             <textarea id="notes" name="notes" placeholder="Size requests, delivery notes, etc."></textarea>
           </div>
 
-          <!-- Hidden fields sent to Formspree -->
+          <!-- Hidden fields for Formspree -->
           <input type="hidden" id="cartSummary" name="cartSummary" value="" />
           <input type="hidden" id="orderTotal" name="orderTotal" value="" />
         </form>
 
         <div class="small" style="margin-top:12px">
-          Payment is made in Vipps. After you pay, click “Send order details” so we can match your payment to your order.
+          After you pay in Vipps, click “Send order details” on the right so we can match your payment to your order.
         </div>
       </section>
 
-      <!-- RIGHT: order summary -->
+      <!-- RIGHT: order summary + steps -->
       <aside class="card">
         <h2 style="margin:0 0 10px;font-size:18px">Your order</h2>
 
@@ -180,7 +144,7 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
           </div>
           <div class="totalsRow">
             <span class="muted">Shipping</span>
-            <span id="shipping">Agree in message</span>
+            <span class="muted">Agree in message</span>
           </div>
           <div class="totalsRow">
             <strong>Total</strong>
@@ -188,10 +152,14 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
           </div>
 
           <div class="stack">
-            <!-- VIPPS PAYMENT BOX -->
-            <div class="vippsBox">
-              <div style="font-weight:800;margin-bottom:4px">Pay with Vipps (Private)</div>
-              <div class="meta">Send the total amount to Vipps number:</div>
+            <!-- STEP 1 -->
+            <div class="stepBox">
+              <div class="stepTitle">
+                <div class="badge">1</div>
+                <div style="font-weight:900">Pay with Vipps (Private)</div>
+              </div>
+
+              <div class="meta">Send the <strong>Total</strong> amount to Vipps number:</div>
               <div class="vippsNumber" id="vippsNumber">92928373</div>
 
               <div class="meta">
@@ -199,23 +167,30 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
               </div>
 
               <div class="pillrow">
-                <button class="pill" id="copyVipps" type="button">Copy number</button>
+                <button class="pill" id="copyVipps" type="button">Copy Vipps number</button>
                 <button class="pill" id="copyTotal" type="button">Copy total</button>
               </div>
 
               <div class="small" style="margin-top:10px">
-                After paying in Vipps, click <strong>Send order details</strong> below.
+                Open Vipps on your phone and complete the payment.
               </div>
             </div>
 
-            <!-- SEND ORDER DETAILS -->
-            <button class="btn secondary" id="sendBtn" type="button">Send order details</button>
+            <!-- STEP 2 -->
+            <div class="stepBox">
+              <div class="stepTitle">
+                <div class="badge">2</div>
+                <div style="font-weight:900">Send order details</div>
+              </div>
 
-            <p class="error" id="payErr"></p>
-            <p class="ok" id="okMsg"></p>
+              <button class="btn secondary" id="sendBtn" type="button">Send order details</button>
 
-            <div class="small">
-              This sends your details + cart to our inbox so we can confirm your Vipps payment and ship your order.
+              <p class="error" id="payErr"></p>
+              <p class="ok" id="okMsg"></p>
+
+              <div class="small">
+                This sends your details + cart to our inbox so we can confirm your Vipps payment and ship your order.
+              </div>
             </div>
           </div>
         </div>
@@ -224,11 +199,7 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
   </main>
 
   <script>
-    // ---------- helpers ----------
-    const fmt = (n) => {
-      const num = Number(n || 0);
-      return new Intl.NumberFormat("en-US", { style: "currency", currency: "NOK" }).format(num);
-    };
+    const fmt = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "NOK" }).format(Number(n || 0));
 
     function readCart() {
       try {
@@ -244,7 +215,6 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
       localStorage.setItem("cart", JSON.stringify(cart));
     }
 
-    // ---------- UI elements ----------
     const elItems = document.getElementById("items");
     const elEmpty = document.getElementById("emptyCart");
     const elTotals = document.getElementById("totals");
@@ -276,6 +246,7 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
         elItems.innerHTML = "";
         cartSummaryInput.value = "[]";
         orderTotalInput.value = "0";
+        copyTotalBtn.dataset.totalText = "";
         return;
       }
 
@@ -319,13 +290,10 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
       elSubtotal.textContent = fmt(sub);
       elTotal.textContent = fmt(sub);
 
-      // Keep hidden fields updated (Formspree)
       cartSummaryInput.value = JSON.stringify(cart);
       orderTotalInput.value = String(sub);
 
-      // Store total as text for copy button
       copyTotalBtn.dataset.totalText = fmt(sub);
-      copyTotalBtn.dataset.totalNumber = String(sub);
     }
 
     elItems.addEventListener("click", (e) => {
@@ -350,7 +318,6 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
     });
 
     async function copyText(text) {
-      // Works on https (Netlify). If it fails, we show a small message.
       await navigator.clipboard.writeText(text);
     }
 
@@ -382,12 +349,10 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
       }
     });
 
-    // ---------- actions ----------
     sendBtn?.addEventListener("click", () => {
       payErr.style.display = "none";
       okMsg.style.display = "none";
 
-      // validate required fields first
       if (!detailsForm.reportValidity()) return;
 
       const cart = readCart();
@@ -397,7 +362,6 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
         return;
       }
 
-      // Make sure hidden fields are current
       cartSummaryInput.value = JSON.stringify(cart);
       orderTotalInput.value = String(calcSubtotal(cart));
 
@@ -406,7 +370,6 @@ const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
       okMsg.style.display = "block";
     });
 
-    // initial render
     render();
   </script>
 </body>
