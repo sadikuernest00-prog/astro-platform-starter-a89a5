@@ -1,6 +1,7 @@
 ---
 const base = import.meta.env.BASE_URL;
 const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
+const VIPPS_NUMBER = "92928373";
 ---
 
 <!doctype html>
@@ -11,9 +12,7 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
   <title>Checkout — Amicbridge</title>
 
   <style>
-    :root{
-      --bg:#f7f6f4; --text:#151515; --muted:#6b6b6b; --border:#dedede; --card:#ffffff;
-    }
+    :root{--bg:#f7f6f4;--text:#151515;--muted:#6b6b6b;--border:#dedede;--card:#fff;}
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
     header{padding:24px 40px;display:flex;justify-content:space-between;align-items:center}
@@ -23,45 +22,47 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
     h1{margin:16px 0 8px;font-size:34px}
     .muted{color:var(--muted)}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;margin-top:18px}
-    .card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:10px}
+    .card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:12px}
+
     label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-    input,textarea{width:100%;padding:12px;border:1px solid var(--border);margin-top:6px;font-size:15px;border-radius:8px}
+    input,textarea{width:100%;padding:12px;border:1px solid var(--border);margin-top:6px;font-size:15px;border-radius:10px}
     textarea{min-height:90px;resize:vertical}
-    .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:800;width:100%;border-radius:10px}
-    .btn.secondary{background:#fff;color:var(--text);border-color:var(--border);font-weight:700}
-    .btn:disabled{opacity:.55;cursor:not-allowed}
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .error{color:#b42318;font-size:13px;margin-top:10px;display:none}
-    .ok{color:#1a7f37;font-size:13px;margin-top:10px;display:none}
 
     .items{display:flex;flex-direction:column;gap:12px;margin-top:10px}
     .item{border-top:1px solid var(--border);padding-top:12px;display:grid;grid-template-columns:1fr auto;gap:12px}
     .item:first-child{border-top:0;padding-top:0}
-    .item strong{display:block;font-size:16px;margin-bottom:4px}
     .meta{color:var(--muted);font-size:13px;line-height:1.35}
     .controls{display:flex;flex-direction:column;gap:8px;align-items:flex-end;min-width:160px}
-    .qty{display:grid;grid-template-columns:36px 44px 36px;border:1px solid var(--border);background:#fff;border-radius:10px;overflow:hidden}
+    .qty{display:grid;grid-template-columns:36px 44px 36px;border:1px solid var(--border);background:#fff;border-radius:12px;overflow:hidden}
     .qty button{border:0;background:#fff;cursor:pointer;font-size:18px;padding:8px 0}
-    .qty div{display:flex;align-items:center;justify-content:center;font-weight:800;border-left:1px solid var(--border);border-right:1px solid var(--border)}
-    .price{font-weight:900}
-    .thumb{width:54px;height:54px;border:1px solid var(--border);background:#fff;object-fit:cover;border-radius:10px}
+    .qty div{display:flex;align-items:center;justify-content:center;font-weight:900;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+    .thumb{width:54px;height:54px;border:1px solid var(--border);background:#fff;object-fit:cover;border-radius:12px}
     .leftline{display:flex;gap:12px}
+    .price{font-weight:900}
+
     .totals{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
     .totalsRow{display:flex;justify-content:space-between;margin:6px 0}
-    .totalsRow strong{font-size:18px}
-    .stack{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .stack{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+
+    .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:900;width:100%;border-radius:12px}
+    .btn.secondary{background:#fff;color:var(--text);border-color:var(--border)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+
+    .error{color:#b42318;font-size:13px;margin-top:10px;display:none}
+    .ok{color:#1a7f37;font-size:13px;margin-top:10px;display:none}
     .small{font-size:12px;color:var(--muted);line-height:1.4}
 
-    /* Step boxes */
-    .stepBox{border:1px solid var(--border);background:#fff;padding:14px;border-radius:12px}
-    .stepTitle{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .step{border:1px solid var(--border);background:#fff;padding:14px;border-radius:12px}
     .badge{width:28px;height:28px;border-radius:999px;background:var(--text);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center}
-    .vippsNumber{font-size:26px;font-weight:900;margin:6px 0 10px;letter-spacing:.02em}
-    .pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .pill{border:1px solid var(--border);padding:10px 12px;background:#fff;cursor:pointer;font-weight:800;border-radius:12px}
+    .stepTitle{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+    .vippsNumber{font-size:26px;font-weight:950;margin:6px 0 10px}
 
-    @media (max-width: 900px){
-      header{padding:18px 18px}
+    .checkRow{display:flex;gap:10px;align-items:flex-start;margin-top:10px}
+    .checkRow input{width:auto;margin-top:3px}
+
+    @media (max-width:900px){
+      header{padding:18px}
       main{padding:0 18px 56px}
       .grid{grid-template-columns:1fr}
       .controls{align-items:stretch}
@@ -71,13 +72,13 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
 
 <body>
   <header>
-    <a href={base}>← Back to shop</a>
-    <a href={base} class="muted">Amicbridge</a>
+    <a href={`${base}`}>← Back to shop</a>
+    <a href={`${base}`} class="muted">Amicbridge</a>
   </header>
 
   <main>
     <h1>Checkout</h1>
-    <div class="muted">Two steps: (1) Pay with Vipps, (2) Send order details.</div>
+    <div class="muted">Step 1: Pay with Vipps • Step 2: Confirm payment and send order.</div>
 
     <div class="grid">
       <!-- LEFT: customer details -->
@@ -114,25 +115,46 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
 
           <div style="margin-top:12px">
             <label for="notes">Order notes (optional)</label>
-            <textarea id="notes" name="notes" placeholder="Size requests, delivery notes, etc."></textarea>
+            <textarea id="notes" name="notes" placeholder="Delivery notes, etc."></textarea>
           </div>
 
-          <!-- Hidden fields for Formspree -->
+          <!-- Required Vipps confirmation info -->
+          <div style="margin-top:12px">
+            <label for="vippsRef">Vipps payment name or phone (required)</label>
+            <input
+              id="vippsRef"
+              name="vippsRef"
+              placeholder="Example: sara / 9xxxxxxx"
+              required
+            />
+            <div class="small" style="margin-top:6px">
+              This helps us match your Vipps payment to your order.
+            </div>
+          </div>
+
+          <div class="checkRow">
+            <input id="paidCheck" name="paidCheck" type="checkbox" />
+            <div>
+              <label for="paidCheck" style="display:block">I have paid with Vipps</label>
+              <div class="small">
+                You must pay first. Orders are processed after payment is received.
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden fields sent to Formspree -->
           <input type="hidden" id="cartSummary" name="cartSummary" value="" />
           <input type="hidden" id="orderTotal" name="orderTotal" value="" />
+          <input type="hidden" id="vippsNumber" name="vippsNumber" value={VIPPS_NUMBER} />
         </form>
-
-        <div class="small" style="margin-top:12px">
-          After you pay in Vipps, click “Send order details” on the right so we can match your payment to your order.
-        </div>
       </section>
 
-      <!-- RIGHT: order summary + steps -->
+      <!-- RIGHT: order summary + Vipps QR -->
       <aside class="card">
         <h2 style="margin:0 0 10px;font-size:18px">Your order</h2>
 
         <div id="emptyCart" class="muted" style="display:none;margin-top:6px">
-          Your cart is empty. Go back and add items.
+          Your cart is empty.
         </div>
 
         <div id="items" class="items"></div>
@@ -143,53 +165,53 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
             <span id="subtotal">0</span>
           </div>
           <div class="totalsRow">
-            <span class="muted">Shipping</span>
-            <span class="muted">Agree in message</span>
-          </div>
-          <div class="totalsRow">
             <strong>Total</strong>
             <strong id="total">0</strong>
           </div>
 
           <div class="stack">
             <!-- STEP 1 -->
-            <div class="stepBox">
+            <div class="step">
               <div class="stepTitle">
                 <div class="badge">1</div>
-                <div style="font-weight:900">Pay with Vipps (Private)</div>
+                <div style="font-weight:950">Scan QR and pay with Vipps</div>
               </div>
 
-              <div class="meta">Send the <strong>Total</strong> amount to Vipps number:</div>
-              <div class="vippsNumber" id="vippsNumber">92928373</div>
+              <div class="meta">Pay the Total to Vipps number:</div>
+              <div class="vippsNumber">92928373</div>
 
-              <div class="meta">
-                Message: <strong>Your name + product</strong>
-              </div>
+              <div class="meta">Message: <strong>Your name + product</strong></div>
 
-              <div class="pillrow">
-                <button class="pill" id="copyVipps" type="button">Copy Vipps number</button>
-                <button class="pill" id="copyTotal" type="button">Copy total</button>
+              <!-- QR CODE -->
+              <div style="margin-top:12px">
+                <img
+                  src="/images/vipps-qr.jpg"
+                  alt="Vipps QR"
+                  style="width:290px;max-width:100%;border:1px solid #dedede;background:#fff;border-radius:16px"
+                />
               </div>
 
               <div class="small" style="margin-top:10px">
-                Open Vipps on your phone and complete the payment.
+                If you are on the same phone, open Vipps manually and send the total to <strong>92928373</strong>.
               </div>
             </div>
 
             <!-- STEP 2 -->
-            <div class="stepBox">
+            <div class="step">
               <div class="stepTitle">
                 <div class="badge">2</div>
-                <div style="font-weight:900">Send order details</div>
+                <div style="font-weight:950">Send order details</div>
               </div>
 
-              <button class="btn secondary" id="sendBtn" type="button">Send order details</button>
+              <button class="btn secondary" id="sendBtn" type="button" disabled>
+                Send order details
+              </button>
 
-              <p class="error" id="payErr"></p>
-              <p class="ok" id="okMsg"></p>
+              <p class="error" id="err"></p>
+              <p class="ok" id="ok"></p>
 
               <div class="small">
-                This sends your details + cart to our inbox so we can confirm your Vipps payment and ship your order.
+                Button unlocks after you tick “I have paid with Vipps”.
               </div>
             </div>
           </div>
@@ -199,20 +221,16 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
   </main>
 
   <script>
-    const fmt = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "NOK" }).format(Number(n || 0));
+    const fmt = (n) =>
+      new Intl.NumberFormat("en-US", { style: "currency", currency: "NOK" }).format(Number(n || 0));
 
     function readCart() {
-      try {
-        const raw = localStorage.getItem("cart");
-        const parsed = JSON.parse(raw || "[]");
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
+      try { return JSON.parse(localStorage.getItem("cart") || "[]"); }
+      catch { return []; }
     }
-
-    function writeCart(cart) {
-      localStorage.setItem("cart", JSON.stringify(cart));
+    function writeCart(c) { localStorage.setItem("cart", JSON.stringify(c)); }
+    function subtotal(cart) {
+      return cart.reduce((s, it) => s + Number(it.price || 0) * Number(it.quantity || 1), 0);
     }
 
     const elItems = document.getElementById("items");
@@ -221,20 +239,20 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
     const elSubtotal = document.getElementById("subtotal");
     const elTotal = document.getElementById("total");
 
-    const sendBtn = document.getElementById("sendBtn");
-    const payErr = document.getElementById("payErr");
-    const okMsg = document.getElementById("okMsg");
-
     const detailsForm = document.getElementById("detailsForm");
-    const cartSummaryInput = document.getElementById("cartSummary");
-    const orderTotalInput = document.getElementById("orderTotal");
+    const cartSummary = document.getElementById("cartSummary");
+    const orderTotal = document.getElementById("orderTotal");
 
-    const copyVippsBtn = document.getElementById("copyVipps");
-    const copyTotalBtn = document.getElementById("copyTotal");
-    const vippsNumberEl = document.getElementById("vippsNumber");
+    const sendBtn = document.getElementById("sendBtn");
+    const err = document.getElementById("err");
+    const ok = document.getElementById("ok");
 
-    function calcSubtotal(cart) {
-      return cart.reduce((sum, it) => sum + (Number(it.price || 0) * Number(it.quantity || 1)), 0);
+    const paidCheck = document.getElementById("paidCheck");
+    const vippsRef = document.getElementById("vippsRef");
+
+    function updateSendEnabled() {
+      // Only enable if they confirmed payment
+      sendBtn.disabled = !paidCheck.checked;
     }
 
     function render() {
@@ -244,9 +262,9 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
         elEmpty.style.display = "block";
         elTotals.style.display = "none";
         elItems.innerHTML = "";
-        cartSummaryInput.value = "[]";
-        orderTotalInput.value = "0";
-        copyTotalBtn.dataset.totalText = "";
+        cartSummary.value = "[]";
+        orderTotal.value = "0";
+        sendBtn.disabled = true;
         return;
       }
 
@@ -256,11 +274,13 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       elItems.innerHTML = cart.map((it, idx) => {
         const name = it.name || it.id || "Item";
         const qty = Number(it.quantity || 1);
-        const size = it.size ? `Size: ${it.size}` : "";
-        const color = it.color ? `Color: ${it.color}` : "";
-        const meta = [size, color].filter(Boolean).join(" • ");
+        const meta = [
+          it.size ? `Size: ${it.size}` : "",
+          it.color ? `Color: ${it.color}` : "",
+        ].filter(Boolean).join(" • ") || "—";
+
         const lineTotal = Number(it.price || 0) * qty;
-        const image = it.image ? it.image : "";
+        const image = it.image || "";
 
         return `
           <div class="item" data-idx="${idx}">
@@ -268,16 +288,16 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
               ${image ? `<img class="thumb" src="${image}" alt="${name}">` : `<div class="thumb"></div>`}
               <div>
                 <strong>${name}</strong>
-                <div class="meta">${meta || "—"}</div>
+                <div class="meta">${meta}</div>
                 <div class="meta">Unit: ${fmt(it.price || 0)}</div>
               </div>
             </div>
 
             <div class="controls">
               <div class="qty">
-                <button type="button" data-act="dec" aria-label="Decrease">−</button>
+                <button type="button" data-act="dec">−</button>
                 <div>${qty}</div>
-                <button type="button" data-act="inc" aria-label="Increase">+</button>
+                <button type="button" data-act="inc">+</button>
               </div>
               <div class="price">${fmt(lineTotal)}</div>
               <button type="button" class="btn secondary" style="padding:10px 12px" data-act="remove">Remove</button>
@@ -286,14 +306,14 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
         `;
       }).join("");
 
-      const sub = calcSubtotal(cart);
+      const sub = subtotal(cart);
       elSubtotal.textContent = fmt(sub);
       elTotal.textContent = fmt(sub);
 
-      cartSummaryInput.value = JSON.stringify(cart);
-      orderTotalInput.value = String(sub);
+      cartSummary.value = JSON.stringify(cart);
+      orderTotal.value = String(sub);
 
-      copyTotalBtn.dataset.totalText = fmt(sub);
+      updateSendEnabled();
     }
 
     elItems.addEventListener("click", (e) => {
@@ -317,61 +337,41 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       render();
     });
 
-    async function copyText(text) {
-      await navigator.clipboard.writeText(text);
-    }
-
-    copyVippsBtn?.addEventListener("click", async () => {
-      payErr.style.display = "none";
-      okMsg.style.display = "none";
-      try {
-        await copyText(vippsNumberEl.textContent.trim());
-        okMsg.textContent = "Vipps number copied.";
-        okMsg.style.display = "block";
-      } catch {
-        payErr.textContent = "Could not copy. Please copy manually: 92928373";
-        payErr.style.display = "block";
-      }
+    paidCheck.addEventListener("change", () => {
+      err.style.display = "none";
+      ok.style.display = "none";
+      updateSendEnabled();
     });
 
-    copyTotalBtn?.addEventListener("click", async () => {
-      payErr.style.display = "none";
-      okMsg.style.display = "none";
-      const totalText = copyTotalBtn.dataset.totalText || "";
-      if (!totalText) return;
-      try {
-        await copyText(totalText);
-        okMsg.textContent = "Total copied.";
-        okMsg.style.display = "block";
-      } catch {
-        payErr.textContent = "Could not copy total. Please copy manually from the Total above.";
-        payErr.style.display = "block";
-      }
-    });
-
-    sendBtn?.addEventListener("click", () => {
-      payErr.style.display = "none";
-      okMsg.style.display = "none";
-
-      if (!detailsForm.reportValidity()) return;
+    sendBtn.addEventListener("click", () => {
+      err.style.display = "none";
+      ok.style.display = "none";
 
       const cart = readCart();
       if (!cart.length) {
-        payErr.textContent = "Your cart is empty.";
-        payErr.style.display = "block";
+        err.textContent = "Your cart is empty.";
+        err.style.display = "block";
         return;
       }
 
-      cartSummaryInput.value = JSON.stringify(cart);
-      orderTotalInput.value = String(calcSubtotal(cart));
+      if (!paidCheck.checked) {
+        err.textContent = "Please pay with Vipps first and tick “I have paid with Vipps”.";
+        err.style.display = "block";
+        return;
+      }
+
+      // Validate the whole form (includes vippsRef required)
+      if (!detailsForm.reportValidity()) return;
+
+      cartSummary.value = JSON.stringify(cart);
+      orderTotal.value = String(subtotal(cart));
 
       detailsForm.submit();
-      okMsg.textContent = "Order details sent. Please pay with Vipps if you haven’t already.";
-      okMsg.style.display = "block";
+      ok.textContent = "Order details sent. Thank you! We will confirm your Vipps payment and ship.";
+      ok.style.display = "block";
     });
 
     render();
   </script>
 </body>
 </html>
-
