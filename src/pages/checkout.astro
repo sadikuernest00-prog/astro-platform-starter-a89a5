@@ -1,7 +1,9 @@
-
 ---
 const base = import.meta.env.BASE_URL;
 const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
+
+// helper: always build correct URL (works on / and subfolders)
+const img = (path) => `${base}${String(path || "").replace(/^\/+/, "")}`;
 ---
 
 <!doctype html>
@@ -28,7 +30,7 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
     label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
     input,textarea{width:100%;padding:12px;border:1px solid var(--border);margin-top:6px;font-size:15px}
     textarea{min-height:90px;resize:vertical}
-    .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:700}
+    .btn{padding:14px 12px;border:1px solid var(--text);background:var(--text);color:#fff;cursor:pointer;font-weight:700;width:100%}
     .btn.secondary{background:#fff;color:var(--text);border-color:var(--border);font-weight:600}
     .btn:disabled{opacity:.55;cursor:not-allowed}
     .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -48,7 +50,7 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
     .meta{color:var(--muted);font-size:13px;line-height:1.35}
     .controls{
       display:flex; flex-direction:column; gap:8px; align-items:flex-end;
-      min-width: 140px;
+      min-width: 160px;
     }
     .qty{
       display:grid;
@@ -60,36 +62,20 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
       border:0;background:#fff;cursor:pointer;font-size:18px;padding:8px 0;
     }
     .qty div{
-      border-left:1px solid var(--border);
-      border-right:1px solid var(--border);
-      display:flex;align-items:center;justify-content:center;font-size:14px;
+      display:flex;align-items:center;justify-content:center;font-weight:700;
+      border-left:1px solid var(--border);border-right:1px solid var(--border);
     }
-    .remove{
-      padding:10px 10px;
-      border:1px solid var(--border);
-      background:#fff;
-      cursor:pointer;
-      font-weight:600;
-      width:100%;
-    }
-    .lineTotal{font-weight:800}
-    .total{
-      display:flex;justify-content:space-between;border-top:1px solid var(--border);
-      padding-top:12px;margin-top:12px;font-weight:800;
-    }
-
-    .payBox{
-      margin-top:12px;
-      border-top:1px solid var(--border);
-      padding-top:12px;
-      display:grid;
-      gap:10px;
-    }
+    .price{font-weight:800}
+    .thumb{width:54px;height:54px;border:1px solid var(--border);background:#fff;object-fit:cover}
+    .leftline{display:flex;gap:12px}
+    .totals{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+    .totalsRow{display:flex;justify-content:space-between;margin:6px 0}
+    .totalsRow strong{font-size:18px}
+    .stack{display:flex;flex-direction:column;gap:10px;margin-top:12px}
     .small{font-size:12px;color:var(--muted);line-height:1.4}
-
     @media (max-width: 900px){
-      header{padding:18px}
-      main{padding:0 18px 50px}
+      header{padding:18px 18px}
+      main{padding:0 18px 56px}
       .grid{grid-template-columns:1fr}
       .controls{align-items:stretch}
     }
@@ -98,303 +84,288 @@ const FORMSPREE_ACTION = "https://formspree.io/f/xzznjkvd";
 
 <body>
   <header>
-    <strong style="letter-spacing:.08em;">AMICBRIDGE</strong>
-    <a href={`${base}`}>← Back</a>
+    <a href={base}>← Back to shop</a>
+    <a href={base} class="muted">Amicbridge</a>
   </header>
 
   <main>
     <h1>Checkout</h1>
-    <p class="muted">Fill in shipping details. Pay securely with Stripe.</p>
+    <div class="muted">Enter your details, review your order, then pay by card.</div>
 
     <div class="grid">
-      <!-- Shipping form -->
+      <!-- LEFT: customer details (optional, and can still send to Formspree if you want) -->
       <section class="card">
-        <h2 style="margin:0 0 10px;font-size:18px;">Shipping details</h2>
+        <h2 style="margin:0 0 10px;font-size:18px">Customer details</h2>
 
-        <form id="orderForm" action={FORMSPREE_ACTION} method="POST">
-          <!-- Hidden fields filled by JS -->
-          <input type="hidden" name="order_summary" id="order_summary" />
-          <input type="hidden" name="order_total_nok" id="order_total_nok" />
-          <input type="hidden" name="order_items_json" id="order_items_json" />
-
-          <!-- Stripe info (filled by JS) -->
-          <input type="hidden" name="stripe_status" id="stripe_status" value="not_started" />
-          <input type="hidden" name="stripe_session_id" id="stripe_session_id" value="" />
-
-          <input type="hidden" name="_subject" value="New Amicbridge order" />
-          <input type="hidden" name="_format" value="plain" />
-
-          <div style="margin-top:10px">
-            <label>Full name</label>
-            <input name="full_name" required />
-          </div>
-
-          <div style="margin-top:10px">
-            <label>Email</label>
-            <input name="email" type="email" required />
-          </div>
-
-          <div style="margin-top:10px">
-            <label>Phone</label>
-            <input name="phone" required />
-          </div>
-
-          <div style="margin-top:10px">
-            <label>Address</label>
-            <input name="address" required />
-          </div>
-
-          <div class="row2" style="margin-top:10px">
+        <!-- You can keep Formspree for messages/order notes if you want -->
+        <form id="detailsForm" action={FORMSPREE_ACTION} method="POST">
+          <div class="row2">
             <div>
-              <label>City</label>
-              <input name="city" required />
+              <label for="name">Full name</label>
+              <input id="name" name="name" autocomplete="name" required />
             </div>
             <div>
-              <label>Postal code</label>
-              <input name="postal_code" required />
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
             </div>
           </div>
 
-          <div style="margin-top:10px">
-            <label>Country</label>
-            <input name="country" value="Norway" required />
+          <div style="margin-top:12px">
+            <label for="address">Address</label>
+            <input id="address" name="address" autocomplete="street-address" required />
           </div>
 
-          <div style="margin-top:10px">
-            <label>Message (optional)</label>
-            <textarea name="message"></textarea>
+          <div class="row2" style="margin-top:12px">
+            <div>
+              <label for="city">City</label>
+              <input id="city" name="city" autocomplete="address-level2" required />
+            </div>
+            <div>
+              <label for="zip">ZIP / Postal code</label>
+              <input id="zip" name="zip" autocomplete="postal-code" required />
+            </div>
           </div>
 
-          <button class="btn" id="sendOrderBtn" type="submit" style="margin-top:14px">
-            Send order (email)
-          </button>
+          <div style="margin-top:12px">
+            <label for="notes">Order notes (optional)</label>
+            <textarea id="notes" name="notes" placeholder="Size requests, delivery notes, etc."></textarea>
+          </div>
 
-          <div class="error" id="cartError">Your cart is empty. Go back and add products.</div>
-
-          <div class="ok" id="stripeOk"></div>
-          <div class="error" id="stripeError"></div>
+          <!-- We’ll write the cart summary into this hidden field before submit -->
+          <input type="hidden" id="cartSummary" name="cartSummary" value="" />
         </form>
+
+        <div class="small" style="margin-top:12px">
+          Payment is handled securely by Stripe. You won’t enter card details on this page.
+        </div>
       </section>
 
-      <!-- Order summary -->
+      <!-- RIGHT: order summary -->
       <aside class="card">
-        <h2 style="margin:0 0 10px;font-size:18px;">Order summary</h2>
-        <div id="items" class="items"></div>
-        <div class="total">
-          <span>Total</span>
-          <span><span id="total">0</span> NOK</span>
+        <h2 style="margin:0 0 10px;font-size:18px">Your order</h2>
+
+        <div id="emptyCart" class="muted" style="display:none;margin-top:6px">
+          Your cart is empty. Go back and add items.
         </div>
 
-        <div class="payBox">
-          <button id="stripeBtn" class="btn" type="button">
-            Pay securely (Card / Apple Pay / Google Pay)
-          </button>
-          <div class="small">
-            You’ll be redirected to Stripe to complete payment.
+        <div id="items" class="items"></div>
+
+        <div class="totals" id="totals" style="display:none">
+          <div class="totalsRow">
+            <span class="muted">Subtotal</span>
+            <span id="subtotal">0</span>
+          </div>
+          <div class="totalsRow">
+            <span class="muted">Shipping</span>
+            <span id="shipping">Calculated at checkout</span>
+          </div>
+          <div class="totalsRow">
+            <strong>Total</strong>
+            <strong id="total">0</strong>
+          </div>
+
+          <div class="stack">
+            <button class="btn" id="payBtn" type="button">Pay with card</button>
+            <button class="btn secondary" id="sendBtn" type="button">Send order details (optional)</button>
+
+            <p class="error" id="payErr"></p>
+            <p class="ok" id="okMsg"></p>
+
+            <div class="small">
+              “Send order details” submits your info + cart to Formspree (optional).  
+              “Pay with card” redirects to Stripe Checkout to complete payment.
+            </div>
           </div>
         </div>
-
-        <button id="clearAll" class="btn secondary" type="button" style="margin-top:12px;width:100%">
-          Clear all
-        </button>
       </aside>
     </div>
   </main>
 
   <script>
-    const CART_KEY = "amicbridge_cart_v1";
+    // ---------- helpers ----------
+    const fmt = (n) => {
+      const num = Number(n || 0);
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "NOK" }).format(num);
+    };
 
     function readCart() {
-      try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-      catch { return []; }
+      try {
+        const raw = localStorage.getItem("cart");
+        const parsed = JSON.parse(raw || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
     }
+
     function writeCart(cart) {
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      localStorage.setItem("cart", JSON.stringify(cart));
     }
 
-    function buildHiddenFields(cart, total) {
-      const summaryLines = cart.map((i) => {
-        const line = (Number(i.qty||0) * Number(i.price||0));
-        return `${i.name} | Qty: ${i.qty} | Size: ${i.size} | Color: ${i.color} | Line: ${line} NOK`;
-      });
+    // ---------- UI elements ----------
+    const elItems = document.getElementById("items");
+    const elEmpty = document.getElementById("emptyCart");
+    const elTotals = document.getElementById("totals");
+    const elSubtotal = document.getElementById("subtotal");
+    const elTotal = document.getElementById("total");
 
-      document.getElementById("order_summary").value = summaryLines.join("\\n");
-      document.getElementById("order_total_nok").value = String(total);
-      document.getElementById("order_items_json").value = JSON.stringify(cart, null, 2);
-    }
+    const payBtn = document.getElementById("payBtn");
+    const sendBtn = document.getElementById("sendBtn");
+    const payErr = document.getElementById("payErr");
+    const okMsg = document.getElementById("okMsg");
 
-    function setStripeMsg(okText, errText) {
-      const ok = document.getElementById("stripeOk");
-      const err = document.getElementById("stripeError");
+    const detailsForm = document.getElementById("detailsForm");
+    const cartSummaryInput = document.getElementById("cartSummary");
 
-      if (okText) { ok.style.display = "block"; ok.textContent = okText; }
-      else { ok.style.display = "none"; ok.textContent = ""; }
-
-      if (errText) { err.style.display = "block"; err.textContent = errText; }
-      else { err.style.display = "none"; err.textContent = ""; }
+    function calcSubtotal(cart) {
+      return cart.reduce((sum, it) => sum + (Number(it.price || 0) * Number(it.quantity || 1)), 0);
     }
 
     function render() {
       const cart = readCart();
-      const itemsEl = document.getElementById("items");
-      const totalEl = document.getElementById("total");
-      const cartError = document.getElementById("cartError");
-      const sendBtn = document.getElementById("sendOrderBtn");
-      const stripeBtn = document.getElementById("stripeBtn");
 
-      itemsEl.innerHTML = "";
-      let total = 0;
+      if (!cart.length) {
+        elEmpty.style.display = "block";
+        elTotals.style.display = "none";
+        elItems.innerHTML = "";
+        return;
+      }
 
-      cart.forEach((item, idx) => {
-        const qty = Math.max(1, Number(item.qty || 1));
-        const price = Number(item.price || 0);
-        const line = qty * price;
-        total += line;
+      elEmpty.style.display = "none";
+      elTotals.style.display = "block";
 
-        const div = document.createElement("div");
-        div.className = "item";
-        div.innerHTML = `
-          <div>
-            <strong>${item.name}</strong>
-            <div class="meta">Size: ${item.size || "-"} · Color: ${item.color || "-"}</div>
-            <div class="meta">Price: ${price} NOK</div>
-          </div>
+      elItems.innerHTML = cart.map((it, idx) => {
+        const name = it.name || it.id || "Item";
+        const qty = Number(it.quantity || 1);
+        const size = it.size ? `Size: ${it.size}` : "";
+        const color = it.color ? `Color: ${it.color}` : "";
+        const meta = [size, color].filter(Boolean).join(" • ");
+        const lineTotal = Number(it.price || 0) * qty;
+        const image = it.image ? it.image : "";
 
-          <div class="controls">
-            <div class="lineTotal">${line} NOK</div>
-            <div class="qty" aria-label="Quantity">
-              <button type="button" data-minus="${idx}">-</button>
-              <div>${qty}</div>
-              <button type="button" data-plus="${idx}">+</button>
+        return `
+          <div class="item" data-idx="${idx}">
+            <div class="leftline">
+              ${image ? `<img class="thumb" src="${image}" alt="${name}">` : `<div class="thumb"></div>`}
+              <div>
+                <strong>${name}</strong>
+                <div class="meta">${meta || "—"}</div>
+                <div class="meta">Unit: ${fmt(it.price || 0)}</div>
+              </div>
             </div>
-            <button class="remove" type="button" data-remove="${idx}">Remove</button>
+
+            <div class="controls">
+              <div class="qty">
+                <button type="button" data-act="dec" aria-label="Decrease">−</button>
+                <div>${qty}</div>
+                <button type="button" data-act="inc" aria-label="Increase">+</button>
+              </div>
+              <div class="price">${fmt(lineTotal)}</div>
+              <button type="button" class="btn secondary" style="padding:10px 12px" data-act="remove">Remove</button>
+            </div>
           </div>
         `;
+      }).join("");
 
-        itemsEl.appendChild(div);
-      });
+      const sub = calcSubtotal(cart);
+      elSubtotal.textContent = fmt(sub);
+      elTotal.textContent = fmt(sub);
 
-      totalEl.textContent = String(total);
-      buildHiddenFields(cart, total);
-
-      const empty = cart.length === 0;
-      cartError.style.display = empty ? "block" : "none";
-      sendBtn.disabled = empty;
-      stripeBtn.disabled = empty;
+      // Update hidden field for Formspree
+      cartSummaryInput.value = JSON.stringify(cart);
     }
 
-    // Event delegation for +/- and remove
-    document.addEventListener("click", (e) => {
-      const minus = e.target.closest("[data-minus]");
-      const plus = e.target.closest("[data-plus]");
-      const remove = e.target.closest("[data-remove]");
+    elItems.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
 
-      if (!minus && !plus && !remove) return;
+      const itemEl = e.target.closest(".item");
+      if (!itemEl) return;
+
+      const idx = Number(itemEl.dataset.idx);
+      const act = btn.dataset.act;
 
       const cart = readCart();
+      if (!cart[idx]) return;
 
-      if (minus) {
-        const idx = Number(minus.getAttribute("data-minus"));
-        if (cart[idx]) {
-          cart[idx].qty = Math.max(1, Number(cart[idx].qty || 1) - 1);
-          writeCart(cart);
-          render();
-        }
-      }
+      if (act === "inc") cart[idx].quantity = Number(cart[idx].quantity || 1) + 1;
+      if (act === "dec") cart[idx].quantity = Math.max(1, Number(cart[idx].quantity || 1) - 1);
+      if (act === "remove") cart.splice(idx, 1);
 
-      if (plus) {
-        const idx = Number(plus.getAttribute("data-plus"));
-        if (cart[idx]) {
-          cart[idx].qty = Math.min(99, Number(cart[idx].qty || 1) + 1);
-          writeCart(cart);
-          render();
-        }
-      }
-
-      if (remove) {
-        const idx = Number(remove.getAttribute("data-remove"));
-        if (cart[idx]) {
-          cart.splice(idx, 1);
-          writeCart(cart);
-          render();
-        }
-      }
-    });
-
-    document.getElementById("clearAll").addEventListener("click", () => {
-      writeCart([]);
+      writeCart(cart);
       render();
     });
 
-    // Stripe: handle success return (adds ?paid=1&session_id=... to URL)
-    (function handleStripeReturn() {
-      const url = new URL(window.location.href);
-      const paid = url.searchParams.get("paid");
-      const sessionId = url.searchParams.get("session_id");
+    // ---------- actions ----------
+    sendBtn?.addEventListener("click", () => {
+      payErr.style.display = "none";
+      okMsg.style.display = "none";
 
-      if (paid === "1") {
-        document.getElementById("stripe_status").value = "returned_success";
-        if (sessionId) document.getElementById("stripe_session_id").value = sessionId;
+      // validate required fields first
+      if (!detailsForm.reportValidity()) return;
 
-        setStripeMsg("Payment completed (Stripe). You can now click “Send order (email)” to send shipping details.", "");
-      }
-      if (sessionId) {
-        // keep it, useful for your emails
-        document.getElementById("stripe_session_id").value = sessionId;
-      }
-    })();
+      // Make sure cart summary is current
+      cartSummaryInput.value = JSON.stringify(readCart());
 
-    // Stripe payment button
-    document.getElementById("stripeBtn").addEventListener("click", async () => {
-      setStripeMsg("", "");
+      detailsForm.submit();
+      okMsg.textContent = "Order details sent.";
+      okMsg.style.display = "block";
+    });
+
+    payBtn?.addEventListener("click", async () => {
+      payErr.style.display = "none";
+      okMsg.style.display = "none";
+
+      // validate required fields first (recommended)
+      if (!detailsForm.reportValidity()) return;
+
       const cart = readCart();
-      if (!cart.length) return;
+      if (!cart.length) {
+        payErr.textContent = "Your cart is empty.";
+        payErr.style.display = "block";
+        return;
+      }
 
-      document.getElementById("stripe_status").value = "started";
+      // Build items for Stripe API: ONLY send safe identifiers (id, qty, size, color)
+      const items = cart.map((it) => ({
+        id: it.id,
+        quantity: Number(it.quantity || 1),
+        size: it.size || "",
+        color: it.color || "",
+      }));
 
-      const stripeBtn = document.getElementById("stripeBtn");
-      stripeBtn.disabled = true;
-      setStripeMsg("Redirecting to Stripe…", "");
+      payBtn.disabled = true;
 
       try {
-        const res = await fetch("/.netlify/functions/create-checkout-session", {
+        const res = await fetch("/api/create-checkout-session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            items: cart,
-            successUrl: `${window.location.origin}${window.location.pathname}?paid=1`,
-            cancelUrl: window.location.href
+            items,
+            customer: {
+              name: document.getElementById("name").value,
+              email: document.getElementById("email").value,
+              address: document.getElementById("address").value,
+              city: document.getElementById("city").value,
+              zip: document.getElementById("zip").value,
+              notes: document.getElementById("notes").value,
+            }
           }),
         });
 
         const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to start payment.");
 
-        if (!res.ok) {
-          document.getElementById("stripe_status").value = "failed";
-          throw new Error(data?.error || "Stripe request failed");
-        }
-
-        if (!data.url) {
-          document.getElementById("stripe_status").value = "failed";
-          throw new Error("Missing Stripe Checkout URL");
-        }
-
-        document.getElementById("stripe_status").value = "redirected";
-        if (data.sessionId) document.getElementById("stripe_session_id").value = data.sessionId;
-
-        window.location.href = data.url;
+        window.location.href = data.url; // Stripe Checkout redirect
       } catch (err) {
-        document.getElementById("stripe_status").value = "failed";
-        setStripeMsg("", err.message || "Stripe error");
-        stripeBtn.disabled = false;
+        payErr.textContent = err.message || "Payment error.";
+        payErr.style.display = "block";
+      } finally {
+        payBtn.disabled = false;
       }
     });
 
-    // Optional: clear cart after sending shipping form
-    document.getElementById("orderForm").addEventListener("submit", () => {
-      localStorage.setItem(CART_KEY, "[]");
-    });
-
+    // initial render
     render();
   </script>
 </body>
