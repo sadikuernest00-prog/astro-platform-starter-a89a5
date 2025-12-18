@@ -16,9 +16,11 @@ const whatsappNumber = "4792928373"; // your number (from your header)
       .row{ display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid #eee; }
       .muted{ color:#666; }
       img{ max-width:260px; border:1px solid #ddd; }
-      input{ width:100%; padding:12px; border:1px solid #ddd; margin-top:8px; }
+      input, textarea{ width:100%; padding:12px; border:1px solid #ddd; margin-top:8px; box-sizing:border-box; }
+      textarea{ min-height:96px; resize:vertical; }
       button{ padding:12px 14px; font-weight:700; cursor:pointer; border:1px solid #111; background:#111; color:#fff; }
       a{ color:#111; }
+      .hint{ font-size:14px; color:#666; margin-top:6px; }
     </style>
   </head>
   <body>
@@ -39,14 +41,29 @@ const whatsappNumber = "4792928373"; // your number (from your header)
     </div>
 
     <div class="box">
-      <h2>3) Send proof / details</h2>
+      <h2>3) Delivery + proof</h2>
+
       <label>
         Your Vipps name or phone number
         <input id="vippsId" placeholder="e.g. +47 900 00 000 or your name in Vipps" />
       </label>
 
+      <label>
+        Full name (receiver)
+        <input id="fullName" placeholder="Your full name" />
+      </label>
+
+      <label>
+        Delivery address
+        <textarea
+          id="address"
+          placeholder="Street + house no&#10;Postal code + city&#10;Country"
+        ></textarea>
+        <div class="hint">Include everything needed for shipping (street, postal code, city, country).</div>
+      </label>
+
       <p class="muted">
-        After you pay, click the button below. It will open WhatsApp with your order details.
+        After you pay, click the button below. It will open WhatsApp with your order details and delivery address.
       </p>
 
       <button id="send">I have paid – send order</button>
@@ -84,7 +101,7 @@ const whatsappNumber = "4792928373"; // your number (from your header)
               <div><b>${i.name}</b></div>
               <div class="muted">Size: ${i.size} • Color: ${i.color} • Qty: ${i.qty}</div>
             </div>
-            <div>${i.price * i.qty} NOK</div>
+            <div>${(Number(i.price)||0) * (Number(i.qty)||0)} NOK</div>
           </div>
         `).join("");
 
@@ -98,6 +115,7 @@ const whatsappNumber = "4792928373"; // your number (from your header)
       document.getElementById("send").addEventListener("click", () => {
         const msgEl = document.getElementById("msg");
         const cart = readCart();
+
         if(!cart.length){
           msgEl.textContent = "Cart is empty.";
           return;
@@ -109,20 +127,35 @@ const whatsappNumber = "4792928373"; // your number (from your header)
           return;
         }
 
-        const total = cart.reduce((s, i) => s + (Number(i.price)||0)*(Number(i.qty)||0), 0);
+        const fullName = (document.getElementById("fullName").value || "").trim();
+        if(!fullName){
+          msgEl.textContent = "Please enter your full name.";
+          return;
+        }
 
-        const orderLines = cart.map(i =>
-          `- ${i.name} | ${i.size} | ${i.color} | qty ${i.qty} | ${i.price} NOK`
-        ).join("%0A");
+        const address = (document.getElementById("address").value || "").trim();
+        if(!address){
+          msgEl.textContent = "Please enter your delivery address.";
+          return;
+        }
+
+        const total = calcTotal(cart);
+
+        // Build lines safely (encode each line)
+        const orderLines = cart.map(i => {
+          const line = `- ${i.name} | ${i.size} | ${i.color} | qty ${i.qty} | ${i.price} NOK`;
+          return encodeURIComponent(line);
+        }).join("%0A");
 
         const orderId = `AMIC-${Date.now()}`; // simple unique id
 
         const text =
-          `New order: ${orderId}%0A` +
+          `New order: ${encodeURIComponent(orderId)}%0A` +
+          `Name: ${encodeURIComponent(fullName)}%0A` +
           `Vipps payer: ${encodeURIComponent(vippsId)}%0A` +
-          `Total paid: ${total} NOK%0A%0A` +
-          `Items:%0A${orderLines}%0A%0A` +
-          `Delivery info (write here):`;
+          `Total paid: ${encodeURIComponent(total)} NOK%0A%0A` +
+          `Delivery address:%0A${encodeURIComponent(address)}%0A%0A` +
+          `Items:%0A${orderLines}`;
 
         const url = `https://wa.me/${whatsappNumber}?text=${text}`;
         window.open(url, "_blank");
