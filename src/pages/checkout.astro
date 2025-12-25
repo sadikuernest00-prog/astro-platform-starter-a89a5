@@ -1,8 +1,9 @@
 ---
 const btcAddress = 'bc1qq8c7h3rx4klumyphkjmpek5c66em7ydghmr2ge';
-const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
-  btcAddress
-)}`;
+
+// Local QR paths (put the image files in /public/images)
+const btcQrUrl = '/images/btc-qr.png';      // optional: your own BTC QR image
+const vippsQrUrl = '/images/vipps-qr.png';  // <- save your Vipps QR here
 ---
 
 <h1>Checkout</h1>
@@ -71,11 +72,37 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
         ></textarea>
       </div>
 
+      <!-- Payment method (sent to Formspree) -->
+      <div>
+        <label class="label">Payment method</label>
+        <div class="pay-methods">
+          <label class="pay-option">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="bitcoin"
+              checked
+              data-show="btc"
+            />
+            Bitcoin
+          </label>
+          <label class="pay-option">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="vipps"
+              data-show="vipps"
+            />
+            Vipps
+          </label>
+        </div>
+      </div>
+
       <!-- hidden field sent to Formspree containing cart info -->
       <textarea id="orderData" name="orderData" hidden></textarea>
 
       <button type="submit" class="btn">
-        I have sent the crypto &rarr;
+        I have sent the payment &rarr;
       </button>
 
       <p class="small">
@@ -84,7 +111,7 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
       </p>
     </section>
 
-    <!-- RIGHT: ORDER + CRYPTO PAYMENT -->
+    <!-- RIGHT: ORDER + CRYPTO/VIPPS PAYMENT -->
     <section class="pay-card">
       <h2>Your Order</h2>
       <div id="orderList"></div>
@@ -92,28 +119,49 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
 
       <hr style="border-color:#1f2937; margin:1.5rem 0;" />
 
-      <h2>Pay with Bitcoin</h2>
+      <h2>Payment</h2>
       <p class="small">
-        Scan this QR code with your wallet app and send the exact amount shown at checkout.
+        Choose your preferred method and scan the QR code with your app to send the payment.
       </p>
 
-      <div class="qr-wrapper">
-        <img
-          src={qrUrl}
-          alt="Bitcoin payment QR code"
-          width="250"
-          height="250"
-          loading="lazy"
-        />
+      <!-- Bitcoin block -->
+      <div id="btcPayment" class="pay-block">
+        <h3 class="pay-title">Pay with Bitcoin</h3>
+        <div class="qr-wrapper">
+          <!-- If you don't have your own BTC QR image yet, you can swap this src
+               back to an online QR generator using btcAddress -->
+          <img
+            src={btcQrUrl}
+            alt="Bitcoin payment QR code"
+            width="250"
+            height="250"
+            loading="lazy"
+          />
+        </div>
+        <p class="small">BTC address</p>
+        <p class="btc-address">{btcAddress}</p>
+        <p class="small">
+          Make sure you are sending on the correct network (Bitcoin mainnet).
+          Transactions must be confirmed on-chain before shipping.
+        </p>
       </div>
 
-      <p class="small">BTC address</p>
-      <p class="btc-address">{btcAddress}</p>
-
-      <p class="small">
-        Make sure you are sending on the correct network (Bitcoin mainnet).
-        Transactions must be confirmed on-chain before shipping.
-      </p>
+      <!-- Vipps block -->
+      <div id="vippsPayment" class="pay-block" style="display:none;">
+        <h3 class="pay-title">Pay with Vipps</h3>
+        <div class="qr-wrapper">
+          <img
+            src={vippsQrUrl}
+            alt="Vipps payment QR code"
+            width="250"
+            height="250"
+            loading="lazy"
+          />
+        </div>
+        <p class="small">
+          Open Vipps, choose “Scan”, and scan this QR code to pay.
+        </p>
+      </div>
     </section>
   </form>
 </main>
@@ -203,7 +251,29 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
     updateCartCount();
   }
 
+  function setupPaymentToggle() {
+    const radios = document.querySelectorAll('input[name="paymentMethod"]');
+    const btcBlock = document.getElementById("btcPayment");
+    const vippsBlock = document.getElementById("vippsPayment");
+
+    if (!radios.length || !btcBlock || !vippsBlock) return;
+
+    radios.forEach((r) => {
+      r.addEventListener("change", () => {
+        const method = r.dataset.show;
+        if (method === "btc") {
+          btcBlock.style.display = "block";
+          vippsBlock.style.display = "none";
+        } else if (method === "vipps") {
+          btcBlock.style.display = "none";
+          vippsBlock.style.display = "block";
+        }
+      });
+    });
+  }
+
   renderCart();
+  setupPaymentToggle();
 </script>
 
 <style>
@@ -354,5 +424,28 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
 
   .remove-order-btn:hover {
     background: rgba(185, 28, 28, 0.3);
+  }
+
+  .pay-methods {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .pay-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  .pay-title {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .pay-block {
+    margin-top: 0.75rem;
   }
 </style>
