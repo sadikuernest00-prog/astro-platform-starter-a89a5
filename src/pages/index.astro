@@ -1,28 +1,27 @@
 ---
+const base = import.meta.env.BASE_URL ?? "/";
+
 const btcAddress = "bc1qq8c7h3rx4klumyphkjmpek5c66em7ydghmr2ge";
 
-// Bitcoin QR is generated via external API (no local file needed)
+// Bitcoin QR via online generator
 const btcQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
   btcAddress
 )}`;
 
-// Vipps QR must be saved as public/vipps-qr.png in your repo
-const vippsQrUrl = "/vipps-qr.png";
+// Vipps QR in /public/images/vipps-qr.jpg (respect BASE_URL)
+const vippsQrUrl = `${base}images/vipps-qr.jpg`;
 ---
 
 <h1>Checkout</h1>
 
 <main>
-  <form
-    action="https://formspree.io/f/xzznjkvd"
-    method="POST"
-    class="card"
-  >
-    <!-- LEFT: SHIPPING INFO -->
+  <form action="https://formspree.io/f/xzznjkvd" method="POST" class="card">
+    <!-- LEFT: SHIPPING -->
     <section>
       <h2>Shipping details</h2>
       <p class="small">
-        Fill out where the item should be sent. Make sure everything is correct before you pay.
+        Fill out where the item should be sent. Make sure everything is correct
+        before you pay.
       </p>
 
       <div>
@@ -76,7 +75,7 @@ const vippsQrUrl = "/vipps-qr.png";
         ></textarea>
       </div>
 
-      <!-- Payment method (sent to Formspree) -->
+      <!-- PAYMENT METHOD -->
       <div>
         <label class="label">Payment method</label>
         <div class="pay-methods">
@@ -102,12 +101,10 @@ const vippsQrUrl = "/vipps-qr.png";
         </div>
       </div>
 
-      <!-- hidden field sent to Formspree containing cart info -->
+      <!-- Hidden cart data for Formspree -->
       <textarea id="orderData" name="orderData" hidden></textarea>
 
-      <button type="submit" class="btn">
-        I have sent the payment &rarr;
-      </button>
+      <button type="submit" class="btn">I have sent the payment →</button>
 
       <p class="small">
         After you send the payment and submit this form, we will verify the
@@ -125,7 +122,8 @@ const vippsQrUrl = "/vipps-qr.png";
 
       <h2>Payment</h2>
       <p class="small">
-        Choose your preferred method and scan the QR code with your app to send the payment.
+        Choose your preferred method and scan the QR code with your app to send
+        the payment.
       </p>
 
       <!-- Bitcoin block -->
@@ -140,11 +138,12 @@ const vippsQrUrl = "/vipps-qr.png";
             loading="lazy"
           />
         </div>
+
         <p class="small">BTC address</p>
         <p class="btc-address">{btcAddress}</p>
         <p class="small">
           Make sure you are sending on the correct network (Bitcoin mainnet).
-          Transactions must be confirmed on-chain before shipping.
+          Transactions must be confirmed before shipping.
         </p>
       </div>
 
@@ -172,8 +171,11 @@ const vippsQrUrl = "/vipps-qr.png";
   const CART_KEY = "amicbridge_cart_v1";
 
   function readCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-    catch { return []; }
+    try {
+      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    } catch {
+      return [];
+    }
   }
 
   function writeCart(cart) {
@@ -206,47 +208,45 @@ const vippsQrUrl = "/vipps-qr.png";
     }
 
     let total = 0;
-    let lines = [];
+    const lines = [];
 
     box.innerHTML = cart
       .map((item, index) => {
         const lineTotal = item.price * item.qty;
         total += lineTotal;
 
-        const lineText =
-          `${item.name} | Size: ${item.size} | Color: ${item.color} | ` +
-          `Qty: ${item.qty} | Line total: ${lineTotal} NOK`;
+        const lineText = `${item.name} | Size: ${item.size} | Color: ${
+          item.color
+        } | Qty: ${item.qty} | Line total: ${lineTotal} NOK`;
         lines.push(lineText);
 
         return `
-          <div class="order-item" data-index="${index}">
+          <div class="order-item">
             <div class="order-item-main">
               <div>
                 <strong>${item.name}</strong><br>
-                Size: ${item.size} | Color: ${item.color} <br>
+                Size: ${item.size} | Color: ${item.color}<br>
                 Qty: ${item.qty} — ${lineTotal} NOK
               </div>
               <button type="button" class="remove-order-btn" data-index="${index}">
                 Remove
               </button>
             </div>
-          </div>`;
+          </div>
+        `;
       })
       .join("");
 
     totalEl.textContent = "Total: " + total + " NOK";
     orderDataField.value = lines.join("\n") + "\nTOTAL: " + total + " NOK";
 
-    // hook up remove buttons
     document.querySelectorAll(".remove-order-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const idx = Number(btn.dataset.index);
-        let cart = readCart();
-        if (idx >= 0 && idx < cart.length) {
-          cart.splice(idx, 1); // remove this line
-          writeCart(cart);
-          renderCart();        // re-render list & update hidden field
-        }
+        const cart = readCart();
+        cart.splice(idx, 1);
+        writeCart(cart);
+        renderCart();
       });
     });
 
@@ -290,7 +290,7 @@ const vippsQrUrl = "/vipps-qr.png";
   }
 
   main {
-    max-width: 800px;
+    max-width: 900px;
     width: 100%;
     padding: 2rem 1.5rem 3rem;
   }
@@ -309,9 +309,8 @@ const vippsQrUrl = "/vipps-qr.png";
     background: #020617;
     border-radius: 1rem;
     padding: 2rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-columns: 3fr 2fr;
     gap: 2rem;
   }
 
@@ -321,15 +320,8 @@ const vippsQrUrl = "/vipps-qr.png";
     }
   }
 
-  form {
-    display: grid;
-    gap: 1rem;
-  }
-
   label {
-    display: block;
     font-size: 0.85rem;
-    margin-bottom: 0.25rem;
     color: #9ca3af;
   }
 
@@ -341,17 +333,17 @@ const vippsQrUrl = "/vipps-qr.png";
     padding: 0.65rem 0.8rem;
     background: #020617;
     color: #e5e7eb;
-    outline: none;
-  }
-
-  input:focus,
-  textarea:focus {
-    border-color: #38bdf8;
   }
 
   textarea {
     min-height: 80px;
     resize: vertical;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: #38bdf8;
+    outline: none;
   }
 
   .row {
@@ -377,7 +369,6 @@ const vippsQrUrl = "/vipps-qr.png";
     border-radius: 1rem;
     border: 1px solid #1f2937;
     padding: 1.5rem;
-    background: #020617;
   }
 
   .qr-wrapper {
