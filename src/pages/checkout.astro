@@ -8,7 +8,7 @@ const btcQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=
   btcAddress
 )}`;
 
-// Vipps QR in /public/images/vipps-qr.jpg (respect BASE_URL)
+// Vipps QR in /public/images/vipps-qr.jpg, respecting BASE_URL
 const vippsQrUrl = `${base}images/vipps-qr.jpg`;
 ---
 
@@ -75,30 +75,35 @@ const vippsQrUrl = `${base}images/vipps-qr.jpg`;
         ></textarea>
       </div>
 
-      <!-- PAYMENT METHOD -->
+      <!-- PAYMENT METHOD BUTTONS -->
       <div>
         <label class="label">Payment method</label>
-        <div class="pay-methods">
-          <label class="pay-option">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="bitcoin"
-              checked
-              data-show="btc"
-            />
-            Bitcoin
-          </label>
-          <label class="pay-option">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="vipps"
-              data-show="vipps"
-            />
-            Vipps
-          </label>
+
+        <div class="pay-buttons">
+          <button
+            type="button"
+            class="pay-btn active"
+            data-method="btc"
+          >
+            💰 Bitcoin
+          </button>
+
+          <button
+            type="button"
+            class="pay-btn"
+            data-method="vipps"
+          >
+            🧡 Vipps
+          </button>
         </div>
+
+        <!-- hidden value sent to Formspree -->
+        <input
+          type="hidden"
+          name="paymentMethod"
+          id="paymentMethod"
+          value="bitcoin"
+        />
       </div>
 
       <!-- Hidden cart data for Formspree -->
@@ -254,21 +259,28 @@ const vippsQrUrl = `${base}images/vipps-qr.jpg`;
   }
 
   function setupPaymentToggle() {
-    const radios = document.querySelectorAll('input[name="paymentMethod"]');
     const btcBlock = document.getElementById("btcPayment");
     const vippsBlock = document.getElementById("vippsPayment");
+    const hiddenInput = document.getElementById("paymentMethod");
+    const buttons = document.querySelectorAll(".pay-btn");
 
-    if (!radios.length || !btcBlock || !vippsBlock) return;
+    if (!btcBlock || !vippsBlock || !hiddenInput || !buttons.length) return;
 
-    radios.forEach((r) => {
-      r.addEventListener("change", () => {
-        const method = r.dataset.show;
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        buttons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const method = btn.dataset.method;
+
         if (method === "btc") {
           btcBlock.style.display = "block";
           vippsBlock.style.display = "none";
-        } else if (method === "vipps") {
+          hiddenInput.value = "bitcoin";
+        } else {
           btcBlock.style.display = "none";
           vippsBlock.style.display = "block";
+          hiddenInput.value = "vipps";
         }
       });
     });
@@ -323,6 +335,8 @@ const vippsQrUrl = `${base}images/vipps-qr.jpg`;
   label {
     font-size: 0.85rem;
     color: #9ca3af;
+    display: block;
+    margin-bottom: 0.25rem;
   }
 
   input,
@@ -419,17 +433,26 @@ const vippsQrUrl = `${base}images/vipps-qr.jpg`;
     background: rgba(185, 28, 28, 0.3);
   }
 
-  .pay-methods {
+  .pay-buttons {
     display: flex;
     gap: 12px;
-    margin-top: 4px;
+    margin-top: 6px;
   }
 
-  .pay-option {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.9rem;
+  .pay-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 999px;
+    border: 1px solid #1f2937;
+    background: #020617;
+    color: #e5e7eb;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .pay-btn.active {
+    border-color: #22c55e;
+    background: linear-gradient(90deg, #22c55e40, #0ea5e940);
   }
 
   .pay-title {
