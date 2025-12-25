@@ -1,167 +1,236 @@
+
 ---
-const base = import.meta.env.BASE_URL;
-const vippsQr = `${base}images/vipps-qr.png`; // put file in /public/images/
-const whatsappNumber = "4792928373"; // your number (from your header)
+const btcAddress = 'bc1qq8c7h3rx4klumyphkjmpek5c66em7ydghmr2ge';
 ---
 
-<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Checkout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; padding:24px; max-width:900px; margin:0 auto; }
-      .box{ border:1px solid #ddd; padding:16px; margin:16px 0; }
-      .row{ display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid #eee; }
-      .muted{ color:#666; }
-      img{ max-width:260px; border:1px solid #ddd; }
-      input, textarea{ width:100%; padding:12px; border:1px solid #ddd; margin-top:8px; box-sizing:border-box; }
-      textarea{ min-height:96px; resize:vertical; }
-      button{ padding:12px 14px; font-weight:700; cursor:pointer; border:1px solid #111; background:#111; color:#fff; }
-      a{ color:#111; }
-      .hint{ font-size:14px; color:#666; margin-top:6px; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: #0f172a;
+        color: #e5e7eb;
+        display: flex;
+        justify-content: center;
+      }
+
+      main {
+        max-width: 800px;
+        width: 100%;
+        padding: 2rem 1.5rem 3rem;
+      }
+
+      .card {
+        background: #020617;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        gap: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      h1 {
+        margin: 0 0 1.5rem;
+        font-size: 1.7rem;
+      }
+
+      h2 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      form {
+        display: grid;
+        gap: 1rem;
+      }
+
+      label {
+        display: block;
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+        color: #9ca3af;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border-radius: 0.6rem;
+        border: 1px solid #1f2937;
+        padding: 0.65rem 0.8rem;
+        background: #020617;
+        color: #e5e7eb;
+        outline: none;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: #38bdf8;
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .btn {
+        margin-top: 0.75rem;
+        width: 100%;
+        border-radius: 999px;
+        border: none;
+        padding: 0.8rem 1rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        background: linear-gradient(90deg, #22c55e, #0ea5e9);
+        color: #0b1120;
+      }
+
+      .pay-card {
+        border-radius: 1rem;
+        border: 1px solid #1f2937;
+        padding: 1.5rem;
+        background: #020617;
+      }
+
+      .qr-wrapper {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0 0.5rem;
+      }
+
+      .btc-address {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 0.75rem;
+        padding: 0.6rem 0.8rem;
+        border-radius: 0.6rem;
+        background: #020617;
+        border: 1px solid #1f2937;
+        word-break: break-all;
+      }
+
+      .small {
+        font-size: 0.75rem;
+        color: #9ca3af;
+      }
     </style>
   </head>
+
   <body>
-    <a href={`${base}`}>← Back to shop</a>
-    <h1>Checkout</h1>
+    <main>
+      <h1>Checkout</h1>
 
-    <div class="box">
-      <h2>1) Your order</h2>
-      <div id="items"></div>
-      <p class="muted" id="total"></p>
-    </div>
+      <!-- Replace action="#" with your backend endpoint or form handler -->
+      <form action="#" method="POST" class="card">
+        <!-- Shipping details -->
+        <section>
+          <h2>Shipping details</h2>
+          <p class="small">
+            Fill out where the item should be sent. Make sure everything is
+            correct before you pay.
+          </p>
 
-    <div class="box">
-      <h2>2) Pay with Vipps (Privat)</h2>
-      <p class="muted">Scan this QR code in Vipps and pay the total amount.</p>
-      <img src={vippsQr} alt="Vipps QR code" />
-      <p class="muted" id="payHint"></p>
-    </div>
+          <div>
+            <label for="fullName">Full name</label>
+            <input id="fullName" name="fullName" required />
+          </div>
 
-    <div class="box">
-      <h2>3) Delivery + proof</h2>
+          <div>
+            <label for="email">Email (for updates)</label>
+            <input id="email" type="email" name="email" required />
+          </div>
 
-      <label>
-        Your Vipps name or phone number
-        <input id="vippsId" placeholder="e.g. +47 900 00 000 or your name in Vipps" />
-      </label>
+          <div>
+            <label for="address1">Address line</label>
+            <input id="address1" name="address1" required />
+          </div>
 
-      <label>
-        Full name (receiver)
-        <input id="fullName" placeholder="Your full name" />
-      </label>
-
-      <label>
-        Delivery address
-        <textarea
-          id="address"
-          placeholder="Street + house no&#10;Postal code + city&#10;Country"
-        ></textarea>
-        <div class="hint">Include everything needed for shipping (street, postal code, city, country).</div>
-      </label>
-
-      <p class="muted">
-        After you pay, click the button below. It will open WhatsApp with your order details and delivery address.
-      </p>
-
-      <button id="send">I have paid – send order</button>
-      <p class="muted" id="msg"></p>
-    </div>
-
-    <script>
-      const CART_KEY = "amicbridge_cart_v1";
-
-      function readCart() {
-        try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-        catch { return []; }
-      }
-
-      function calcTotal(cart){
-        return cart.reduce((s, i) => s + (Number(i.price)||0) * (Number(i.qty)||0), 0);
-      }
-
-      function render(){
-        const cart = readCart();
-        const itemsEl = document.getElementById("items");
-        const totalEl = document.getElementById("total");
-        const payHint = document.getElementById("payHint");
-
-        if(!cart.length){
-          itemsEl.innerHTML = "<p>Your cart is empty.</p>";
-          totalEl.textContent = "";
-          payHint.textContent = "";
-          return;
-        }
-
-        itemsEl.innerHTML = cart.map(i => `
           <div class="row">
             <div>
-              <div><b>${i.name}</b></div>
-              <div class="muted">Size: ${i.size} • Color: ${i.color} • Qty: ${i.qty}</div>
+              <label for="postalCode">Postal code</label>
+              <input id="postalCode" name="postalCode" required />
             </div>
-            <div>${(Number(i.price)||0) * (Number(i.qty)||0)} NOK</div>
+            <div>
+              <label for="city">City</label>
+              <input id="city" name="city" required />
+            </div>
           </div>
-        `).join("");
 
-        const total = calcTotal(cart);
-        totalEl.textContent = `Total: ${total} NOK`;
-        payHint.textContent = `Pay exactly: ${total} NOK`;
-      }
+          <div>
+            <label for="country">Country</label>
+            <input id="country" name="country" required />
+          </div>
 
-      render();
+          <div>
+            <label for="notes">Order notes (optional)</label>
+            <textarea
+              id="notes"
+              name="notes"
+              placeholder="Size, color, extra details…"
+            ></textarea>
+          </div>
 
-      document.getElementById("send").addEventListener("click", () => {
-        const msgEl = document.getElementById("msg");
-        const cart = readCart();
+          <button type="submit" class="btn">
+            I have sent the crypto &rarr;
+          </button>
 
-        if(!cart.length){
-          msgEl.textContent = "Cart is empty.";
-          return;
-        }
+          <p class="small">
+            After you send the payment and submit this form, we will verify the
+            transaction and ship your order to the address above.
+          </p>
+        </section>
 
-        const vippsId = (document.getElementById("vippsId").value || "").trim();
-        if(!vippsId){
-          msgEl.textContent = "Please enter your Vipps name or phone number.";
-          return;
-        }
+        <!-- Crypto payment -->
+        <section class="pay-card">
+          <h2>Pay with Bitcoin</h2>
+          <p class="small">
+            Scan this QR code with your wallet app and send the exact amount
+            shown at checkout.
+          </p>
 
-        const fullName = (document.getElementById("fullName").value || "").trim();
-        if(!fullName){
-          msgEl.textContent = "Please enter your full name.";
-          return;
-        }
+          <div class="qr-wrapper">
+            <!-- Option 1: generated QR code from an API -->
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+                btcAddress
+              )}`}
+              alt="Bitcoin payment QR code"
+              width="250"
+              height="250"
+            />
+            <!--
+              Option 2: if you have a local QR image, put it in /public and use:
+              <img src="/btc-qr.png" alt="Bitcoin payment QR code" width="250" height="250" />
+            -->
+          </div>
 
-        const address = (document.getElementById("address").value || "").trim();
-        if(!address){
-          msgEl.textContent = "Please enter your delivery address.";
-          return;
-        }
+          <p class="small">BTC address</p>
+          <p class="btc-address">{btcAddress}</p>
 
-        const total = calcTotal(cart);
-
-        // Build lines safely (encode each line)
-        const orderLines = cart.map(i => {
-          const line = `- ${i.name} | ${i.size} | ${i.color} | qty ${i.qty} | ${i.price} NOK`;
-          return encodeURIComponent(line);
-        }).join("%0A");
-
-        const orderId = `AMIC-${Date.now()}`; // simple unique id
-
-        const text =
-          `New order: ${encodeURIComponent(orderId)}%0A` +
-          `Name: ${encodeURIComponent(fullName)}%0A` +
-          `Vipps payer: ${encodeURIComponent(vippsId)}%0A` +
-          `Total paid: ${encodeURIComponent(total)} NOK%0A%0A` +
-          `Delivery address:%0A${encodeURIComponent(address)}%0A%0A` +
-          `Items:%0A${orderLines}`;
-
-        const url = `https://wa.me/${whatsappNumber}?text=${text}`;
-        window.open(url, "_blank");
-
-        msgEl.textContent = "Opened WhatsApp. Please send the message to confirm your order.";
-      });
-    </script>
+          <p class="small">
+            Make sure you are sending on the correct network (Bitcoin mainnet).
+            Transactions must be confirmed on-chain before shipping.
+          </p>
+        </section>
+      </form>
+    </main>
   </body>
 </html>
