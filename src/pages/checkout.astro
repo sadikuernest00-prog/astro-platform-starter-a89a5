@@ -15,6 +15,11 @@ const vippsQrUrl = `${base}images/vipps-qr.jpg`;
 <h1>Checkout</h1>
 
 <main>
+  <!-- Back to store -->
+  <a href={base} class="back-link">
+    ← Back to store
+  </a>
+
   <form action="https://formspree.io/f/xzznjkvd" method="POST" class="card">
     <!-- LEFT: SHIPPING -->
     <section>
@@ -315,6 +320,18 @@ const vippsQrUrl = `${base}images/vipps-qr.jpg`;
   h2 {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #38bdf8;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
   }
 
   .card {
