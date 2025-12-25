@@ -1,12 +1,12 @@
 ---
 const btcAddress = "bc1qq8c7h3rx4klumyphkjmpek5c66em7ydghmr2ge";
 
-// Generate BTC QR online
+// Bitcoin QR via online generator
 const btcQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
   btcAddress
 )}`;
 
-// Vipps QR image (must exist in /public/images)
+// Vipps QR in /public/images/vipps-qr.jpg
 const vippsQrUrl = "/images/vipps-qr.jpg";
 ---
 
@@ -14,7 +14,7 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
 
 <main>
   <form action="https://formspree.io/f/xzznjkvd" method="POST" class="card">
-    <!-- LEFT SIDE: SHIPPING FORM -->
+    <!-- LEFT: SHIPPING -->
     <section>
       <h2>Shipping details</h2>
       <p class="small">
@@ -53,7 +53,6 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
           <label for="postalCode">Postal code</label>
           <input id="postalCode" name="postalCode" required />
         </div>
-
         <div>
           <label for="city">City</label>
           <input id="city" name="city" required />
@@ -88,15 +87,19 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
             />
             Bitcoin
           </label>
-
           <label class="pay-option">
-            <input type="radio" name="paymentMethod" value="vipps" data-show="vipps" />
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="vipps"
+              data-show="vipps"
+            />
             Vipps
           </label>
         </div>
       </div>
 
-      <!-- Hidden cart data -->
+      <!-- Hidden cart data for Formspree -->
       <textarea id="orderData" name="orderData" hidden></textarea>
 
       <button type="submit" class="btn">I have sent the payment →</button>
@@ -107,7 +110,7 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
       </p>
     </section>
 
-    <!-- RIGHT SIDE: ORDER + PAYMENT DISPLAY -->
+    <!-- RIGHT: ORDER + PAYMENT -->
     <section class="pay-card">
       <h2>Your Order</h2>
       <div id="orderList"></div>
@@ -116,40 +119,46 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
       <hr style="border-color:#1f2937; margin:1.5rem 0;" />
 
       <h2>Payment</h2>
+      <p class="small">
+        Choose your preferred method and scan the QR code with your app to send
+        the payment.
+      </p>
 
-      <!-- BITCOIN -->
+      <!-- Bitcoin block -->
       <div id="btcPayment" class="pay-block">
         <h3 class="pay-title">Pay with Bitcoin</h3>
         <div class="qr-wrapper">
-          <img src={btcQrUrl} width="250" height="250" loading="lazy" />
-        </div>
-
-        <p class="small">BTC address</p>
-
-        <p class="btc-address">{btcAddress}</p>
-
-        <p class="small">
-          Make sure you are sending on the correct network (Bitcoin mainnet).
-          Transactions must confirm before shipping.
-        </p>
-      </div>
-
-      <!-- VIPPS -->
-      <div id="vippsPayment" class="pay-block" style="display:none;">
-        <h3 class="pay-title">Pay with Vipps</h3>
-
-        <div class="qr-wrapper">
           <img
-            src={vippsQrUrl}
-            alt="Vipps QR"
+            src={btcQrUrl}
+            alt="Bitcoin payment QR code"
             width="250"
             height="250"
             loading="lazy"
           />
         </div>
 
+        <p class="small">BTC address</p>
+        <p class="btc-address">{btcAddress}</p>
         <p class="small">
-          Open Vipps → tap Scan → point at this code to pay.
+          Make sure you are sending on the correct network (Bitcoin mainnet).
+          Transactions must be confirmed before shipping.
+        </p>
+      </div>
+
+      <!-- Vipps block -->
+      <div id="vippsPayment" class="pay-block" style="display:none;">
+        <h3 class="pay-title">Pay with Vipps</h3>
+        <div class="qr-wrapper">
+          <img
+            src={vippsQrUrl}
+            alt="Vipps payment QR code"
+            width="250"
+            height="250"
+            loading="lazy"
+          />
+        </div>
+        <p class="small">
+          Open Vipps, choose “Scan”, and scan this QR code to pay.
         </p>
       </div>
     </section>
@@ -175,7 +184,6 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
   function updateCartCount() {
     const el = document.getElementById("cartCount");
     if (!el) return;
-
     const cart = readCart();
     const count = cart.reduce((sum, i) => sum + (Number(i.qty) || 0), 0);
     el.textContent = String(count);
@@ -187,7 +195,7 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
     const totalEl = document.getElementById("orderTotal");
     const orderDataField = document.getElementById("orderData");
 
-    if (!box) return;
+    if (!box || !totalEl || !orderDataField) return;
 
     if (!cart.length) {
       box.innerHTML = "<p>No items in cart.</p>";
@@ -198,7 +206,7 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
     }
 
     let total = 0;
-    let lines = [];
+    const lines = [];
 
     box.innerHTML = cart
       .map((item, index) => {
@@ -211,19 +219,19 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
         lines.push(lineText);
 
         return `
-        <div class="order-item">
-          <div class="order-item-main">
-            <div>
-              <strong>${item.name}</strong><br>
-              Size: ${item.size} | Color: ${item.color}<br>
-              Qty: ${item.qty} — ${lineTotal} NOK
+          <div class="order-item">
+            <div class="order-item-main">
+              <div>
+                <strong>${item.name}</strong><br>
+                Size: ${item.size} | Color: ${item.color}<br>
+                Qty: ${item.qty} — ${lineTotal} NOK
+              </div>
+              <button type="button" class="remove-order-btn" data-index="${index}">
+                Remove
+              </button>
             </div>
-            <button class="remove-order-btn" data-index="${index}">
-              Remove
-            </button>
           </div>
-        </div>
-      `;
+        `;
       })
       .join("");
 
@@ -233,8 +241,7 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
     document.querySelectorAll(".remove-order-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const idx = Number(btn.dataset.index);
-        let cart = readCart();
-
+        const cart = readCart();
         cart.splice(idx, 1);
         writeCart(cart);
         renderCart();
@@ -249,12 +256,15 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
     const btcBlock = document.getElementById("btcPayment");
     const vippsBlock = document.getElementById("vippsPayment");
 
+    if (!radios.length || !btcBlock || !vippsBlock) return;
+
     radios.forEach((r) => {
       r.addEventListener("change", () => {
-        if (r.dataset.show === "btc") {
+        const method = r.dataset.show;
+        if (method === "btc") {
           btcBlock.style.display = "block";
           vippsBlock.style.display = "none";
-        } else {
+        } else if (method === "vipps") {
           btcBlock.style.display = "none";
           vippsBlock.style.display = "block";
         }
@@ -268,6 +278,9 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
 
 <style>
   :global(body) {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
     background: #0f172a;
     color: #e5e7eb;
     display: flex;
@@ -278,6 +291,16 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
     max-width: 900px;
     width: 100%;
     padding: 2rem 1.5rem 3rem;
+  }
+
+  h1 {
+    margin: 0 0 1.5rem;
+    font-size: 1.7rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
   }
 
   .card {
@@ -295,14 +318,36 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
     }
   }
 
+  label {
+    font-size: 0.85rem;
+    color: #9ca3af;
+  }
+
   input,
   textarea {
     width: 100%;
     border-radius: 0.6rem;
     border: 1px solid #1f2937;
+    padding: 0.65rem 0.8rem;
     background: #020617;
-    color: white;
-    padding: 0.6rem;
+    color: #e5e7eb;
+  }
+
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: #38bdf8;
+    outline: none;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   .btn {
@@ -312,40 +357,86 @@ const vippsQrUrl = "/images/vipps-qr.jpg";
     border: none;
     padding: 0.8rem 1rem;
     font-weight: 600;
+    letter-spacing: 0.03em;
     cursor: pointer;
     background: linear-gradient(90deg, #22c55e, #0ea5e9);
+    color: #0b1120;
   }
 
   .pay-card {
-    border: 1px solid #1f2937;
     border-radius: 1rem;
+    border: 1px solid #1f2937;
     padding: 1.5rem;
   }
 
   .qr-wrapper {
     display: flex;
     justify-content: center;
+    margin: 1rem 0 0.5rem;
   }
 
   .btc-address {
-    font-family: monospace;
-    font-size: 0.8rem;
-    padding: 0.6rem;
-    border-radius: 0.5rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    font-size: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.6rem;
+    background: #020617;
     border: 1px solid #1f2937;
     word-break: break-all;
   }
 
+  .small {
+    font-size: 0.75rem;
+    color: #9ca3af;
+  }
+
+  .order-item {
+    border-bottom: 1px solid #1f2937;
+    padding: 8px 0;
+  }
+
+  .order-item-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+
   .remove-order-btn {
     border-radius: 999px;
-    border: 1px solid red;
+    border: 1px solid #b91c1c;
     background: transparent;
-    color: #ff9c9c;
     padding: 6px 12px;
+    font-size: 12px;
+    color: #fecaca;
+    cursor: pointer;
+  }
+
+  .remove-order-btn:hover {
+    background: rgba(185, 28, 28, 0.3);
   }
 
   .pay-methods {
     display: flex;
     gap: 12px;
+    margin-top: 4px;
+  }
+
+  .pay-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  .pay-title {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .pay-block {
+    margin-top: 0.75rem;
   }
 </style>
