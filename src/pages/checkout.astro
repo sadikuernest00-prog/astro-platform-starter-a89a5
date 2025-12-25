@@ -8,7 +8,6 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
 <h1>Checkout</h1>
 
 <main>
-  <!-- 1. FORM GOES TO FORMSPREE -->
   <form
     action="https://formspree.io/f/xzznjkvd"
     method="POST"
@@ -29,6 +28,17 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
       <div>
         <label for="email">Email (for updates)</label>
         <input id="email" type="email" name="email" required />
+      </div>
+
+      <div>
+        <label for="phone">Phone number</label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          placeholder="+47 123 45 678"
+          required
+        />
       </div>
 
       <div>
@@ -61,7 +71,7 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
         ></textarea>
       </div>
 
-      <!-- hidden field that will contain cart info text -->
+      <!-- hidden field sent to Formspree containing cart info -->
       <textarea id="orderData" name="orderData" hidden></textarea>
 
       <button type="submit" class="btn">
@@ -116,6 +126,19 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
     catch { return []; }
   }
 
+  function writeCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartCount();
+  }
+
+  function updateCartCount() {
+    const el = document.getElementById("cartCount");
+    if (!el) return;
+    const cart = readCart();
+    const count = cart.reduce((sum, i) => sum + (Number(i.qty) || 0), 0);
+    el.textContent = String(count);
+  }
+
   function renderCart() {
     const cart = readCart();
     const box = document.getElementById("orderList");
@@ -128,33 +151,56 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
       box.innerHTML = "<p>No items in cart.</p>";
       totalEl.textContent = "";
       orderDataField.value = "Cart is empty";
+      updateCartCount();
       return;
     }
 
     let total = 0;
     let lines = [];
 
-    box.innerHTML = cart.map(item => {
-      const lineTotal = item.price * item.qty;
-      total += lineTotal;
+    box.innerHTML = cart
+      .map((item, index) => {
+        const lineTotal = item.price * item.qty;
+        total += lineTotal;
 
-      const lineText =
-        `${item.name} | Size: ${item.size} | Color: ${item.color} | ` +
-        `Qty: ${item.qty} | Line total: ${lineTotal} NOK`;
-      lines.push(lineText);
+        const lineText =
+          `${item.name} | Size: ${item.size} | Color: ${item.color} | ` +
+          `Qty: ${item.qty} | Line total: ${lineTotal} NOK`;
+        lines.push(lineText);
 
-      return `
-        <div style="border-bottom:1px solid #1f2937;padding:8px 0;">
-          <strong>${item.name}</strong><br>
-          Size: ${item.size} | Color: ${item.color} <br>
-          Qty: ${item.qty} — ${lineTotal} NOK
-        </div>`;
-    }).join("");
+        return `
+          <div class="order-item" data-index="${index}">
+            <div class="order-item-main">
+              <div>
+                <strong>${item.name}</strong><br>
+                Size: ${item.size} | Color: ${item.color} <br>
+                Qty: ${item.qty} — ${lineTotal} NOK
+              </div>
+              <button type="button" class="remove-order-btn" data-index="${index}">
+                Remove
+              </button>
+            </div>
+          </div>`;
+      })
+      .join("");
 
     totalEl.textContent = "Total: " + total + " NOK";
+    orderDataField.value = lines.join("\n") + "\nTOTAL: " + total + " NOK";
 
-    // This text will be sent to Formspree in the email
-    orderDataField.value = lines.join("\\n") + "\\nTOTAL: " + total + " NOK";
+    // hook up remove buttons
+    document.querySelectorAll(".remove-order-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.dataset.index);
+        let cart = readCart();
+        if (idx >= 0 && idx < cart.length) {
+          cart.splice(idx, 1); // remove this line
+          writeCart(cart);
+          renderCart();        // re-render list & update hidden field
+        }
+      });
+    });
+
+    updateCartCount();
   }
 
   renderCart();
@@ -282,5 +328,31 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
   .small {
     font-size: 0.75rem;
     color: #9ca3af;
+  }
+
+  .order-item {
+    border-bottom: 1px solid #1f2937;
+    padding: 8px 0;
+  }
+
+  .order-item-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .remove-order-btn {
+    border-radius: 999px;
+    border: 1px solid #b91c1c;
+    background: transparent;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #fecaca;
+    cursor: pointer;
+  }
+
+  .remove-order-btn:hover {
+    background: rgba(185, 28, 28, 0.3);
   }
 </style>
