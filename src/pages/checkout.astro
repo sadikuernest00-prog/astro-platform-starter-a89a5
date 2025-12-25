@@ -8,8 +8,13 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
 <h1>Checkout</h1>
 
 <main>
-  <form action="#" method="POST" class="card">
-    <!-- Shipping details -->
+  <!-- 1. FORM GOES TO FORMSPREE -->
+  <form
+    action="https://formspree.io/f/xzznjkvd"
+    method="POST"
+    class="card"
+  >
+    <!-- LEFT: SHIPPING INFO -->
     <section>
       <h2>Shipping details</h2>
       <p class="small">
@@ -56,6 +61,9 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
         ></textarea>
       </div>
 
+      <!-- hidden field that will contain cart info text -->
+      <textarea id="orderData" name="orderData" hidden></textarea>
+
       <button type="submit" class="btn">
         I have sent the crypto &rarr;
       </button>
@@ -66,8 +74,14 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
       </p>
     </section>
 
-    <!-- Crypto payment -->
+    <!-- RIGHT: ORDER + CRYPTO PAYMENT -->
     <section class="pay-card">
+      <h2>Your Order</h2>
+      <div id="orderList"></div>
+      <p class="small" id="orderTotal"></p>
+
+      <hr style="border-color:#1f2937; margin:1.5rem 0;" />
+
       <h2>Pay with Bitcoin</h2>
       <p class="small">
         Scan this QR code with your wallet app and send the exact amount shown at checkout.
@@ -81,10 +95,6 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
           height="250"
           loading="lazy"
         />
-        {/*
-          If you have your own QR image in /public:
-          <img src="/btc-qr.png" alt="Bitcoin payment QR code" width="250" height="250" loading="lazy" />
-        */}
       </div>
 
       <p class="small">BTC address</p>
@@ -97,6 +107,58 @@ const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${e
     </section>
   </form>
 </main>
+
+<script>
+  const CART_KEY = "amicbridge_cart_v1";
+
+  function readCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+    catch { return []; }
+  }
+
+  function renderCart() {
+    const cart = readCart();
+    const box = document.getElementById("orderList");
+    const totalEl = document.getElementById("orderTotal");
+    const orderDataField = document.getElementById("orderData");
+
+    if (!box || !totalEl || !orderDataField) return;
+
+    if (!cart.length) {
+      box.innerHTML = "<p>No items in cart.</p>";
+      totalEl.textContent = "";
+      orderDataField.value = "Cart is empty";
+      return;
+    }
+
+    let total = 0;
+    let lines = [];
+
+    box.innerHTML = cart.map(item => {
+      const lineTotal = item.price * item.qty;
+      total += lineTotal;
+
+      const lineText =
+        `${item.name} | Size: ${item.size} | Color: ${item.color} | ` +
+        `Qty: ${item.qty} | Line total: ${lineTotal} NOK`;
+      lines.push(lineText);
+
+      return `
+        <div style="border-bottom:1px solid #1f2937;padding:8px 0;">
+          <strong>${item.name}</strong><br>
+          Size: ${item.size} | Color: ${item.color} <br>
+          Qty: ${item.qty} — ${lineTotal} NOK
+        </div>`;
+    }).join("");
+
+    totalEl.textContent = "Total: " + total + " NOK";
+
+    // This text will be sent to Formspree in the email
+    orderDataField.value = lines.join("\\n") + "\\nTOTAL: " + total + " NOK";
+  }
+
+  renderCart();
+</script>
 
 <style>
   :global(body) {
