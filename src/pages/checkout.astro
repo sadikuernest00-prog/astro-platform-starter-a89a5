@@ -1,4 +1,6 @@
 ---
+const base = import.meta.env.BASE_URL ?? "/";
+
 const btcAddress = "bc1qq8c7h3rx4klumyphkjmpek5c66em7ydghmr2ge";
 
 // Bitcoin QR via online generator
@@ -6,8 +8,8 @@ const btcQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=
   btcAddress
 )}`;
 
-// Vipps QR in /public/images/vipps-qr.jpg
-const vippsQrUrl = "/images/vipps-qr.jpg";
+// Vipps QR in /public/images/vipps-qr.jpg (respect BASE_URL)
+const vippsQrUrl = `${base}images/vipps-qr.jpg`;
 ---
 
 <h1>Checkout</h1>
