@@ -1,444 +1,490 @@
 ---
 const base = import.meta.env.BASE_URL ?? "/";
 
-const btcAddress = "bc1qq8c7h3rx4klumyphkjmpek5c66em7ydghmr2ge";
+// helper: always build correct URL (works on / and subfolders)
+const img = (path) => `${base}${path.replace(/^\/+/, "")}`;
 
-// Bitcoin QR via online generator
-const btcQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
-  btcAddress
-)}`;
+const products = [
+  {
+    id: "set-black",
+    name: "Black Satin-Look Cami & Shorts Set",
+    price: 499,
+    image: "/images/set-black.png",
+    colors: ["Black"],
+    sizes: ["S", "M", "L"],
+    defaultColor: "Black",
+  },
+  {
+    id: "set-white",
+    name: "White Satin-Look Cami & Shorts Set",
+    price: 499,
+    image: "/images/set-white.png",
+    colors: ["White"],
+    sizes: ["S", "M", "L"],
+    defaultColor: "White",
+  },
+  {
+    id: "nude-slip",
+    name: "Nude Satin-Look Slip Dress",
+    price: 499,
+    image: "/images/nude-slipp-dress.png",
+    colors: ["Nude"],
+    sizes: ["S", "M", "L"],
+    defaultColor: "Nude",
+  },
+  {
+    id: "white-slip",
+    name: "White Satin-Look Slip Dress",
+    price: 499,
+    image: "/images/white-slip-dress.png",
+    colors: ["White"],
+    sizes: ["S", "M", "L"],
+    defaultColor: "White",
+  },
+  {
+    id: "black-chemise",
+    name: "Black Satin-Look Chemise Dress",
+    price: 499,
+    image: "/images/black-chemise.png",
+    colors: ["Black"],
+    sizes: ["S", "M", "L"],
+    defaultColor: "Black",
+  },
 
-// Vipps QR in /public/images/vipps-qr.jpg (respect BASE_URL)
-const vippsQrUrl = `${base}images/vipps-qr.jpg`;
+  // bras
+  {
+    id: "white-soft-bra",
+    name: "White Soft Comfort Bra",
+    price: 380,
+    image: "/images/white-soft-bra.png",
+    colors: ["White"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "White",
+  },
+  {
+    id: "black-soft-bra",
+    name: "Black Soft Comfort Bra",
+    price: 380,
+    image: "/images/black-soft-bra.png",
+    colors: ["Black"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "Black",
+  },
+  {
+    id: "grey-soft-bra",
+    name: "Grey Soft Comfort Bra",
+    price: 380,
+    image: "/images/grey-soft.png",
+    colors: ["Grey"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "Grey",
+  },
+  {
+    id: "white-sport-bra",
+    name: "White Sport Bra",
+    price: 380,
+    image: "/images/white-sport-bra.png",
+    colors: ["White"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "White",
+  },
+  {
+    id: "white-set-bra",
+    name: "White Set Bra",
+    price: 380,
+    image: "/images/white-set-bra.png",
+    colors: ["White"],
+    sizes: ["75B", "80B", "85B", "90B", "95B"],
+    defaultColor: "White",
+  },
+];
 ---
 
-<h1>Checkout</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Amicbridge</title>
 
-<main>
-  <form action="https://formspree.io/f/xzznjkvd" method="POST" class="card">
-    <!-- LEFT: SHIPPING -->
-    <section>
-      <h2>Shipping details</h2>
-      <p class="small">
-        Fill out where the item should be sent. Make sure everything is correct
-        before you pay.
-      </p>
+    <style>
+      :root{
+        --bg:#f7f6f4;
+        --text:#151515;
+        --muted:#6b6b6b;
+        --border:#dedede;
+        --card:#ffffff;
+      }
+      *{ box-sizing:border-box; }
+      body{
+        margin:0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background:var(--bg);
+        color:var(--text);
+      }
 
-      <div>
-        <label for="fullName">Full name</label>
-        <input id="fullName" name="fullName" required />
-      </div>
+      header{
+        padding:26px 44px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      }
+      .brand{
+        font-weight:800;
+        letter-spacing:.08em;
+        text-transform:uppercase;
+        font-size:18px;
+      }
+      nav{
+        display:flex;
+        gap:26px;
+        align-items:center;
+      }
+      nav a{
+        color:var(--text);
+        text-decoration:none;
+        font-size:16px;
+        font-weight:500;
+      }
+      nav a:hover{ text-decoration:underline; }
 
-      <div>
-        <label for="email">Email (for updates)</label>
-        <input id="email" type="email" name="email" required />
-      </div>
+      .badge{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        min-width:22px;
+        height:22px;
+        padding:0 6px;
+        border-radius:999px;
+        border:1px solid var(--border);
+        font-size:12px;
+        color:var(--muted);
+        background:#fff;
+        margin-left:8px;
+      }
 
-      <div>
-        <label for="phone">Phone number</label>
-        <input
-          id="phone"
-          name="phone"
-          type="tel"
-          placeholder="+47 123 45 678"
-          required
-        />
-      </div>
+      main{
+        max-width:1200px;
+        margin:0 auto;
+        padding:0 44px 80px;
+      }
 
-      <div>
-        <label for="address1">Address line</label>
-        <input id="address1" name="address1" required />
-      </div>
+      .hero{
+        margin-top:110px;
+        max-width:820px;
+      }
+      .hero h1{
+        margin:0 0 18px;
+        font-size:72px;
+        line-height:1.05;
+        letter-spacing:-0.02em;
+      }
+      .hero p{
+        margin:0;
+        color:var(--muted);
+        font-size:20px;
+        max-width:560px;
+      }
 
-      <div class="row">
-        <div>
-          <label for="postalCode">Postal code</label>
-          <input id="postalCode" name="postalCode" required />
-        </div>
-        <div>
-          <label for="city">City</label>
-          <input id="city" name="city" required />
-        </div>
-      </div>
+      .sectionTitle{
+        margin-top:90px;
+        font-size:22px;
+        font-weight:700;
+      }
 
-      <div>
-        <label for="country">Country</label>
-        <input id="country" name="country" required />
-      </div>
+      .products{
+        margin-top:18px;
+        display:grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap:24px;
+      }
+      .card{
+        background:var(--card);
+        border:1px solid var(--border);
+        padding:16px;
+      }
+      .card img{
+        width:100%;
+        height:420px;
+        object-fit:cover;
+        background:#eee;
+        border:1px solid var(--border);
+      }
 
-      <div>
-        <label for="notes">Order notes (optional)</label>
-        <textarea
-          id="notes"
-          name="notes"
-          placeholder="Size, color, extra details…"
-        ></textarea>
-      </div>
+      .name{
+        margin:12px 0 4px;
+        font-size:18px;
+        font-weight:700;
+      }
+      .price{
+        margin:0 0 10px;
+        font-weight:800;
+      }
 
-      <!-- PAYMENT METHOD -->
-      <div>
-        <label class="label">Payment method</label>
-        <div class="pay-methods">
-          <label class="pay-option">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="bitcoin"
-              checked
-              data-show="btc"
-            />
-            Bitcoin
-          </label>
-          <label class="pay-option">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="vipps"
-              data-show="vipps"
-            />
-            Vipps
-          </label>
-        </div>
-      </div>
+      .label{
+        margin:12px 0 8px;
+        color:var(--muted);
+        font-size:12px;
+        text-transform:uppercase;
+        letter-spacing:.06em;
+      }
+      .grid{
+        display:grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap:10px;
+      }
+      .opt{
+        border:1px solid var(--border);
+        background:#fff;
+        padding:12px 10px;
+        cursor:pointer;
+        text-align:center;
+        font-size:15px;
+      }
+      .opt.active{
+        border-color:var(--text);
+        outline:2px solid rgba(0,0,0,.06);
+      }
 
-      <!-- Hidden cart data for Formspree -->
-      <textarea id="orderData" name="orderData" hidden></textarea>
+      .qty{
+        display:grid;
+        grid-template-columns: 56px 70px 56px;
+        border:1px solid var(--border);
+        width:max-content;
+      }
+      .qty button{
+        border:0;
+        background:#fff;
+        padding:12px 0;
+        cursor:pointer;
+        font-size:18px;
+      }
+      .qty div{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-left:1px solid var(--border);
+        border-right:1px solid var(--border);
+        font-size:14px;
+      }
 
-      <button type="submit" class="btn">I have sent the payment →</button>
+      .actions{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:10px;
+        margin-top:14px;
+      }
+      .btn{
+        padding:12px 10px;
+        border:1px solid var(--text);
+        background:#fff;
+        cursor:pointer;
+        font-size:14px;
+        font-weight:700;
+      }
+      .btn.primary{
+        background:var(--text);
+        color:#fff;
+      }
+      .btn.secondary{
+        border-color:var(--border);
+        font-weight:700;
+      }
+      .msg{
+        margin:10px 0 0;
+        font-size:12px;
+        min-height:16px;
+        color:#1a7f37;
+      }
+      .msg.bad{ color:#b42318; }
 
-      <p class="small">
-        After you send the payment and submit this form, we will verify the
-        transaction and ship your order to the address above.
-      </p>
-    </section>
+      @media (max-width: 900px){
+        header{ padding:18px 18px; }
+        main{ padding:0 18px 60px; }
+        .hero{ margin-top:70px; }
+        .hero h1{ font-size:48px; }
+      }
+    </style>
+  </head>
 
-    <!-- RIGHT: ORDER + PAYMENT -->
-    <section class="pay-card">
-      <h2>Your Order</h2>
-      <div id="orderList"></div>
-      <p class="small" id="orderTotal"></p>
+  <body>
+    <header>
+      <div class="brand">AMIC UNDERWEAR</div>
+      <nav>
+        <a href="#shop">Shop</a>
+        <a href="https://wa.me/4792928373" target="_blank" rel="noopener">Contact</a>
 
-      <hr style="border-color:#1f2937; margin:1.5rem 0;" />
+        <!-- checkout is src/pages/checkout.astro -->
+        <a href={`${base}checkout`}>
+          Checkout <span class="badge" id="cartCount">0</span>
+        </a>
+      </nav>
+    </header>
 
-      <h2>Payment</h2>
-      <p class="small">
-        Choose your preferred method and scan the QR code with your app to send
-        the payment.
-      </p>
-
-      <!-- Bitcoin block -->
-      <div id="btcPayment" class="pay-block">
-        <h3 class="pay-title">Pay with Bitcoin</h3>
-        <div class="qr-wrapper">
-          <img
-            src={btcQrUrl}
-            alt="Bitcoin payment QR code"
-            width="250"
-            height="250"
-            loading="lazy"
-          />
-        </div>
-
-        <p class="small">BTC address</p>
-        <p class="btc-address">{btcAddress}</p>
-        <p class="small">
-          Make sure you are sending on the correct network (Bitcoin mainnet).
-          Transactions must be confirmed before shipping.
+    <main>
+      <section class="hero">
+        <h1>everday comfort. Designed beautifully.</h1>
+        <p>
+          Amic Underwear creates soft, supportive essentials designed to move with your body -
+          made for confidence, comfort, and real life.
         </p>
-      </div>
+      </section>
 
-      <!-- Vipps block -->
-      <div id="vippsPayment" class="pay-block" style="display:none;">
-        <h3 class="pay-title">Pay with Vipps</h3>
-        <div class="qr-wrapper">
-          <img
-            src={vippsQrUrl}
-            alt="Vipps payment QR code"
-            width="250"
-            height="250"
-            loading="lazy"
-          />
-        </div>
-        <p class="small">
-          Open Vipps, choose “Scan”, and scan this QR code to pay.
-        </p>
-      </div>
-    </section>
-  </form>
-</main>
+      <h2 id="shop" class="sectionTitle">Shop</h2>
 
-<script>
-  const CART_KEY = "amicbridge_cart_v1";
+      <section class="products" aria-label="Products">
+        {products.map((p) => (
+          <article
+            class="card"
+            data-product
+            data-id={p.id}
+            data-name={p.name}
+            data-price={p.price}
+          >
+            <img src={img(p.image)} alt={p.name} />
 
-  function readCart() {
-    try {
-      return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-    } catch {
-      return [];
-    }
-  }
+            <div class="name">{p.name}</div>
+            <div class="price">{p.price} NOK</div>
 
-  function writeCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    updateCartCount();
-  }
-
-  function updateCartCount() {
-    const el = document.getElementById("cartCount");
-    if (!el) return;
-    const cart = readCart();
-    const count = cart.reduce((sum, i) => sum + (Number(i.qty) || 0), 0);
-    el.textContent = String(count);
-  }
-
-  function renderCart() {
-    const cart = readCart();
-    const box = document.getElementById("orderList");
-    const totalEl = document.getElementById("orderTotal");
-    const orderDataField = document.getElementById("orderData");
-
-    if (!box || !totalEl || !orderDataField) return;
-
-    if (!cart.length) {
-      box.innerHTML = "<p>No items in cart.</p>";
-      totalEl.textContent = "";
-      orderDataField.value = "Cart is empty";
-      updateCartCount();
-      return;
-    }
-
-    let total = 0;
-    const lines = [];
-
-    box.innerHTML = cart
-      .map((item, index) => {
-        const lineTotal = item.price * item.qty;
-        total += lineTotal;
-
-        const lineText = `${item.name} | Size: ${item.size} | Color: ${
-          item.color
-        } | Qty: ${item.qty} | Line total: ${lineTotal} NOK`;
-        lines.push(lineText);
-
-        return `
-          <div class="order-item">
-            <div class="order-item-main">
-              <div>
-                <strong>${item.name}</strong><br>
-                Size: ${item.size} | Color: ${item.color}<br>
-                Qty: ${item.qty} — ${lineTotal} NOK
-              </div>
-              <button type="button" class="remove-order-btn" data-index="${index}">
-                Remove
-              </button>
+            <div class="label">Size</div>
+            <div class="grid sizes">
+              {p.sizes.map((s) => (
+                <button class="opt" type="button" data-size={s}>{s}</button>
+              ))}
             </div>
-          </div>
-        `;
-      })
-      .join("");
 
-    totalEl.textContent = "Total: " + total + " NOK";
-    orderDataField.value = lines.join("\n") + "\nTOTAL: " + total + " NOK";
+            <div class="label">Color</div>
+            <div class="grid colors">
+              {p.colors.map((c) => (
+                <button
+                  class={`opt ${c === p.defaultColor ? "active" : ""}`}
+                  type="button"
+                  data-color={c}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
 
-    document.querySelectorAll(".remove-order-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const idx = Number(btn.dataset.index);
-        const cart = readCart();
-        cart.splice(idx, 1);
-        writeCart(cart);
-        renderCart();
+            <div class="label">Quantity</div>
+            <div class="qty" role="group" aria-label="Quantity selector">
+              <button type="button" data-minus>-</button>
+              <div data-qty>1</div>
+              <button type="button" data-plus>+</button>
+            </div>
+
+            <div class="actions">
+              <button class="btn secondary" type="button" data-remove>Remove</button>
+              <button class="btn primary" type="button" data-add>Add to cart</button>
+            </div>
+
+            <p class="msg" data-msg></p>
+          </article>
+        ))}
+      </section>
+    </main>
+
+    <script>
+      const CART_KEY = "amicbridge_cart_v1";
+
+      function readCart() {
+        try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+        catch { return []; }
+      }
+      function writeCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartCount();
+      }
+      function updateCartCount() {
+        const count = readCart().reduce((sum, i) => sum + (Number(i.qty) || 0), 0);
+        const el = document.getElementById("cartCount");
+        if (el) el.textContent = String(count);
+      }
+      function setMsg(card, text, ok=true){
+        const el = card.querySelector("[data-msg]");
+        if(!el) return;
+        el.textContent = text;
+        el.classList.toggle("bad", !ok);
+      }
+
+      document.querySelectorAll("[data-product]").forEach((card) => {
+        let qty = 1;
+        let size = null;
+        let color = card.querySelector(".colors .opt.active")?.dataset.color || null;
+
+        // Size
+        card.querySelectorAll(".sizes .opt").forEach((b) => {
+          b.addEventListener("click", () => {
+            card.querySelectorAll(".sizes .opt").forEach((x) => x.classList.remove("active"));
+            b.classList.add("active");
+            size = b.dataset.size;
+            setMsg(card, "");
+          });
+        });
+
+        // Color
+        card.querySelectorAll(".colors .opt").forEach((b) => {
+          b.addEventListener("click", () => {
+            card.querySelectorAll(".colors .opt").forEach((x) => x.classList.remove("active"));
+            b.classList.add("active");
+            color = b.dataset.color;
+            setMsg(card, "");
+          });
+        });
+
+        // Quantity
+        const qtyEl = card.querySelector("[data-qty]");
+        card.querySelector("[data-plus]").addEventListener("click", () => {
+          qty = Math.min(99, qty + 1);
+          qtyEl.textContent = String(qty);
+        });
+        card.querySelector("[data-minus]").addEventListener("click", () => {
+          qty = Math.max(1, qty - 1);
+          qtyEl.textContent = String(qty);
+        });
+
+        // Add to cart
+        card.querySelector("[data-add]").addEventListener("click", () => {
+          if (!size) return setMsg(card, "Please select a size.", false);
+          if (!color) return setMsg(card, "Please select a color.", false);
+
+          const cart = readCart();
+          const productId = card.dataset.id;
+          const name = card.dataset.name;
+          const price = Number(card.dataset.price) || 0;
+
+          const existing = cart.find(i => i.productId === productId && i.size === size && i.color === color);
+          if (existing) existing.qty += qty;
+          else cart.push({ productId, name, price, size, color, qty });
+
+          writeCart(cart);
+          setMsg(card, "Added to cart ✓");
+        });
+
+        // Remove exact size+color variant from cart
+        card.querySelector("[data-remove]").addEventListener("click", () => {
+          if (!size || !color) return setMsg(card, "Select size & color to remove.", false);
+
+          let cart = readCart();
+          const before = cart.length;
+
+          cart = cart.filter(
+            (i) =>
+              !(
+                i.productId === card.dataset.id &&
+                i.size === size &&
+                i.color === color
+              )
+          );
+
+          if (cart.length === before) return setMsg(card, "Item not in cart.", false);
+
+          writeCart(cart);
+          setMsg(card, "Removed from cart ✓");
+        });
       });
-    });
 
-    updateCartCount();
-  }
-
-  function setupPaymentToggle() {
-    const radios = document.querySelectorAll('input[name="paymentMethod"]');
-    const btcBlock = document.getElementById("btcPayment");
-    const vippsBlock = document.getElementById("vippsPayment");
-
-    if (!radios.length || !btcBlock || !vippsBlock) return;
-
-    radios.forEach((r) => {
-      r.addEventListener("change", () => {
-        const method = r.dataset.show;
-        if (method === "btc") {
-          btcBlock.style.display = "block";
-          vippsBlock.style.display = "none";
-        } else if (method === "vipps") {
-          btcBlock.style.display = "none";
-          vippsBlock.style.display = "block";
-        }
-      });
-    });
-  }
-
-  renderCart();
-  setupPaymentToggle();
-</script>
-
-<style>
-  :global(body) {
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
-    display: flex;
-    justify-content: center;
-  }
-
-  main {
-    max-width: 900px;
-    width: 100%;
-    padding: 2rem 1.5rem 3rem;
-  }
-
-  h1 {
-    margin: 0 0 1.5rem;
-    font-size: 1.7rem;
-  }
-
-  h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .card {
-    background: #020617;
-    border-radius: 1rem;
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 2rem;
-  }
-
-  @media (max-width: 768px) {
-    .card {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  label {
-    font-size: 0.85rem;
-    color: #9ca3af;
-  }
-
-  input,
-  textarea {
-    width: 100%;
-    border-radius: 0.6rem;
-    border: 1px solid #1f2937;
-    padding: 0.65rem 0.8rem;
-    background: #020617;
-    color: #e5e7eb;
-  }
-
-  textarea {
-    min-height: 80px;
-    resize: vertical;
-  }
-
-  input:focus,
-  textarea:focus {
-    border-color: #38bdf8;
-    outline: none;
-  }
-
-  .row {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-  }
-
-  .btn {
-    margin-top: 0.75rem;
-    width: 100%;
-    border-radius: 999px;
-    border: none;
-    padding: 0.8rem 1rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    cursor: pointer;
-    background: linear-gradient(90deg, #22c55e, #0ea5e9);
-    color: #0b1120;
-  }
-
-  .pay-card {
-    border-radius: 1rem;
-    border: 1px solid #1f2937;
-    padding: 1.5rem;
-  }
-
-  .qr-wrapper {
-    display: flex;
-    justify-content: center;
-    margin: 1rem 0 0.5rem;
-  }
-
-  .btc-address {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      "Liberation Mono", "Courier New", monospace;
-    font-size: 0.75rem;
-    padding: 0.6rem 0.8rem;
-    border-radius: 0.6rem;
-    background: #020617;
-    border: 1px solid #1f2937;
-    word-break: break-all;
-  }
-
-  .small {
-    font-size: 0.75rem;
-    color: #9ca3af;
-  }
-
-  .order-item {
-    border-bottom: 1px solid #1f2937;
-    padding: 8px 0;
-  }
-
-  .order-item-main {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .remove-order-btn {
-    border-radius: 999px;
-    border: 1px solid #b91c1c;
-    background: transparent;
-    padding: 6px 12px;
-    font-size: 12px;
-    color: #fecaca;
-    cursor: pointer;
-  }
-
-  .remove-order-btn:hover {
-    background: rgba(185, 28, 28, 0.3);
-  }
-
-  .pay-methods {
-    display: flex;
-    gap: 12px;
-    margin-top: 4px;
-  }
-
-  .pay-option {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.9rem;
-  }
-
-  .pay-title {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-  }
-
-  .pay-block {
-    margin-top: 0.75rem;
-  }
-</style>
+      updateCartCount();
+    </script>
+  </body>
+</html>
