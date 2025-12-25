@@ -1,236 +1,224 @@
-
 ---
 const btcAddress = 'bc1qq8c7h3rx4klumyphkjmpek5c66em7ydghmr2ge';
+const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+  btcAddress
+)}`;
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Checkout</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-        background: #0f172a;
-        color: #e5e7eb;
-        display: flex;
-        justify-content: center;
-      }
+<h1>Checkout</h1>
 
-      main {
-        max-width: 800px;
-        width: 100%;
-        padding: 2rem 1.5rem 3rem;
-      }
+<main>
+  <form action="#" method="POST" class="card">
+    <!-- Shipping details -->
+    <section>
+      <h2>Shipping details</h2>
+      <p class="small">
+        Fill out where the item should be sent. Make sure everything is correct before you pay.
+      </p>
 
-      .card {
-        background: #020617;
-        border-radius: 1rem;
-        padding: 2rem;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        display: grid;
-        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-        gap: 2rem;
-      }
+      <div>
+        <label for="fullName">Full name</label>
+        <input id="fullName" name="fullName" required />
+      </div>
 
-      @media (max-width: 768px) {
-        .card {
-          grid-template-columns: 1fr;
-        }
-      }
+      <div>
+        <label for="email">Email (for updates)</label>
+        <input id="email" type="email" name="email" required />
+      </div>
 
-      h1 {
-        margin: 0 0 1.5rem;
-        font-size: 1.7rem;
-      }
+      <div>
+        <label for="address1">Address line</label>
+        <input id="address1" name="address1" required />
+      </div>
 
-      h2 {
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-      }
+      <div class="row">
+        <div>
+          <label for="postalCode">Postal code</label>
+          <input id="postalCode" name="postalCode" required />
+        </div>
+        <div>
+          <label for="city">City</label>
+          <input id="city" name="city" required />
+        </div>
+      </div>
 
-      form {
-        display: grid;
-        gap: 1rem;
-      }
+      <div>
+        <label for="country">Country</label>
+        <input id="country" name="country" required />
+      </div>
 
-      label {
-        display: block;
-        font-size: 0.85rem;
-        margin-bottom: 0.25rem;
-        color: #9ca3af;
-      }
+      <div>
+        <label for="notes">Order notes (optional)</label>
+        <textarea
+          id="notes"
+          name="notes"
+          placeholder="Size, color, extra details…"
+        ></textarea>
+      </div>
 
-      input,
-      textarea {
-        width: 100%;
-        border-radius: 0.6rem;
-        border: 1px solid #1f2937;
-        padding: 0.65rem 0.8rem;
-        background: #020617;
-        color: #e5e7eb;
-        outline: none;
-      }
+      <button type="submit" class="btn">
+        I have sent the crypto &rarr;
+      </button>
 
-      input:focus,
-      textarea:focus {
-        border-color: #38bdf8;
-      }
+      <p class="small">
+        After you send the payment and submit this form, we will verify the
+        transaction and ship your order to the address above.
+      </p>
+    </section>
 
-      textarea {
-        min-height: 80px;
-        resize: vertical;
-      }
+    <!-- Crypto payment -->
+    <section class="pay-card">
+      <h2>Pay with Bitcoin</h2>
+      <p class="small">
+        Scan this QR code with your wallet app and send the exact amount shown at checkout.
+      </p>
 
-      .row {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
-      }
+      <div class="qr-wrapper">
+        <img
+          src={qrUrl}
+          alt="Bitcoin payment QR code"
+          width="250"
+          height="250"
+          loading="lazy"
+        />
+        {/*
+          If you have your own QR image in /public:
+          <img src="/btc-qr.png" alt="Bitcoin payment QR code" width="250" height="250" loading="lazy" />
+        */}
+      </div>
 
-      .btn {
-        margin-top: 0.75rem;
-        width: 100%;
-        border-radius: 999px;
-        border: none;
-        padding: 0.8rem 1rem;
-        font-weight: 600;
-        letter-spacing: 0.03em;
-        cursor: pointer;
-        background: linear-gradient(90deg, #22c55e, #0ea5e9);
-        color: #0b1120;
-      }
+      <p class="small">BTC address</p>
+      <p class="btc-address">{btcAddress}</p>
 
-      .pay-card {
-        border-radius: 1rem;
-        border: 1px solid #1f2937;
-        padding: 1.5rem;
-        background: #020617;
-      }
+      <p class="small">
+        Make sure you are sending on the correct network (Bitcoin mainnet).
+        Transactions must be confirmed on-chain before shipping.
+      </p>
+    </section>
+  </form>
+</main>
 
-      .qr-wrapper {
-        display: flex;
-        justify-content: center;
-        margin: 1rem 0 0.5rem;
-      }
+<style>
+  :global(body) {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    display: flex;
+    justify-content: center;
+  }
 
-      .btc-address {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
-        font-size: 0.75rem;
-        padding: 0.6rem 0.8rem;
-        border-radius: 0.6rem;
-        background: #020617;
-        border: 1px solid #1f2937;
-        word-break: break-all;
-      }
+  main {
+    max-width: 800px;
+    width: 100%;
+    padding: 2rem 1.5rem 3rem;
+  }
 
-      .small {
-        font-size: 0.75rem;
-        color: #9ca3af;
-      }
-    </style>
-  </head>
+  h1 {
+    margin: 0 0 1.5rem;
+    font-size: 1.7rem;
+  }
 
-  <body>
-    <main>
-      <h1>Checkout</h1>
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
 
-      <!-- Replace action="#" with your backend endpoint or form handler -->
-      <form action="#" method="POST" class="card">
-        <!-- Shipping details -->
-        <section>
-          <h2>Shipping details</h2>
-          <p class="small">
-            Fill out where the item should be sent. Make sure everything is
-            correct before you pay.
-          </p>
+  .card {
+    background: #020617;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 2rem;
+  }
 
-          <div>
-            <label for="fullName">Full name</label>
-            <input id="fullName" name="fullName" required />
-          </div>
+  @media (max-width: 768px) {
+    .card {
+      grid-template-columns: 1fr;
+    }
+  }
 
-          <div>
-            <label for="email">Email (for updates)</label>
-            <input id="email" type="email" name="email" required />
-          </div>
+  form {
+    display: grid;
+    gap: 1rem;
+  }
 
-          <div>
-            <label for="address1">Address line</label>
-            <input id="address1" name="address1" required />
-          </div>
+  label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    color: #9ca3af;
+  }
 
-          <div class="row">
-            <div>
-              <label for="postalCode">Postal code</label>
-              <input id="postalCode" name="postalCode" required />
-            </div>
-            <div>
-              <label for="city">City</label>
-              <input id="city" name="city" required />
-            </div>
-          </div>
+  input,
+  textarea {
+    width: 100%;
+    border-radius: 0.6rem;
+    border: 1px solid #1f2937;
+    padding: 0.65rem 0.8rem;
+    background: #020617;
+    color: #e5e7eb;
+    outline: none;
+  }
 
-          <div>
-            <label for="country">Country</label>
-            <input id="country" name="country" required />
-          </div>
+  input:focus,
+  textarea:focus {
+    border-color: #38bdf8;
+  }
 
-          <div>
-            <label for="notes">Order notes (optional)</label>
-            <textarea
-              id="notes"
-              name="notes"
-              placeholder="Size, color, extra details…"
-            ></textarea>
-          </div>
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
 
-          <button type="submit" class="btn">
-            I have sent the crypto &rarr;
-          </button>
+  .row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
 
-          <p class="small">
-            After you send the payment and submit this form, we will verify the
-            transaction and ship your order to the address above.
-          </p>
-        </section>
+  .btn {
+    margin-top: 0.75rem;
+    width: 100%;
+    border-radius: 999px;
+    border: none;
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+    color: #0b1120;
+  }
 
-        <!-- Crypto payment -->
-        <section class="pay-card">
-          <h2>Pay with Bitcoin</h2>
-          <p class="small">
-            Scan this QR code with your wallet app and send the exact amount
-            shown at checkout.
-          </p>
+  .pay-card {
+    border-radius: 1rem;
+    border: 1px solid #1f2937;
+    padding: 1.5rem;
+    background: #020617;
+  }
 
-          <div class="qr-wrapper">
-            <!-- Option 1: generated QR code from an API -->
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
-                btcAddress
-              )}`}
-              alt="Bitcoin payment QR code"
-              width="250"
-              height="250"
-            />
-            <!--
-              Option 2: if you have a local QR image, put it in /public and use:
-              <img src="/btc-qr.png" alt="Bitcoin payment QR code" width="250" height="250" />
-            -->
-          </div>
+  .qr-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0 0.5rem;
+  }
 
-          <p class="small">BTC address</p>
-          <p class="btc-address">{btcAddress}</p>
+  .btc-address {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    font-size: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.6rem;
+    background: #020617;
+    border: 1px solid #1f2937;
+    word-break: break-all;
+  }
 
-          <p class="small">
-            Make sure you are sending on the correct network (Bitcoin mainnet).
-            Transactions must be confirmed on-chain before shipping.
-          </p>
-        </section>
-      </form>
-    </main>
-  </body>
-</html>
+  .small {
+    font-size: 0.75rem;
+    color: #9ca3af;
+  }
+</style>
