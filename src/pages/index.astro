@@ -1,324 +1,45 @@
+<section class="return-box">
+  <h2>Example structured return</h2>
+  <p class="muted">
+    Example: A lender provides <strong>30,000</strong> and receives
+    <strong>35,000</strong> after 4 weeks.
+  </p>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>AmicBridge Transport & Logistics – Professional Freight Services</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="AmicBridge Transport & Logistics offers reliable freight transport services with professional handling, clear agreements and trusted delivery. Based in Norway." />
-
-<style>
-:root {
-  --primary:#0b3d82;
-  --primary-light:#e8f0ff;
-  --background:#f4f6f9;
-  --surface:#ffffff;
-  --text:#0f172a;
-  --muted:#6b7280;
-  --border:#d1d5db;
-  --radius:10px;
-}
-
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  background:var(--background);
-  color:var(--text);
-  line-height:1.6;
-}
-
-/* HEADER */
-header{
-  background:#fff;
-  border-bottom:1px solid var(--border);
-}
-.header-inner{
-  max-width:1040px;
-  margin:0 auto;
-  padding:12px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-.logo{
-  font-size:22px;
-  font-weight:800;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  color:var(--primary);
-}
-.logo span{color:#111;}
-.brand-sub{
-  font-size:13px;
-  color:var(--muted);
-}
-nav{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-nav a{
-  text-decoration:none;
-  padding:6px 10px;
-  border-radius:999px;
-  color:var(--muted);
-  font-size:14px;
-}
-nav a:hover{
-  background:var(--primary-light);
-  color:var(--primary);
-}
-.nav-cta{
-  border:1px solid var(--primary);
-  color:var(--primary);
-  font-weight:500;
-}
-
-/* MAIN */
-main{
-  max-width:1040px;
-  margin:0 auto;
-  padding:24px 20px 40px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-/* HERO */
-.hero{
-  background:var(--surface);
-  border-radius:var(--radius);
-  border:1px solid var(--border);
-  padding:22px;
-}
-.hero img{
-  width:100%;
-  border-radius:10px;
-  border:1px solid var(--border);
-  margin-bottom:14px;
-}
-.hero-tag{
-  display:inline-flex;
-  background:var(--primary-light);
-  color:var(--primary);
-  padding:4px 10px;
-  border-radius:999px;
-  font-size:12px;
-  margin-bottom:8px;
-}
-.btn-primary,.btn-secondary{
-  border-radius:999px;
-  padding:8px 16px;
-  text-decoration:none;
-  font-size:14px;
-  display:inline-block;
-}
-.btn-primary{
-  background:var(--primary);
-  border:1px solid var(--primary);
-  color:#fff;
-}
-.btn-secondary{
-  border:1px solid var(--primary);
-  color:var(--primary);
-}
-
-/* SECTIONS */
-section{
-  background:#fff;
-  border-radius:var(--radius);
-  border:1px solid var(--border);
-  padding:18px;
-}
-.grid-3{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-}
-.grid-2{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-.card{
-  background:#fafafa;
-  border-radius:8px;
-  border:1px solid var(--border);
-  padding:12px;
-}
-ul.clean{
-  list-style:none;
-  padding:0;
-}
-ul.clean li{
-  display:flex;
-  gap:8px;
-}
-.bullet{
-  margin-top:7px;
-  height:6px;
-  width:6px;
-  background:#9ca3af;
-  border-radius:50%;
-}
-
-/* CONTACT */
-.contact{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-footer{
-  text-align:center;
-  padding:14px;
-  color:var(--muted);
-}
-@media(max-width:900px){
-  .grid-3,.grid-2,.contact{
-    grid-template-columns:1fr;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <div class="header-inner">
+  <div class="result">
     <div>
-      <div class="logo">AMIC<span>BRIDGE</span></div>
-      <div class="brand-sub">Transport & Logistics · Reliable Freight Delivery</div>
+      <span class="label">Principal</span>
+      <span id="principal">30,000</span>
     </div>
-
-    <nav>
-      <a href="#services">Services</a>
-      <a href="#areas">Service Area</a>
-      <a href="#how">How We Work</a>
-      <a href="#contact" class="nav-cta">Contact</a>
-    </nav>
-  </div>
-</header>
-
-<main>
-
-<section class="hero">
-  <img src="images/amicbridge-banner.jpg" alt="Truck Transport Logistics Banner">
-  <div class="hero-tag">Professional & Trustworthy Transport</div>
-
-  <h1>AmicBridge Transport & Logistics</h1>
-
-  <p>
-    Reliable road transport for businesses and individuals who value safety, punctuality and
-    clear agreements. AmicBridge operates with a dedicated truck, ensuring personal responsibility
-    and careful handling of every load.
-  </p>
-
-  <a href="#contact" class="btn-primary">Request Transport</a>
-</section>
-
-<section id="services">
-  <h2>Transport Services</h2>
-  <div class="grid-3">
-    <div class="card">
-      <h3>General Freight</h3>
-      <p>Standard cargo, pallets, equipment and packaged goods.</p>
+    <div>
+      <span class="label">Repayment</span>
+      <span id="repayment">35,000</span>
     </div>
-
-    <div class="card">
-      <h3>Business Deliveries</h3>
-      <p>Reliable transport for shops, warehouses and companies.</p>
+    <div>
+      <span class="label">Profit</span>
+      <span id="profit"></span>
     </div>
-
-    <div class="card">
-      <h3>Dedicated Transport</h3>
-      <p>Point-to-point delivery with no cargo mixing when required.</p>
+    <div>
+      <span class="label">Return</span>
+      <span id="returnRate"></span>
     </div>
   </div>
-</section>
 
-<section id="areas">
-  <h2>Operating Area</h2>
-  <p>
-    Based in Norway, AmicBridge provides transport depending on route agreements.
-    (You can adjust this text to your real locations, such as “Norway & Scandinavia” or specific routes.)
+  <p class="note">
+    Capital involves risk. Returns depend on agreement terms and borrower performance.
   </p>
 </section>
-
-<section id="how">
-  <h2>How We Work</h2>
-  <div class="grid-2">
-    <div class="card">
-      <h3>Booking</h3>
-      <p>You contact us with cargo details, route and preferred timing.</p>
-    </div>
-
-    <div class="card">
-      <h3>Agreement</h3>
-      <p>We confirm price, responsibility and delivery expectations.</p>
-    </div>
-
-    <div class="card">
-      <h3>Transport</h3>
-      <p>Your cargo is handled carefully and transported securely.</p>
-    </div>
-
-    <div class="card">
-      <h3>Delivery</h3>
-      <p>Clear communication and confirmed delivery completion.</p>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2>Why Choose AmicBridge?</h2>
-  <ul class="clean">
-    <li><span class="bullet"></span>One dedicated truck — personal accountability</li>
-    <li><span class="bullet"></span>Professional attitude and respect for every job</li>
-    <li><span class="bullet"></span>Clear agreements and honest communication</li>
-    <li><span class="bullet"></span>Safety, reliability and trust</li>
-  </ul>
-</section>
-
-<section id="contact">
-  <h2>Contact AmicBridge Transport</h2>
-
-  <div class="contact">
-    <div class="card">
-      <h3>Get in Touch</h3>
-
-      <p><strong>Contact Person:</strong> Habbitx</p>
-      <p><strong>Email:</strong> <a href="mailto:amicbridgecontact@gmail.com">amicbridgecontact@gmail.com</a></p>
-      <p><strong>Location:</strong> Norway</p>
-
-      <p style="font-size:12px; color:gray;">
-        Send route details, cargo information and timing if possible.
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>What to Include</h3>
-      <ul class="clean">
-        <li><span class="bullet"></span>Pickup & delivery locations</li>
-        <li><span class="bullet"></span>Cargo type & approx weight</li>
-        <li><span class="bullet"></span>Preferred date / flexibility</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  © <span id="year"></span> AmicBridge Transport & Logistics – Professional freight services.
-</footer>
 
 <script>
-document.getElementById("year").textContent = new Date().getFullYear();
-</script>
+  const principal = 30000;
+  const repayment = 35000;
+  const weeks = 4;
 
-</body>
-</html>
+  const profit = repayment - principal;
+  const simpleReturn = (profit / principal) * 100;
+
+  document.getElementById("profit").innerText =
+    profit.toLocaleString();
+
+  document.getElementById("returnRate").innerText =
+    simpleReturn.toFixed(2) + "% in " + weeks + " weeks";
+</script>
