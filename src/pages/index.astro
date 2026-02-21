@@ -1,440 +1,266 @@
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>AmicBridge — Trust before money</title>
-    <meta
-      name="description"
-      content="AmicBridge is a private lending & investing network based in Norway. Trust before money. Clear agreements, transparent terms."
-    />
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AmicBridge — Private Capital Network</title>
 
-    <style>
-      :root {
-        --bg: #f3f4f6;
-        --white: #ffffff;
-        --border: #d1d5db;
-        --text-main: #111827;
-        --text-muted: #6b7280;
-        --primary: #1d4ed8;
-        --primary-dark: #1e3a8a;
-        --success-bg: #ecfdf3;
-      }
+<meta name="description"
+content="AmicBridge is a private lending and capital network based in Norway. Trust before money. Structured agreements and defined returns." />
 
-      * { box-sizing: border-box; }
+<style>
+:root {
+  --bg:#f3f4f6;
+  --white:#ffffff;
+  --border:#d1d5db;
+  --text:#111827;
+  --muted:#6b7280;
+  --primary:#1d4ed8;
+  --primary-dark:#1e3a8a;
+  --soft:#e6f0ea;
+}
 
-      body {
-        margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
-          "Apple Color Emoji", "Segoe UI Emoji";
-        background: var(--bg);
-        color: var(--text-main);
-      }
+*{box-sizing:border-box}
 
-      /* Header */
-      .topbar {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: var(--white);
-        border-bottom: 1px solid var(--border);
-        padding: 18px 28px;
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 24px;
-      }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-      .brand-name {
-        font-weight: 800;
-        letter-spacing: 0.5px;
-        font-size: 26px;
-      }
+/* Header */
+header{
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:18px 28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-      .brand-tagline {
-        margin-top: 4px;
-        font-size: 13px;
-        color: var(--text-muted);
-      }
+.logo{
+  font-weight:800;
+  font-size:24px;
+  letter-spacing:.5px;
+}
 
-      .nav {
-        display: flex;
-        gap: 22px;
-        flex-wrap: wrap;
-      }
+.tagline{
+  font-size:13px;
+  color:var(--muted);
+}
 
-      .nav a {
-        text-decoration: none;
-        color: var(--text-main);
-        font-weight: 600;
-        font-size: 14px;
-        opacity: 0.9;
-      }
+nav a{
+  margin-left:18px;
+  text-decoration:none;
+  font-weight:600;
+  font-size:14px;
+  color:var(--text);
+}
 
-      .nav a:hover {
-        opacity: 1;
-        text-decoration: underline;
-      }
+nav a:hover{ text-decoration:underline; }
 
-      /* Layout */
-      .wrap {
-        padding: 34px 28px 60px;
-        max-width: 1060px;
-        margin: 0 auto;
-      }
+/* Layout */
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:40px 24px 60px;
+}
 
-      .pill-top {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: #fff;
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--primary-dark);
-      }
+h1{
+  font-size:42px;
+  margin:10px 0;
+}
 
-      .hero {
-        margin-top: 18px;
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 18px;
-        align-items: start;
-      }
+p.lead{
+  color:var(--muted);
+  font-size:17px;
+  max-width:700px;
+}
 
-      h1 {
-        font-size: 44px;
-        line-height: 1.06;
-        margin: 12px 0 10px;
-      }
+.section{
+  margin-top:40px;
+}
 
-      .muted {
-        color: var(--text-muted);
-        font-size: 16px;
-        max-width: 720px;
-        margin: 0 0 18px;
-      }
+.card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+}
 
-      .btnrow {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-      }
+/* Offer */
+.offer{
+  background:var(--soft);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:24px;
+}
 
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: var(--white);
-        color: var(--text-main);
-        text-decoration: none;
-        font-weight: 700;
-      }
+.offer-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
 
-      .btn.primary {
-        background: var(--primary);
-        border-color: var(--primary);
-        color: #fff;
-      }
+.offer-header h2{
+  margin:0;
+  font-size:20px;
+}
 
-      .btn.primary:hover {
-        background: var(--primary-dark);
-        border-color: var(--primary-dark);
-      }
+.badge{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
 
-      .card {
-        background: var(--white);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 18px;
-      }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:16px;
+}
 
-      .card h2 {
-        margin: 0 0 10px;
-        font-size: 16px;
-      }
+.box{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+}
 
-      .chips {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 10px;
-      }
+.label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
 
-      .chip {
-        border: 1px solid var(--border);
-        background: #fff;
-        border-radius: 999px;
-        padding: 6px 10px;
-        font-size: 12px;
-        color: var(--text-muted);
-        font-weight: 700;
-      }
+.value{
+  font-size:20px;
+  font-weight:800;
+  margin-top:4px;
+}
 
-      /* Sections */
-      .section { margin-top: 22px; }
+.small{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:12px;
+}
 
-      .section-title {
-        font-size: 20px;
-        margin: 0 0 10px;
-      }
+.button{
+  display:inline-block;
+  margin-top:16px;
+  padding:12px 18px;
+  background:var(--primary);
+  color:#fff;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:700;
+}
 
-      .grid3 {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-      }
+.button:hover{
+  background:var(--primary-dark);
+}
 
-      .mini p {
-        margin: 6px 0 0;
-        color: var(--text-muted);
-        font-size: 14px;
-      }
+footer{
+  margin-top:60px;
+  font-size:13px;
+  color:var(--muted);
+}
 
-      /* Offer box */
-      .offer {
-        background: var(--success-bg);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 16px;
-        max-width: 720px;
-      }
+/* Mobile */
+@media(max-width:800px){
+  .grid{grid-template-columns:1fr;}
+  h1{font-size:32px;}
+  header{flex-direction:column;align-items:flex-start}
+  nav{margin-top:10px}
+}
+</style>
+</head>
 
-      .offer-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 10px;
-      }
+<body>
 
-      .offer-head h3 { margin: 0; font-size: 16px; }
+<header>
+  <div>
+    <div class="logo">AMICBRIDGE</div>
+    <div class="tagline">Based in Norway · Private lending & investing network</div>
+  </div>
+  <nav>
+    <a href="#offer">Current Offer</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
 
-      .pill {
-        font-size: 12px;
-        color: var(--text-main);
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        padding: 6px 10px;
-        background: #fff;
-        font-weight: 700;
-        white-space: nowrap;
-      }
+<div class="container">
 
-      .kvgrid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-      }
+  <h1>Trust before money.</h1>
+  <p class="lead">
+    AmicBridge connects private capital with businesses and individuals seeking growth.
+    We structure transparent agreements with defined repayment terms.
+    Returns depend on the active offer and the written agreement.
+  </p>
 
-      .kv {
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 12px;
-      }
+  <div class="section" id="offer">
+    <h2>Current Offer</h2>
 
-      .label {
-        display: block;
-        font-size: 12px;
-        color: var(--text-muted);
-        margin-bottom: 4px;
-        font-weight: 700;
-      }
-
-      .value {
-        font-size: 18px;
-        font-weight: 800;
-      }
-
-      .fineprint {
-        margin: 10px 0 0;
-        font-size: 12px;
-        color: var(--text-muted);
-      }
-
-      /* Footer contact */
-      .contact {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      .contact a {
-        color: var(--primary);
-        font-weight: 800;
-        text-decoration: none;
-      }
-
-      .contact a:hover { text-decoration: underline; }
-
-      /* Mobile */
-      @media (max-width: 860px) {
-        .hero { grid-template-columns: 1fr; }
-        .grid3 { grid-template-columns: 1fr; }
-        .kvgrid { grid-template-columns: 1fr; }
-        .contact { grid-template-columns: 1fr; }
-        h1 { font-size: 34px; }
-        .topbar { align-items: flex-start; flex-direction: column; }
-      }
-    </style>
-  </head>
-
-  <body>
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-name">AMICBRIDGE</div>
-        <div class="brand-tagline">Based in Norway · Private lending &amp; investing network</div>
+    <div class="offer">
+      <div class="offer-header">
+        <h2>Invest 45,000 → Receive 52,000 in 4 weeks</h2>
+        <span class="badge">Profit 7,000</span>
       </div>
 
-      <nav class="nav">
-        <a href="#how">How it works</a>
-        <a href="#offer">Current offer</a>
-        <a href="#trust">Trust</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </header>
-
-    <main class="wrap">
-      <span class="pill-top">✓ TRUST BEFORE MONEY</span>
-
-      <section class="hero">
-        <div>
-          <h1>Structured capital with clear agreements.</h1>
-          <p class="muted">
-            AmicBridge connects people and businesses with capital — borrowers who need more capital,
-            and private lenders/investors looking for structured opportunities. Terms and returns
-            depend on each offer and the written agreement.
-          </p>
-
-          <div class="btnrow">
-            <a class="btn primary" href="mailto:amicbridgecontact@gmail.com?subject=AmicBridge%20-%20Contact%20CEO%20Ernest">
-              Contact CEO Ernest
-            </a>
-            <a class="btn" href="#offer">See current offer</a>
-          </div>
-        </div>
-
-        <aside class="card">
-          <h2>AmicBridge in one look</h2>
-          <div class="chips">
-            <span class="chip">Written agreements</span>
-            <span class="chip">Clear expectations</span>
-            <span class="chip">Transparent terms</span>
-            <span class="chip">Human-to-human network</span>
-          </div>
-          <p class="muted" style="margin-top: 12px">
-            We focus on clarity, structure, and trust — before money moves.
-          </p>
-        </aside>
-      </section>
-
-      <section class="section" id="how">
-        <h2 class="section-title">How it works</h2>
-        <div class="grid3">
-          <div class="card mini">
-            <h2>1) Define the need</h2>
-            <p>Borrowers explain how much capital they need and the purpose.</p>
-          </div>
-          <div class="card mini">
-            <h2>2) Agree on terms</h2>
-            <p>Lenders make offers. Return depends on the offer and risk profile.</p>
-          </div>
-          <div class="card mini">
-            <h2>3) Document it</h2>
-            <p>We create clear agreements so expectations are written and transparent.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="offer">
-        <h2 class="section-title">Current offer (illustrative)</h2>
-
-        <div class="offer">
-          <div class="offer-head">
-            <h3>Example: Invest 45,000 → Receive 52.000 in 4 weeks</h3>
-            <span class="pill">Profit 7000</span>
-          </div>
-
-          <p class="muted" style="margin: 0">
-            AmicBridge can provide an example offer where an investor provides capital and receives a
-            defined repayment. Returns vary based on the offer available on
-            <strong>amicbridge.com</strong> at the time. Repayment is scheduled 4 weeks after funding,
-            as defined in the agreement.
-          </p>
-
-          <div class="kvgrid" aria-label="Offer details">
-            <div class="kv">
-              <span class="label">Investment</span>
-              <span class="value">45,000</span>
-            </div>
-            <div class="kv">
-              <span class="label">Return (repayment)</span>
-              <span class="value">52,000</span>
-            </div>
-            <div class="kv">
-              <span class="label">Profit</span>
-              <span class="value">7000</span>
-            </div>
-          </div>
-
-          <p class="fineprint">
-            Example only — not a guarantee. Capital involves risk. Terms, timing, and repayment depend
-            on the written agreement and performance.
-          </p>
-        </div>
-      </section>
-
-      <section class="section" id="trust">
-        <h2 class="section-title">Trust before money</h2>
-        <div class="card">
-          <p class="muted" style="margin: 0">
-            AmicBridge relies on trust before money. We help private people and businesses make
-            better financial decisions by keeping terms transparent and agreements clear — between us,
-            or between you and other companies in the network.
-          </p>
-        </div>
-      </section>
-
-      <section class="section" id="contact">
-        <h2 class="section-title">Contact</h2>
-
-        <div class="card contact">
-          <div>
-            <h2 style="margin: 0 0 8px">CEO: Ernest</h2>
-            <p class="muted" style="margin: 0">
-              For questions about offers, capital needs, or agreements, email:
-              <a href="mailto:amicbridgecontact@gmail.com">amicbridgecontact@gmail.com</a>
-            </p>
-          </div>
-
-          <div>
-            <a class="btn primary" href="mailto:amicbridgecontact@gmail.com?subject=AmicBridge%20Inquiry">
-              Email AmicBridge
-            </a>
-            <p class="fineprint" style="margin-top: 10px">
-              Please include your name, location, and what you’re looking for.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <p class="fineprint" style="margin-top: 18px">
-        © <span id="year"></span> AmicBridge. All rights reserved.
+      <p class="lead" style="margin:0;">
+        This is the current active offer available through AmicBridge.
+        Repayment is scheduled 4 weeks after funding, as defined in the written agreement.
       </p>
-    </main>
 
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
-  </body>
+      <div class="grid">
+        <div class="box">
+          <div class="label">Investment</div>
+          <div class="value">45,000</div>
+        </div>
+        <div class="box">
+          <div class="label">Return (repayment)</div>
+          <div class="value">52,000</div>
+        </div>
+        <div class="box">
+          <div class="label">Profit</div>
+          <div class="value">7,000</div>
+        </div>
+      </div>
+
+      <p class="small">
+        Capital involves risk. Repayment, timing and performance are defined in the written agreement.
+      </p>
+    </div>
+  </div>
+
+  <div class="section" id="contact">
+    <div class="card">
+      <h2>Contact CEO Ernest</h2>
+      <p class="lead">
+        For more information about this offer or future capital opportunities,
+        please contact us directly.
+      </p>
+
+      <a class="button" href="mailto:amicbridgecontact@gmail.com?subject=AmicBridge%20Inquiry">
+        Email: amicbridgecontact@gmail.com
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> AmicBridge. All rights reserved.
+  </footer>
+
+</div>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
 </html>
