@@ -1,35 +1,61 @@
-<section class="return-box">
-  <h2>Example structured return</h2>
-  <p class="muted">
-    Example: A lender provides <strong>30,000</strong> and receives
-    <strong>35,000</strong> after 4 weeks.
-  </p>
-
-  <div class="result">
-    <div>
-      <span class="label">Principal</span>
-      <span id="principal">30,000</span>
-    </div>
-    <div>
-      <span class="label">Repayment</span>
-      <span id="repayment">35,000</span>
-    </div>
-    <div>
-      <span class="label">Profit</span>
-      <span id="profit"></span>
-    </div>
-    <div>
-      <span class="label">Return</span>
-      <span id="returnRate"></span>
-    </div>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-name">AMICBRIDGE</div>
+    <div class="brand-tagline">Based in Norway · Private lending &amp; investing network</div>
   </div>
 
-  <p class="note">
-    Capital involves risk. Returns depend on agreement terms and borrower performance.
-  </p>
-</section>
+  <nav class="nav">
+    <a href="#how">How it works</a>
+    <a href="#who">Who it is for</a>
+    <a href="#trust">Trust &amp; agreements</a>
+    <a href="#currency">Currency</a>
+    <a href="#stablecoin">Stablecoin</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="capital-card" id="capital">
+    <h1>Capital opportunities with clear terms.</h1>
+    <p class="muted">
+      AmicBridge connects borrowers and private lenders through written agreements.
+      We structure capital with defined repayment terms and agreed return.
+    </p>
+
+    <div class="return-box">
+      <div class="return-head">
+        <h2>Example return (illustrative)</h2>
+        <span class="pill">Structured · 4 weeks</span>
+      </div>
+
+      <div class="return-grid">
+        <div class="kv">
+          <span class="label">Capital provided</span>
+          <span class="value" id="principal">30,000</span>
+        </div>
+        <div class="kv">
+          <span class="label">Repayment</span>
+          <span class="value" id="repayment">35,000</span>
+        </div>
+        <div class="kv">
+          <span class="label">Profit</span>
+          <span class="value" id="profit"></span>
+        </div>
+        <div class="kv">
+          <span class="label">Return</span>
+          <span class="value" id="returnRate"></span>
+        </div>
+      </div>
+
+      <p class="note">
+        Example only. Capital involves risk. Returns depend on the agreement and borrower performance.
+      </p>
+    </div>
+  </section>
+</main>
 
 <script>
+  // Illustrative example: 30,000 -> 35,000 in 4 weeks
   const principal = 30000;
   const repayment = 35000;
   const weeks = 4;
@@ -37,9 +63,9 @@
   const profit = repayment - principal;
   const simpleReturn = (profit / principal) * 100;
 
-  document.getElementById("profit").innerText =
-    profit.toLocaleString();
-
+  document.getElementById("principal").innerText = principal.toLocaleString();
+  document.getElementById("repayment").innerText = repayment.toLocaleString();
+  document.getElementById("profit").innerText = profit.toLocaleString();
   document.getElementById("returnRate").innerText =
     simpleReturn.toFixed(2) + "% in " + weeks + " weeks";
 </script>
