@@ -95,6 +95,7 @@ p.lead{
   border:1px solid var(--border);
   border-radius:16px;
   padding:24px;
+  margin-top:14px;
 }
 
 .offer-header{
@@ -102,11 +103,13 @@ p.lead{
   justify-content:space-between;
   align-items:center;
   margin-bottom:14px;
+  gap:12px;
 }
 
 .offer-header h2{
   margin:0;
   font-size:20px;
+  line-height:1.2;
 }
 
 .badge{
@@ -116,6 +119,7 @@ p.lead{
   border-radius:999px;
   font-size:12px;
   font-weight:700;
+  white-space:nowrap;
 }
 
 .grid{
@@ -189,7 +193,7 @@ footer{
     <div class="tagline">Based in Norway · Private lending & investing network</div>
   </div>
   <nav>
-    <a href="#offer">Current Offer</a>
+    <a href="#offer">Current Offers</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
@@ -206,29 +210,30 @@ footer{
   <div class="section" id="offer">
     <h2>Current Offer</h2>
 
+    <!-- Main Offer -->
     <div class="offer">
       <div class="offer-header">
-        <h2>lending 45,000 → Receive 52,000 in 4 weeks</h2>
-        <span class="badge">Profit 7,000</span>
+        <h2>Lend 100,000 → Receive 120,000 in 3 weeks</h2>
+        <span class="badge">Profit 20,000</span>
       </div>
 
       <p class="lead" style="margin:0;">
         This is the current active offer available through AmicBridge.
-        Repayment is scheduled 4 weeks after funding, as defined in the written agreement.
+        Repayment is scheduled 3 weeks after funding, as defined in the written agreement.
       </p>
 
       <div class="grid">
         <div class="box">
-          <div class="label">lend</div>
-          <div class="value">45,000</div>
+          <div class="label">Lend</div>
+          <div class="value">100,000</div>
         </div>
         <div class="box">
           <div class="label">Return (repayment)</div>
-          <div class="value">52,000</div>
+          <div class="value">120,000</div>
         </div>
         <div class="box">
           <div class="label">Profit</div>
-          <div class="value">7,000</div>
+          <div class="value">20,000</div>
         </div>
       </div>
 
@@ -236,6 +241,7 @@ footer{
         Capital involves risk. Repayment, timing and performance are defined in the written agreement.
       </p>
     </div>
+
   </div>
 
   <div class="section" id="contact">
