@@ -1,0 +1,241 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DealCard from "../components/DealCard.astro";
+import { starterDeals } from "../data/deals";
+---
+
+<BaseLayout
+  title="AmicBridge Deals"
+  description="Browse active AmicBridge funding pools and join a deal."
+>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Live marketplace</div>
+          <h1 style="font-size: clamp(2.2rem, 4vw, 4rem);">Browse live deal pools</h1>
+          <p class="section-copy">
+            Join a pool, contribute an amount, and track funding progress instantly.
+            This MVP stores activity in your browser so you can test the full flow right now.
+          </p>
+        </div>
+        <a class="btn btn-primary" href="/create-deal">Create a deal</a>
+      </div>
+
+      <div id="marketplace-notice" class="notice" style="margin-bottom:20px; display:none;">
+        Your new deal was added successfully.
+      </div>
+
+      <div id="deal-grid" class="deal-grid">
+        {starterDeals.map((deal) => <DealCard deal={deal} />)}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    const customDealsKey = "amicbridge_custom_deals";
+    const contributionsKey = "amicbridge_contributions";
+
+    const formatCurrency = (value) =>
+      new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+      }).format(value);
+
+    const escapeHtml = (value) =>
+      String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    const getCustomDeals = () => {
+      try {
+        return JSON.parse(localStorage.getItem(customDealsKey) || "[]");
+      } catch {
+        return [];
+      }
+    };
+
+    const getContributions = () => {
+      try {
+        return JSON.parse(localStorage.getItem(contributionsKey) || "{}");
+      } catch {
+        return {};
+      }
+    };
+
+    const saveContributions = (data) => {
+      localStorage.setItem(contributionsKey, JSON.stringify(data));
+    };
+
+    const getStatusClass = (status) => {
+      if (status === "funded") return "status-funded";
+      if (status === "active") return "status-active";
+      return "status-open";
+    };
+
+    const getTotalCurrent = (card, contributions) => {
+      const id = card.dataset.id;
+      const base = Number(card.dataset.baseCurrent || 0);
+      const extra = Number(contributions[id] || 0);
+      return base + extra;
+    };
+
+    const updateCard = (card) => {
+      const contributions = getContributions();
+      const target = Number(card.dataset.target || 0);
+      const totalCurrent = getTotalCurrent(card, contributions);
+      const percent = Math.min(100, Math.round((totalCurrent / Math.max(target, 1)) * 100));
+      const statusEl = card.querySelector(".js-status");
+      const currentEl = card.querySelector(".js-current");
+      const progressFill = card.querySelector(".progress-fill");
+      const progressLabel = card.querySelector(".progress-label");
+
+      if (currentEl) currentEl.textContent = formatCurrency(totalCurrent);
+      if (progressFill) progressFill.style.width = `${percent}%`;
+      if (progressLabel) {
+        progressLabel.innerHTML = `<span>${percent}% funded</span><span>${totalCurrent.toLocaleString()} / ${target.toLocaleString()}</span>`;
+      }
+
+      const nextStatus = totalCurrent >= target ? "funded" : (card.dataset.status || "open");
+      if (statusEl) {
+        statusEl.textContent = nextStatus;
+        statusEl.className = `deal-status js-status ${getStatusClass(nextStatus)}`;
+      }
+    };
+
+    const attachJoinHandler = (card) => {
+      const btn = card.querySelector(".js-join-btn");
+      if (!btn) return;
+
+      btn.addEventListener("click", () => {
+        const title = card.dataset.title || "this deal";
+        const target = Number(card.dataset.target || 0);
+        const contributions = getContributions();
+        const current = getTotalCurrent(card, contributions);
+        const remaining = Math.max(target - current, 0);
+
+        if (remaining <= 0) {
+          alert("This pool is already fully funded.");
+          return;
+        }
+
+        const raw = window.prompt(`How much would you like to contribute to "${title}"?\nRemaining: ${formatCurrency(remaining)}`, "500");
+        if (!raw) return;
+
+        const amount = Number(raw);
+        if (!Number.isFinite(amount) || amount <= 0) {
+          alert("Enter a valid contribution amount.");
+          return;
+        }
+
+        const finalAmount = Math.min(amount, remaining);
+        const id = card.dataset.id;
+        contributions[id] = Number(contributions[id] || 0) + finalAmount;
+        saveContributions(contributions);
+        updateCard(card);
+
+        alert(`Contribution added: ${formatCurrency(finalAmount)}`);
+      });
+    };
+
+    const renderCustomDeals = () => {
+      const grid = document.getElementById("deal-grid");
+      if (!grid) return;
+
+      const customDeals = getCustomDeals();
+
+      customDeals.forEach((deal) => {
+        const article = document.createElement("article");
+        article.className = "deal-card js-deal-card";
+        article.dataset.id = deal.id;
+        article.dataset.title = deal.title;
+        article.dataset.target = String(deal.targetAmount);
+        article.dataset.baseCurrent = String(deal.currentAmount || 0);
+        article.dataset.rate = String(deal.interestRate);
+        article.dataset.duration = String(deal.durationMonths);
+        article.dataset.status = deal.status || "open";
+        article.dataset.borrower = deal.borrowerName;
+        article.dataset.location = deal.location;
+        article.dataset.category = deal.category;
+        article.dataset.description = deal.description;
+
+        article.innerHTML = `
+          <div class="deal-top">
+            <div>
+              <div class="muted" style="font-size:0.88rem; font-weight:800;">${escapeHtml(deal.category)}</div>
+              <h3>${escapeHtml(deal.title)}</h3>
+              <div class="muted">Borrower: ${escapeHtml(deal.borrowerName)}</div>
+            </div>
+            <div class="deal-status js-status ${getStatusClass(deal.status || "open")}">${escapeHtml(deal.status || "open")}</div>
+          </div>
+
+          <p class="muted js-description">${escapeHtml(deal.description)}</p>
+
+          <div class="deal-meta">
+            <div>
+              <strong>Target</strong>
+              <span class="js-target">${formatCurrency(Number(deal.targetAmount))}</span>
+            </div>
+            <div>
+              <strong>Current</strong>
+              <span class="js-current">${formatCurrency(Number(deal.currentAmount || 0))}</span>
+            </div>
+            <div>
+              <strong>Return</strong>
+              <span>${escapeHtml(deal.interestRate)}%</span>
+            </div>
+            <div>
+              <strong>Duration</strong>
+              <span>${escapeHtml(deal.durationMonths)} months</span>
+            </div>
+            <div>
+              <strong>Location</strong>
+              <span>${escapeHtml(deal.location)}</span>
+            </div>
+            <div>
+              <strong>Pool</strong>
+              <span>Deal-based</span>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-bar" aria-label="Funding progress">
+              <div class="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-label">
+              <span>0% funded</span>
+              <span>0 / ${Number(deal.targetAmount).toLocaleString()}</span>
+            </div>
+          </div>
+
+          <div class="deal-actions">
+            <button class="btn btn-primary js-join-btn" type="button">Join pool</button>
+          </div>
+        `;
+
+        grid.appendChild(article);
+      });
+    };
+
+    const init = () => {
+      const params = new URLSearchParams(window.location.search);
+      const notice = document.getElementById("marketplace-notice");
+      if (params.get("created") === "1" && notice) {
+        notice.style.display = "block";
+      }
+
+      renderCustomDeals();
+
+      document.querySelectorAll(".js-deal-card").forEach((card) => {
+        attachJoinHandler(card);
+        updateCard(card);
+      });
+    };
+
+    init();
+  </script>
+</BaseLayout>
