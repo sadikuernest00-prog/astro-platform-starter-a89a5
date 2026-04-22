@@ -1,154 +1,294 @@
----
-import BaseLayout from "../layouts/BaseLayout.astro";
-import DealCard from "../components/DealCard.astro";
-import { starterDeals } from "../data/deals";
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AmicBridge</title>
+  </head>
 
-const featuredDeals = starterDeals.slice(0, 3);
----
-
-<BaseLayout
-  title="AmicBridge | Trust-first funding pools"
-  description="AmicBridge lets people pool money to fund real opportunities through clear, structured agreements."
->
-  <section class="container hero">
-    <div>
-      <div class="eyebrow">Trust before money</div>
-      <h1>Pool money. Fund opportunities. Earn together.</h1>
-      <p class="lead">
-        AmicBridge is a trust-first funding platform where borrowers create deals,
-        customers join funding pools, and every opportunity is presented with clarity,
-        structure, and transparent progress.
-      </p>
-
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="/deals">Browse deals</a>
-        <a class="btn btn-secondary" href="/create-deal">Create deal</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="section-copy" style="margin-bottom: 18px;">
-        Modern private funding should feel simple, transparent, and structured.
-      </div>
-      <div class="steps">
-        <div class="step-card">
-          <div class="step-num">1</div>
-          <h3>Create or discover</h3>
-          <p class="muted">Borrowers post funding requests. Customers browse live opportunities.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">2</div>
-          <h3>Join the pool</h3>
-          <p class="muted">Multiple people contribute smaller amounts into one structured deal.</p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">3</div>
-          <h3>Track progress</h3>
-          <p class="muted">See funding levels, terms, and expected return in one clear place.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container card-grid">
-      <div class="stat-card">
-        <div class="stat-label">Model</div>
-        <div class="stat-value">Deal pools</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Structure</div>
-        <div class="stat-value">Transparent</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Launch path</div>
-        <div class="stat-value">Fast MVP</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
+  <body>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="container nav">
         <div>
-          <h2>How AmicBridge works</h2>
-          <p class="section-copy">
-            The first version focuses on a clean deal-based model. One borrower, one deal,
-            one pool, many contributors.
+          <h2 class="logo">
+            <span>AMIC</span><span class="blue">BRIDGE</span>
+          </h2>
+          <p class="tag">Private lending & investing network</p>
+        </div>
+
+        <nav class="menu">
+          <a href="#">How it works</a>
+          <a href="#">Who it is for</a>
+          <a href="#">Trust & agreements</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+
+        <!-- LEFT -->
+        <div class="left">
+          <div class="badge">✔ TRUST BEFORE MONEY</div>
+
+          <h1>
+            Invest your money. Let it work smarter for you.
+          </h1>
+
+          <p>
+            Put your money to work with us. We provide earnings. Start with a small amount or a big amount.
+          </p>
+
+          <div class="buttons">
+            <a href="mailto:sadikuernest00@gmail.com" class="btn primary">Email CEO</a>
+            <a href="#" class="btn secondary">Learn how it works</a>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+          <div class="money-card">
+            <h2>
+              Start with whatever amount you are comfortable with — big or small.
+              We provide structure, insights, and opportunities to help your
+              money work more effectively over time.
+            </h2>
+
+            <p>
+              We work for you and let your money grow.
+            </p>
+
+            <a
+              href="https://wa.me/4792928373"
+              target="_blank"
+              class="whatsapp-btn"
+            >
+              💬 Contact on WhatsApp to get started
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- WHO -->
+    <section class="section">
+      <div class="container">
+        <h2>Who AmicBridge is for</h2>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Private lenders</h3>
+            <p>Individuals who want professional structure.</p>
+          </div>
+
+          <div class="card">
+            <h3>Projects & builders</h3>
+            <p>People with concrete plans that need funding.</p>
+          </div>
+
+          <div class="card">
+            <h3>Long-term investors</h3>
+            <p>Those who prefer agreements over hype.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>If you are interested in working with us, reach out directly:</p>
+
+        <div class="card">
+          <p><strong>Email:</strong> 
+            <a href="mailto:sadikuernest00@gmail.com">
+              sadikuernest00@gmail.com
+            </a>
+          </p>
+
+          <p><strong>WhatsApp:</strong> 
+            <a href="https://wa.me/4792928373" target="_blank">
+              Chat on WhatsApp
+            </a>
           </p>
         </div>
       </div>
+    </section>
 
-      <div class="steps">
-        <div class="step-card">
-          <div class="step-num">1</div>
-          <h3>Borrower creates a deal</h3>
-          <p class="muted">
-            A funding request is posted with amount, duration, category, and return.
-          </p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">2</div>
-          <h3>Pool opens automatically</h3>
-          <p class="muted">
-            Customers can contribute smaller amounts until the target is reached.
-          </p>
-        </div>
-        <div class="step-card">
-          <div class="step-num">3</div>
-          <h3>Track funding in real time</h3>
-          <p class="muted">
-            The marketplace updates progress and closes a pool once funded.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <h2>Featured deals</h2>
-          <p class="section-copy">
-            Start with visible, understandable opportunities. Trust grows when the deal is easy to understand.
-          </p>
-        </div>
-        <a class="btn btn-secondary" href="/deals">See all deals</a>
-      </div>
-
-      <div class="deal-grid">
-        {featuredDeals.map((deal) => <DealCard deal={deal} />)}
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container two-col">
-      <div class="card">
-        <h2>Why this page works right now</h2>
-        <p class="muted">
-          This version positions AmicBridge as a trust-first funding marketplace instead of
-          an overbuilt finance platform. It is clear, modern, and easy to deploy on Netlify.
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <p>
+          AmicBridge provides structure, agreements, and opportunities.
         </p>
-        <div class="pill-row" style="margin-top:16px;">
-          <div class="pill">Trust-first</div>
-          <div class="pill">Simple structure</div>
-          <div class="pill">Deal-based pools</div>
-          <div class="pill">Fast launch</div>
-        </div>
       </div>
+    </footer>
 
-      <div class="card">
-        <h2>Best next move</h2>
-        <p class="muted">
-          Launch this MVP with mock data, prove interest, then connect Supabase for real deal storage.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="/deals">Open marketplace</a>
-          <a class="btn btn-secondary" href="/create-deal">Post a deal</a>
-        </div>
-      </div>
-    </div>
-  </section>
-</BaseLayout>
+  </body>
+</html>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6fb;
+    color: #111;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  /* HEADER */
+  .header {
+    background: white;
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    margin: 0;
+  }
+
+  .logo .blue {
+    color: #2d4bb3;
+  }
+
+  .tag {
+    font-size: 12px;
+    color: gray;
+  }
+
+  .menu a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 60px 0;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .badge {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 15px;
+  }
+
+  h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  .buttons {
+    margin-top: 20px;
+  }
+
+  .btn {
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+
+  .primary {
+    background: #2d4bb3;
+    color: white;
+  }
+
+  .secondary {
+    background: #eee;
+  }
+
+  /* RIGHT CARD */
+  .money-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+  }
+
+  .money-card h2 {
+    margin-bottom: 15px;
+  }
+
+  .money-card p {
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .whatsapp-btn {
+    display: inline-block;
+    margin-top: 15px;
+    background: #25D366;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 50px 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: white;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+  }
+
+  /* MOBILE */
+  @media (max-width: 800px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
