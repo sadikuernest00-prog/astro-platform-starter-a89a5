@@ -1,294 +1,562 @@
-<!doctype html>
+---
+const oilProducts = [
+  {
+    id: 1,
+    name: "Brent Crude Oil",
+    region: "North Sea",
+    price: "$82 / Barrel",
+    minOrder: "1,000 Barrels",
+    image: "/images/brent-oil.jpg",
+    payment: "USDC • BTC • ETH",
+  },
+
+  {
+    id: 2,
+    name: "WTI Crude Oil",
+    region: "United States",
+    price: "$79 / Barrel",
+    minOrder: "5,000 Barrels",
+    image: "/images/wti-oil.jpg",
+    payment: "USDC • BTC • ETH",
+  },
+
+  {
+    id: 3,
+    name: "Jet Fuel A-1",
+    region: "Middle East",
+    price: "$2.85 / Gallon",
+    minOrder: "50,000 Gallons",
+    image: "/images/jet-fuel.jpg",
+    payment: "USDC • BTC • ETH",
+  },
+];
+---
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AmicBridge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>AmicBridge | Oil Trading With Crypto</title>
+
+    <style>
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: #0a0a0a;
+        color: white;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .navbar {
+        width: 100%;
+        padding: 28px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 999;
+        background: rgba(0,0,0,0.75);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .logo {
+        font-size: 38px;
+        font-weight: 900;
+        letter-spacing: 1px;
+      }
+
+      .logo span {
+        color: #d6a85f;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 35px;
+      }
+
+      .nav-links a {
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: #d6a85f;
+      }
+
+      .hero {
+        height: 100vh;
+        background:
+          linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)),
+          url('/images/oil-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .hero-content {
+        max-width: 1000px;
+      }
+
+      .hero h1 {
+        font-size: 88px;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 24px;
+      }
+
+      .hero span {
+        color: #d6a85f;
+      }
+
+      .hero p {
+        font-size: 24px;
+        color: #cccccc;
+        line-height: 1.7;
+        margin-bottom: 40px;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 18px 34px;
+        border-radius: 999px;
+        font-size: 18px;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      .primary-btn {
+        background: #d6a85f;
+        color: black;
+      }
+
+      .secondary-btn {
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+      }
+
+      .section {
+        padding: 120px 30px;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 64px;
+        font-weight: 900;
+        margin-bottom: 20px;
+      }
+
+      .section-subtitle {
+        text-align: center;
+        color: #999;
+        font-size: 22px;
+        margin-bottom: 70px;
+      }
+
+      .products {
+        max-width: 1450px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+      }
+
+      .card {
+        background: #121212;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.05);
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+      }
+
+      .card img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+      }
+
+      .card-content {
+        padding: 32px;
+      }
+
+      .card h3 {
+        font-size: 34px;
+        margin-bottom: 12px;
+      }
+
+      .region {
+        color: #d6a85f;
+        margin-bottom: 18px;
+        font-weight: bold;
+      }
+
+      .price {
+        font-size: 46px;
+        font-weight: 900;
+        margin-bottom: 20px;
+      }
+
+      .info {
+        color: #aaa;
+        line-height: 1.8;
+        margin-bottom: 26px;
+      }
+
+      .buy-btn {
+        width: 100%;
+        background: #d6a85f;
+        color: black;
+        border: none;
+        padding: 18px;
+        border-radius: 999px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .trust-grid {
+        max-width: 1450px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+      }
+
+      .trust-card {
+        background: #121212;
+        padding: 40px;
+        border-radius: 28px;
+        border: 1px solid rgba(255,255,255,0.05);
+      }
+
+      .trust-card h3 {
+        font-size: 28px;
+        margin-bottom: 18px;
+      }
+
+      .trust-card p {
+        color: #999;
+        line-height: 1.8;
+        font-size: 17px;
+      }
+
+      .stats {
+        max-width: 1300px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+      }
+
+      .stat-box {
+        text-align: center;
+        background: #121212;
+        padding: 50px 20px;
+        border-radius: 28px;
+      }
+
+      .stat-box h2 {
+        font-size: 64px;
+        color: #d6a85f;
+        margin-bottom: 12px;
+      }
+
+      .stat-box p {
+        color: #999;
+        font-size: 18px;
+      }
+
+      .contact {
+        max-width: 1000px;
+        margin: auto;
+        background: #121212;
+        padding: 60px;
+        border-radius: 28px;
+        text-align: center;
+      }
+
+      .contact h2 {
+        font-size: 52px;
+        margin-bottom: 20px;
+      }
+
+      .contact p {
+        color: #999;
+        font-size: 20px;
+        margin-bottom: 14px;
+      }
+
+      .email {
+        color: #d6a85f;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      footer {
+        padding: 60px 20px;
+        text-align: center;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        color: #777;
+      }
+
+      @media(max-width: 768px){
+
+        .hero h1{
+          font-size: 54px;
+        }
+
+        .section-title{
+          font-size: 42px;
+        }
+
+        .navbar{
+          padding: 22px;
+        }
+
+        .nav-links{
+          display:none;
+        }
+
+      }
+
+    </style>
   </head>
 
   <body>
-    <!-- HEADER -->
-    <header class="header">
-      <div class="container nav">
-        <div>
-          <h2 class="logo">
-            <span>AMIC</span><span class="blue">BRIDGE</span>
-          </h2>
-          <p class="tag">Private lending & investing network</p>
+
+    <nav class="navbar">
+
+      <div class="logo">
+        Amic<span>Bridge</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="#products">Oil</a>
+        <a href="#trust">Trust</a>
+        <a href="#stats">Markets</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+    </nav>
+
+    <section class="hero">
+
+      <div class="hero-content">
+
+        <h1>
+          Global Oil Trading <br />
+          Powered By <span>Crypto</span>
+        </h1>
+
+        <p>
+          Buy and settle oil transactions using USDC, Bitcoin and Ethereum.
+          Fast international settlement for energy buyers worldwide.
+        </p>
+
+        <div class="hero-buttons">
+
+          <a href="#products" class="btn primary-btn">
+            Explore Oil Markets
+          </a>
+
+          <a href="#trust" class="btn secondary-btn">
+            Why AmicBridge
+          </a>
+
         </div>
 
-        <nav class="menu">
-          <a href="#">How it works</a>
-          <a href="#">Who it is for</a>
-          <a href="#">Trust & agreements</a>
-          <a href="#contact">Contact</a>
-        </nav>
       </div>
-    </header>
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container hero-grid">
+    </section>
 
-        <!-- LEFT -->
-        <div class="left">
-          <div class="badge">✔ TRUST BEFORE MONEY</div>
+    <section class="section" id="products">
 
-          <h1>
-            Invest your money. Let it work smarter for you.
-          </h1>
+      <h2 class="section-title">
+        Energy Products
+      </h2>
+
+      <p class="section-subtitle">
+        International energy products available with crypto settlement.
+      </p>
+
+      <div class="products">
+
+        {
+          oilProducts.map((oil) => (
+
+            <div class="card">
+
+              <img src={oil.image} alt={oil.name} />
+
+              <div class="card-content">
+
+                <h3>{oil.name}</h3>
+
+                <div class="region">
+                  {oil.region}
+                </div>
+
+                <div class="price">
+                  {oil.price}
+                </div>
+
+                <div class="info">
+                  Minimum Order: {oil.minOrder}
+                  <br /><br />
+                  Payment Methods: {oil.payment}
+                </div>
+
+                <button class="buy-btn">
+                  Request Trade
+                </button>
+
+              </div>
+
+            </div>
+
+          ))
+        }
+
+      </div>
+
+    </section>
+
+    <section class="section" id="trust">
+
+      <h2 class="section-title">
+        Built Around Trust
+      </h2>
+
+      <p class="section-subtitle">
+        Transparent energy trade infrastructure for the crypto era.
+      </p>
+
+      <div class="trust-grid">
+
+        <div class="trust-card">
+
+          <h3>Escrow Settlement</h3>
 
           <p>
-            Put your money to work with us. We provide earnings. Start with a small amount or a big amount.
+            Funds can be secured through trusted escrow systems before shipment release.
           </p>
 
-          <div class="buttons">
-            <a href="mailto:sadikuernest00@gmail.com" class="btn primary">Email CEO</a>
-            <a href="#" class="btn secondary">Learn how it works</a>
-          </div>
         </div>
 
-        <!-- RIGHT -->
-        <div class="right">
-          <div class="money-card">
-            <h2>
-              Start with whatever amount you are comfortable with — big or small.
-              We provide structure, insights, and opportunities to help your
-              money work more effectively over time.
-            </h2>
+        <div class="trust-card">
 
-            <p>
-              We work for you and let your money grow.
-            </p>
+          <h3>Global Crypto Payments</h3>
 
-            <a
-              href="https://wa.me/4792928373"
-              target="_blank"
-              class="whatsapp-btn"
-            >
-              💬 Contact on WhatsApp to get started
-            </a>
-          </div>
+          <p>
+            International buyers can settle trades instantly using stablecoins.
+          </p>
+
+        </div>
+
+        <div class="trust-card">
+
+          <h3>Verified Documentation</h3>
+
+          <p>
+            Shipment documentation and verification processes help create trust between buyers and suppliers.
+          </p>
+
         </div>
 
       </div>
+
     </section>
 
-    <!-- WHO -->
-    <section class="section">
-      <div class="container">
-        <h2>Who AmicBridge is for</h2>
+    <section class="section" id="stats">
 
-        <div class="grid">
-          <div class="card">
-            <h3>Private lenders</h3>
-            <p>Individuals who want professional structure.</p>
-          </div>
+      <h2 class="section-title">
+        Market Access
+      </h2>
 
-          <div class="card">
-            <h3>Projects & builders</h3>
-            <p>People with concrete plans that need funding.</p>
-          </div>
+      <p class="section-subtitle">
+        Connecting crypto capital with global energy markets.
+      </p>
 
-          <div class="card">
-            <h3>Long-term investors</h3>
-            <p>Those who prefer agreements over hype.</p>
-          </div>
+      <div class="stats">
+
+        <div class="stat-box">
+          <h2>24/7</h2>
+          <p>Crypto Settlement</p>
         </div>
-      </div>
-    </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="section">
-      <div class="container">
-        <h2>Contact</h2>
-        <p>If you are interested in working with us, reach out directly:</p>
-
-        <div class="card">
-          <p><strong>Email:</strong> 
-            <a href="mailto:sadikuernest00@gmail.com">
-              sadikuernest00@gmail.com
-            </a>
-          </p>
-
-          <p><strong>WhatsApp:</strong> 
-            <a href="https://wa.me/4792928373" target="_blank">
-              Chat on WhatsApp
-            </a>
-          </p>
+        <div class="stat-box">
+          <h2>190+</h2>
+          <p>Countries Supported</p>
         </div>
+
+        <div class="stat-box">
+          <h2>USDC</h2>
+          <p>Main Settlement Asset</p>
+        </div>
+
+        <div class="stat-box">
+          <h2>Fast</h2>
+          <p>International Transfers</p>
+        </div>
+
       </div>
+
     </section>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-      <div class="container">
+    <section class="section" id="contact">
+
+      <div class="contact">
+
+        <h2>Contact Trading Desk</h2>
+
         <p>
-          AmicBridge provides structure, agreements, and opportunities.
+          For wholesale oil orders and institutional partnerships.
         </p>
+
+        <div class="email">
+          trade@amicbridge.com
+        </div>
+
       </div>
+
+    </section>
+
+    <footer>
+
+      © 2026 AmicBridge. Global energy trading platform powered by crypto settlement.
+
     </footer>
 
   </body>
 </html>
-
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6fb;
-    color: #111;
-  }
-
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-  }
-
-  /* HEADER */
-  .header {
-    background: white;
-    border-bottom: 1px solid #ddd;
-    padding: 15px 0;
-  }
-
-  .nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .logo {
-    margin: 0;
-  }
-
-  .logo .blue {
-    color: #2d4bb3;
-  }
-
-  .tag {
-    font-size: 12px;
-    color: gray;
-  }
-
-  .menu a {
-    margin-left: 15px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-  }
-
-  /* HERO */
-  .hero {
-    padding: 60px 0;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-  }
-
-  .badge {
-    background: #dbeafe;
-    color: #1e40af;
-    padding: 6px 12px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 15px;
-  }
-
-  h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
-  }
-
-  .buttons {
-    margin-top: 20px;
-  }
-
-  .btn {
-    padding: 12px 18px;
-    border-radius: 8px;
-    text-decoration: none;
-    margin-right: 10px;
-  }
-
-  .primary {
-    background: #2d4bb3;
-    color: white;
-  }
-
-  .secondary {
-    background: #eee;
-  }
-
-  /* RIGHT CARD */
-  .money-card {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    border: 1px solid #ddd;
-  }
-
-  .money-card h2 {
-    margin-bottom: 15px;
-  }
-
-  .money-card p {
-    color: #555;
-    line-height: 1.6;
-  }
-
-  .whatsapp-btn {
-    display: inline-block;
-    margin-top: 15px;
-    background: #25D366;
-    color: white;
-    padding: 12px 18px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: bold;
-  }
-
-  /* SECTION */
-  .section {
-    padding: 50px 0;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  .card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-  }
-
-  /* FOOTER */
-  .footer {
-    background: white;
-    padding: 20px;
-    border-top: 1px solid #ddd;
-    text-align: center;
-    font-size: 14px;
-    color: gray;
-  }
-
-  /* MOBILE */
-  @media (max-width: 800px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
