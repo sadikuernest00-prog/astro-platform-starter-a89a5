@@ -1,80 +1,34 @@
 ---
-import ProgressBar from "./ProgressBar.astro";
-import { formatCurrency } from "../data/deals";
-import type { Deal } from "../data/deals";
-
-interface Props {
-  deal: Deal;
-}
-
-const { deal } = Astro.props;
-
-const statusClass =
-  deal.status === "funded"
-    ? "status-funded"
-    : deal.status === "active"
-      ? "status-active"
-      : "status-open";
+const { value = 70 } = Astro.props;
 ---
 
-<article
-  class="deal-card js-deal-card"
-  data-id={deal.id}
-  data-title={deal.title}
-  data-target={deal.targetAmount}
-  data-base-current={deal.currentAmount}
-  data-rate={deal.interestRate}
-  data-duration={deal.durationMonths}
-  data-status={deal.status}
-  data-borrower={deal.borrowerName}
-  data-location={deal.location}
-  data-category={deal.category}
-  data-description={deal.description}
->
-  <div class="deal-top">
-    <div>
-      <div class="muted" style="font-size:0.88rem; font-weight:800;">{deal.category}</div>
-      <h3>{deal.title}</h3>
-      <div class="muted">Borrower: {deal.borrowerName}</div>
-    </div>
+<div class="progress-container">
+  <div
+    class="progress-bar"
+    style={`width:${value}%`}
+  ></div>
+</div>
 
-    <div class={`deal-status ${statusClass} js-status`}>
-      {deal.status}
-    </div>
-  </div>
+<style>
 
-  <p class="muted js-description">{deal.description}</p>
+  .progress-container {
+    width: 100%;
+    height: 12px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 14px;
+  }
 
-  <div class="deal-meta">
-    <div>
-      <strong>Target</strong>
-      <span class="js-target">{formatCurrency(deal.targetAmount)}</span>
-    </div>
-    <div>
-      <strong>Current</strong>
-      <span class="js-current">{formatCurrency(deal.currentAmount)}</span>
-    </div>
-    <div>
-      <strong>Return</strong>
-      <span>{deal.interestRate}%</span>
-    </div>
-    <div>
-      <strong>Duration</strong>
-      <span>{deal.durationMonths} months</span>
-    </div>
-    <div>
-      <strong>Location</strong>
-      <span>{deal.location}</span>
-    </div>
-    <div>
-      <strong>Pool</strong>
-      <span>Deal-based</span>
-    </div>
-  </div>
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      #d6a85f,
+      #f0c67a
+    );
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
 
-  <ProgressBar current={deal.currentAmount} target={deal.targetAmount} />
-
-  <div class="deal-actions">
-    <button class="btn btn-primary js-join-btn" type="button">Join pool</button>
-  </div>
-</article>
+</style>
