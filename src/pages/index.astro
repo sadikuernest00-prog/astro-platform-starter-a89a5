@@ -416,6 +416,10 @@ const process = [
         cursor:pointer;
       }
 
+      .quote-form button:hover{
+        opacity:0.9;
+      }
+
       footer{
         padding:70px 20px;
         text-align:center;
@@ -683,33 +687,69 @@ const process = [
 
         </p>
 
-        <form class="quote-form">
+        <!-- EMAIL FORM -->
+
+        <form
+          class="quote-form"
+          action="https://formsubmit.co/sadikuernest00@gmail.com"
+          method="POST"
+        >
 
           <input
             type="text"
+            name="company"
             placeholder="Company Name"
+            required
           />
 
           <input
             type="email"
+            name="email"
             placeholder="Business Email"
+            required
           />
 
           <input
             type="text"
+            name="country"
             placeholder="Country"
+            required
           />
 
           <input
             type="text"
+            name="commodity"
             placeholder="Commodity Interest"
+            required
           />
 
           <textarea
+            name="details"
             placeholder="Transaction details..."
+            required
           ></textarea>
 
-          <button>
+          <!-- EMAIL SETTINGS -->
+
+          <input
+            type="hidden"
+            name="_subject"
+            value="New AmicBridge Request"
+          />
+
+          <input
+            type="hidden"
+            name="_captcha"
+            value="false"
+          />
+
+          <input
+            type="hidden"
+            name="_template"
+            value="table"
+          />
+
+          <button type="submit">
             Submit Request
           </button>
 
