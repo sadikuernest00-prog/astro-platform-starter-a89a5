@@ -1,0 +1,50 @@
+---
+import '@fontsource-variable/cormorant-garamond/wght.css';
+import '@fontsource-variable/cormorant-garamond/wght-italic.css';
+import '@fontsource-variable/inter/wght.css';
+import '../styles/luxury.css';
+import SiteHeader from '../components/lux/SiteHeader.astro';
+import SiteFooter from '../components/lux/SiteFooter.astro';
+import WhatsAppFloat from '../components/lux/WhatsAppFloat.astro';
+import { site } from '../data/site';
+
+interface Props { title?: string; description?: string }
+const { title = `${site.name} | Discover Exceptional Diamonds`, description = site.description } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="theme-color" content="#050505" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <link rel="icon" type="image/svg+xml" href="/diamond-favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+    </head>
+    <body class="lux">
+        <a class="skip-link" href="#main">Skip to content</a>
+        <SiteHeader />
+        <main id="main"><slot /></main>
+        <SiteFooter />
+        <WhatsAppFloat />
+        <script>
+            // Elegant reveal-on-scroll animations
+            const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+            if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                const io = new IntersectionObserver(
+                    (entries) => entries.forEach((e) => {
+                        if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+                    }),
+                    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+                );
+                els.forEach((el) => io.observe(el));
+            } else {
+                els.forEach((el) => el.classList.add('is-visible'));
+            }
+        </script>
+    </body>
+</html>

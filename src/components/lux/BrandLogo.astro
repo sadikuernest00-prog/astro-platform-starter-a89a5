@@ -1,0 +1,24 @@
+---
+import { site } from '../../data/site';
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<a href="/" class="brand" aria-label={`${site.name} — home`}>
+    <svg class="brand-mark" viewBox="0 0 40 40" width="38" height="38" aria-hidden="true">
+        <defs>
+            <linearGradient id="brandGold" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#f6e3b4" />
+                <stop offset=".5" stop-color="#c9a24b" />
+                <stop offset="1" stop-color="#8a6a26" />
+            </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#brandGold)" stroke-width="1.4" stroke-linejoin="round">
+            <path d="M8 14 L14 6 H26 L32 14 L20 35 Z" />
+            <path d="M8 14 H32 M14 6 L17 14 L20 35 L23 14 L26 6 M17 14 L20 6 L23 14" />
+        </g>
+    </svg>
+    <span class="brand-text">
+        <span class="brand-name">{site.shortName}</span>
+        {!compact && <span class="brand-sub">Diamonds</span>}
+    </span>
+</a>
