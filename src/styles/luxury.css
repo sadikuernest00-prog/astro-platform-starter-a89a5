@@ -1,0 +1,81 @@
+:root{--gold:#d4af61;--gold2:#f3dfa8;--bg:#050505;--card:#0e0e0e;--line:rgba(212,175,97,.22);--muted:#a9a49a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body.lux{background:var(--bg);color:#fff;font-family:'Inter Variable',system-ui,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+.skip-link{position:absolute;left:-999px}.skip-link:focus{left:10px;top:10px;background:var(--gold);color:#000;padding:8px;z-index:200}
+h1,h2,h3,.brand-name{font-family:'Cormorant Garamond Variable',Georgia,serif;font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:999px;font-weight:600;font-size:15px;border:1px solid transparent;cursor:pointer;transition:background .2s,color .2s}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#000}
+.btn-gold:hover{background:var(--gold2)}
+.btn-outline{border-color:var(--gold);color:var(--gold)}
+.btn-outline:hover{background:var(--gold);color:#000}
+.btn-sm{padding:8px 16px;font-size:14px}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(5,5,5,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-text{display:flex;flex-direction:column;line-height:1}
+.brand-name{font-size:24px;letter-spacing:2px;color:var(--gold2)}
+.brand-sub{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--muted)}
+.nav-list{display:flex;gap:28px;list-style:none}
+.nav-link{font-size:14px;letter-spacing:1px;text-transform:uppercase}
+.nav-link:hover{color:var(--gold)}
+.nav-cta-mobile{display:none}
+.header-actions{display:flex;align-items:center;gap:12px}
+.menu-toggle{display:none;background:none;border:0;width:36px;height:36px;flex-direction:column;justify-content:center;gap:5px;cursor:pointer}
+.menu-toggle span{display:block;height:2px;background:var(--gold)}
+.hero{position:relative;min-height:80vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#050505 20%,rgba(5,5,5,.2))}
+.hero-content{position:relative;z-index:1;max-width:600px;padding:80px 0}
+.eyebrow{color:var(--gold);letter-spacing:4px;text-transform:uppercase;font-size:13px;margin-bottom:16px}
+.hero h1{font-size:clamp(44px,8vw,84px);line-height:1;letter-spacing:3px;margin-bottom:20px}
+.hero h1 span{color:var(--gold)}
+.hero p{color:#d8d3c8;font-size:18px;margin-bottom:32px}
+.btn-row{display:flex;flex-wrap:wrap;gap:14px}
+.section{padding:90px 0}
+.section-head{text-align:center;max-width:640px;margin:0 auto 48px}
+.section-head h2{font-size:clamp(34px,5vw,52px);margin-bottom:10px}
+.section-head p{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.card-img{position:relative;aspect-ratio:1;background:#000}
+.card-img img{width:100%;height:100%;object-fit:cover}
+.badge{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.75);border:1px solid var(--line);color:var(--gold2);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+.card-body{padding:22px;display:flex;flex-direction:column;gap:14px;flex:1}
+.card-body h3{font-size:26px;line-height:1.15}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:14px}
+.specs dt{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px}
+.specs dd{color:#fff}
+.price{font-family:'Cormorant Garamond Variable',Georgia,serif;font-size:28px;color:var(--gold);margin-top:auto}
+.card .btn{width:100%}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.about img{border-radius:18px;border:1px solid var(--line)}
+.about h2{font-size:clamp(34px,5vw,48px);margin-bottom:16px}
+.about p{color:#d0cbc0;margin-bottom:14px}
+.contact-box{max-width:720px;margin:0 auto;text-align:center;border:1px solid var(--line);border-radius:22px;padding:56px 24px;background:var(--card)}
+.contact-box h2{font-size:clamp(32px,5vw,46px);margin-bottom:12px}
+.contact-box p{color:var(--muted);margin-bottom:28px}
+.contact-box .btn-row{justify-content:center}
+.site-footer{border-top:1px solid var(--line);padding:56px 0 24px;background:#030303}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1.3fr;gap:32px}
+.footer-brand p,.footer-note{color:var(--muted);font-size:14px;margin-top:14px}
+.footer-title{font-size:18px;color:var(--gold);margin-bottom:12px}
+.footer-links{list-style:none;display:grid;gap:8px;font-size:14px}
+.footer-links a:hover{color:var(--gold)}
+.footer-wa{display:flex;gap:10px;align-items:center;color:var(--gold2)}
+.footer-wa small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase}
+.footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.wa-float{position:fixed;right:20px;bottom:20px;z-index:150;width:60px;height:60px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.wa-float-pulse,.wa-float-label{display:none}
+@media (max-width:860px){
+.menu-toggle{display:flex}.header-wa{display:none}
+.nav-list{display:none;position:absolute;top:72px;left:0;right:0;flex-direction:column;gap:0;background:#050505;border-bottom:1px solid var(--line);padding:10px 20px 20px}
+.nav-list.is-open{display:flex}.nav-list li a.nav-link{display:block;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-cta-mobile{display:block;margin-top:16px}
+.about{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}
+.hero::after{background:linear-gradient(0deg,#050505 30%,rgba(5,5,5,.4))}
+}
+@media (max-width:520px){.footer-grid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
