@@ -1,0 +1,43 @@
+---
+import BrandLogo from './BrandLogo.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { site, whatsappLink, defaultWhatsappMessage } from '../../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-brand">
+            <BrandLogo />
+            <p>{site.tagline}. Certified natural and lab-grown diamonds and fine diamond jewelry, offered with complete transparency and personal service.</p>
+        </div>
+        <div>
+            <h3 class="footer-title">Explore</h3>
+            <ul class="footer-links">
+                <li><a href="/#home">Home</a></li>
+                <li><a href="/#catalogue">Diamond Catalogue</a></li>
+                <li><a href="/#about">About Us</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="footer-title">Collections</h3>
+            <ul class="footer-links">
+                <li><a href="/?category=natural#catalogue">Natural Diamonds</a></li>
+                <li><a href="/?category=lab-grown#catalogue">Lab-Grown Diamonds</a></li>
+                <li><a href="/?category=jewelry#catalogue">Diamond Jewelry</a></li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="footer-title">Contact</h3>
+            <a class="footer-wa" href={whatsappLink(defaultWhatsappMessage)} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon size={20} />
+                <span><small>WhatsApp</small>{site.whatsappDisplay}</span>
+            </a>
+            <p class="footer-note">Private viewings and international shipping arranged on request.</p>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <p>© {year} {site.name}. All rights reserved.</p>
+        <p>Every diamond is offered with its original grading certificate.</p>
+    </div>
+</footer>

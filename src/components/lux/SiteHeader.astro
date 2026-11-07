@@ -1,0 +1,56 @@
+---
+import BrandLogo from './BrandLogo.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { whatsappLink, defaultWhatsappMessage } from '../../data/site';
+
+const links = [
+    { href: '/#home', label: 'Home' },
+    { href: '/#catalogue', label: 'Diamonds' },
+    { href: '/?category=jewelry#catalogue', label: 'Jewelry' },
+    { href: '/#about', label: 'About' },
+    { href: '/#contact', label: 'Contact' }
+];
+---
+<header class="site-header" data-header>
+    <div class="container header-inner">
+        <BrandLogo />
+        <nav class="main-nav" aria-label="Main navigation">
+            <ul id="nav-menu" class="nav-list" data-nav-menu>
+                {links.map((l) => <li><a href={l.href} class="nav-link" data-nav-link>{l.label}</a></li>)}
+                <li class="nav-cta-mobile">
+                    <a href={whatsappLink(defaultWhatsappMessage)} target="_blank" rel="noopener noreferrer" class="btn btn-gold">
+                        <WhatsAppIcon size={18} /> Chat on WhatsApp
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="header-actions">
+            <a href={whatsappLink(defaultWhatsappMessage)} target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm header-wa">
+                <WhatsAppIcon size={16} /> WhatsApp
+            </a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu" data-menu-toggle>
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<script>
+    const header = document.querySelector<HTMLElement>('[data-header]');
+    const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    const menu = document.querySelector<HTMLElement>('[data-nav-menu]');
+
+    const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const setOpen = (open: boolean) => {
+        toggle?.setAttribute('aria-expanded', String(open));
+        toggle?.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        menu?.classList.toggle('is-open', open);
+        document.body.classList.toggle('menu-open', open);
+    };
+    toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    window.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+</script>
