@@ -9,9 +9,9 @@ export const site = {
     description:
         'Discover exceptional natural diamonds, lab-grown diamonds and fine diamond jewelry. Certified stones, transparent pricing and personal service via WhatsApp.',
     /** WhatsApp number in international format, digits only (no +, spaces or dashes). */
-    whatsappNumber: '4792928373',
+    whatsappNumber: '4740975815',
     /** Human-readable version of the number shown on the page. */
-    whatsappDisplay: '+47 92 92 83 73',
+    whatsappDisplay: '+47 409 75 815',
     founded: 2014
 };
 
