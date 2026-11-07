@@ -2,8 +2,8 @@
 // To add a product, append an entry to `products`. Prices are intentionally
 // never shown — all pricing is negotiated directly between buyer and seller.
 
-export const WHATSAPP_NUMBER = '4792928373';
-export const WHATSAPP_DISPLAY = '+47 92928373';
+export const WHATSAPP_NUMBER = '4740975815';
+export const WHATSAPP_DISPLAY = '+47 40975815';
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 
 export const whatsappLink = (message: string) => `${WHATSAPP_URL}?text=${encodeURIComponent(message)}`;
